@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.3.7
+Version: 0.3.8
 Authors@R: person("David", "Blodgett", role = c("aut", "cre"), email = "dblodgett@usgs.gov")
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.
 URL: https://github.com/usgs-r/nhdplusTools
@@ -16,8 +16,8 @@ LazyData: true
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-08-24 17:42:19 UTC; dblodgett
+Packaged: 2019-08-27 00:30:59 UTC; dblodgett
 Author: David Blodgett [aut, cre]
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2019-08-25 07:30:06 UTC
+Date/Publication: 2019-08-27 06:10:02 UTC

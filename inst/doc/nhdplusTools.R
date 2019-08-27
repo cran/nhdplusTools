@@ -3,14 +3,15 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
-  fig.height=4
+  fig.height=4,
+  eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
 oldoption <- options(scipen = 9999)
 options(scipen = 9999)
 
 ## ----tldr----------------------------------------------------------------
 # Uncomment to install!
-# devtools::install_github("usgs-r/nhdplusTools")
+# install.packages("nhdplusTools")
 
 library(nhdplusTools)
 library(sf)
