@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>NHDPlus Point Indexing</title>
+<title>TL;DR;</title>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -201,83 +201,162 @@ hr {
 </head>
 
 <body>
-<h2>NHDPlus Point Indexing</h2>
+<h2>TL;DR;</h2>
 
-<p>First we&#39;ll load up some data. In this case, we use flowlines from the NHDPlus subset that&#39;s included in the package and a set of points to index. We&#39;ll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations. </p>
+<p>Most functions in <code>nhdplusTools</code> work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results. </p>
+
+<p><em>Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior.</em></p>
 
 <pre><code class="r">library(nhdplusTools)
+library(sf)
 
-nhdplus_path(file.path(temp_dir, &quot;natseamless.gpkg&quot;))
+work_dir &lt;- tempdir(check = TRUE)
+sample_data &lt;- system.file(&quot;extdata/sample_natseamless.gpkg&quot;, package = &quot;nhdplusTools&quot;)
 
-flowlines &lt;- sf::read_sf(nhdplus_path(), &quot;NHDFlowline_Network&quot;)
-gages &lt;- sf::read_sf(nhdplus_path(), &quot;Gage&quot;)
+hr_gpkg &lt;- file.path(work_dir, &quot;hr_data.gpkg&quot;)
+
+# Make a plot and get some background NHDPlusV2 data.
+plot_data &lt;- plot_nhdplus(list(&quot;nwissite&quot;, &quot;USGS-05428500&quot;), streamorder = 3,
+                          nhdplus_data = sample_data,
+                          stoponlargerequest = FALSE)
+
+# Find the HU04 we are interested in.
+hu04 &lt;- unique(substr(plot_data$flowline$REACHCODE, 1, 4))
+
+# Download some NHDPlusHR Data
+hr_data_dir &lt;- download_nhdplushr(work_dir, hu04)
+
+# Projection and simplification for demo purposes.
+hr &lt;- get_nhdplushr(work_dir, out_gpkg = hr_gpkg,
+                    proj = 3857)
+
+(start_index &lt;- get_flowline_index(st_transform(hr$NHDFlowline, 5070),
+                                   st_transform(plot_data$outlets, 5070),
+                                   search_radius = 200)) # meters albers eq area
+
+ids &lt;- get_UT(hr$NHDFlowline, start_index$COMID)
+
+hr_subset &lt;- subset_nhdplus(ids, nhdplus_data = hr_gpkg)
 </code></pre>
 
-<p>Now we can call <code>nhdplusTools::get_flowline_index()</code> on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, <code>search_radius</code> which defaults to 0.1. See the documentation of the <a href="https://cran.r-project.org/package=RANN">nn2 function from the RANN package</a> for more information on how the search works.</p>
+<p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a subset upstream of a point of interest, we can plot things up and see what it looks like. This plot uses NHDPlusV2 as returned by <code>plot_nhdplus()</code> as a base layer and adds NHDPlusHR data on top of it.</p>
 
-<pre><code class="r">geom_col &lt;- attr(gages, &quot;sf_column&quot;)
-indexes &lt;- get_flowline_index(flowlines, gages[[geom_col]], search_radius = 0.1)
+<pre><code class="r">plot_nhdplus(list(&quot;nwissite&quot;, &quot;USGS-05428500&quot;), streamorder = 2, 
+             nhdplus_data = sample_data, overwrite = TRUE,
+             plot_config = list(flowline = list(lwd = 2.5),
+                                basin = list(lwd = 3)),
+             stoponlargerequest = FALSE)
+
+plot(st_geometry(hr$NHDPlusCatchment), lwd = 0.25, add = TRUE)
+plot(st_geometry(hr$NHDFlowline), col = &quot;blue&quot;, lwd = 0.5, add = TRUE)
+
+plot(st_geometry(st_transform(hr_subset$NHDFlowline, 3857)),
+     col = &quot;cyan&quot;, lwd = 1, add = TRUE)
 </code></pre>
 
-<p>Now let&#39;s look at the results and see how the <code>nhdplusTools::get_flowline_index()</code> did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODES that were matched.</p>
+<h2>Download</h2>
 
-<pre><code class="r">p_match &lt;- 100 * length(which(indexes$COMID %in% gages$FLComID)) / nrow(gages)
-paste0(round(p_match, digits = 1), 
-       &quot;% were found to match the COMID in the NHDPlus gages layer&quot;)
+<p>NHDPlusHR support in nhdplusTools begins with the function <code>download_nhdplushr()</code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products">four digit hydrologic unit code subsets here.</a> <code>download_nhdplushr()</code> facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.</p>
 
-p_match &lt;- 100 * length(which(indexes$REACHCODE %in% gages$REACHCODE)) / nrow(gages)
-paste0(round(p_match, digits = 1), 
-       &quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;)
+<p><em>Note: Data for each HU02 are put in their own output folder.</em></p>
 
-matched &lt;- cbind(indexes, 
-                 dplyr::select(sf::st_set_geometry(gages, NULL), 
-                               REACHCODE_ref = REACHCODE, 
-                               COMID_ref = FLComID, 
-                               REACH_meas_ref = Measure)) %&gt;%
-  dplyr::filter(REACHCODE == REACHCODE_ref) %&gt;%
-  dplyr::mutate(REACH_meas_diff = REACH_meas - REACH_meas_ref)
+<pre><code class="r">(hr_urls &lt;- download_nhdplushr(work_dir, &quot;06&quot;, download_files = FALSE))
 
-hist(matched$REACH_meas_diff, breaks = 100, 
-     main = &quot;Difference in measure for gages matched to the same reach.&quot;)
-
-round(quantile(matched$REACH_meas_diff, 
-               probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), 
-      digits = 2)
+# already downloaded:
+list.files(hr_data_dir)
 </code></pre>
 
-<p>The above example used the native nodes of the NHDPlus as the potential measure snap locations. The <code>nhdplusTools::get_flowline_index()</code> function has the ability to refine these by segmentizing the line to some given resolution. Let&#39;s try the same thing using a resolution of 10m and see if we can do any better. </p>
+<h2>Basic functionality</h2>
 
-<p>Note that the <code>sf::st_segmentize</code> function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.</p>
+<p>The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called <code>get_nhdplushr()</code>. At it&#39;s core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 
+1. joins flowline attributes to the flowline geometry, 
+1. can return one or more selected layers, 
+1. can save the result to a standalone geopackage for later use, and 
+1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren&#39;t in the subset. </p>
 
-<pre><code class="r">indexes &lt;- get_flowline_index(flowlines, 
-                              gages[[geom_col]], 
-                              search_radius = 0.1, 
-                              precision = 10)
+<p>Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of <code>get_nhdplushr()</code></p>
+
+<p>First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.</p>
+
+<pre><code class="r">hr &lt;- get_nhdplushr(hr_data_dir)
+sapply(hr, class)
+plot(st_geometry(hr$NHDFlowline), lwd = (hr$NHDFlowline$StreamOrde / 6))
 </code></pre>
 
-<p>Now lets look at out comparison again.</p>
+<p>If we want more data, we can get any of the layer options listed in the <code>get_nhdplushr()</code> documentation.</p>
 
-<pre><code class="r">p_match &lt;- 100 * length(which(indexes$COMID %in% gages$FLComID)) / nrow(gages)
-paste0(round(p_match, digits = 1), 
-       &quot;% were found to match the COMID in the NHDPlus gages layer&quot;)
+<pre><code class="r">hr &lt;- get_nhdplushr(hr_data_dir, layers = c(&quot;NHDFlowline&quot;, &quot;NHDWaterbody&quot;, &quot;NHDArea&quot;))
+sapply(hr, class)
+sapply(hr, nrow)
+plot(st_geometry(hr$NHDFlowline), lwd = (hr$NHDFlowline$StreamOrde / 6), col = &quot;blue&quot;)
 
-p_match &lt;- 100 * length(which(indexes$REACHCODE %in% gages$REACHCODE)) / nrow(gages)
-paste0(round(p_match, digits = 1), 
-       &quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;)
+plot(c(st_geometry(hr$NHDWaterbody), st_geometry(hr$NHDArea)), 
+     col = &quot;cyan&quot;, border = &quot;cyan&quot;, lwd = 0.25, add = TRUE)
+</code></pre>
 
-matched &lt;- cbind(indexes, 
-                 dplyr::select(sf::st_set_geometry(gages, NULL), 
-                               REACHCODE_ref = REACHCODE, 
-                               COMID_ref = FLComID, 
-                               REACH_meas_ref = Measure)) %&gt;%
-  dplyr::filter(REACHCODE == REACHCODE_ref) %&gt;%
-  dplyr::mutate(REACH_meas_diff = REACH_meas - REACH_meas_ref)
+<p>Since this function can work over large ammounts of data and we don&#39;t want to keep running it again and again, there is an option to save the results to a standalone database for later use. </p>
 
-hist(matched$REACH_meas_diff, breaks = 100, 
-     main = &quot;Difference in measure for gages matched to the same reach.&quot;)
+<pre><code class="r">demo_gpkg &lt;- file.path(work_dir, &quot;demo.gpkg&quot;)
+hr &lt;- get_nhdplushr(hr_data_dir, out_gpkg = demo_gpkg)
+st_layers(demo_gpkg)
+</code></pre>
 
-round(quantile(matched$REACH_meas_diff, 
-               probs = c(0, 0.1, 0.25, 0.5, 0.75, 0.9, 1)), digits = 2)
+<h2>HR modification and filtering</h2>
+
+<p>Since NHDPlusHR data can be very large, <code>get_nhdplushr()</code> offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the <code>get_hr_data()</code> utility function. 
+1. <code>min_size_sqkm</code> will remove flowlines under a certain size threshold.
+1. <code>sim</code> will simplify all geometry to a given tolerance using <code>sf::st_simplify()</code>.
+1. <code>proj</code> will project the output into the desired projection.
+1. <code>keep_cols</code> is used to specify which attributes are desired in the output.
+1. <code>rename</code> controls whether output is automatically renamed to be compatible with <code>nhdplusTools</code> functions.</p>
+
+<p><em>Note: These options only operate on the flowline network.</em></p>
+
+<pre><code class="r">demo &lt;- get_nhdplushr(hr_data_dir, layers = &quot;NHDFlowline&quot;, 
+                               min_size_sqkm = 50)
+plot(st_geometry(demo$NHDFlowline), 
+     lwd = demo$NHDFlowline$StreamOrde/4, col = &quot;blue&quot;)
+</code></pre>
+
+<pre><code class="r">demo &lt;- get_nhdplushr(hr_data_dir, layers = &quot;NHDFlowline&quot;, 
+                      min_size_sqkm = 100, 
+                      proj = &quot;+init=epsg:5070&quot;, simp = 200,
+                      keep_cols = c(&quot;COMID&quot;, &quot;StreamOrde&quot;))
+names(demo$NHDFlowline)
+plot(st_geometry(demo$NHDFlowline), 
+     lwd = demo$NHDFlowline$StreamOrde/4, col = &quot;blue&quot;)
+</code></pre>
+
+<h2>Make Standalone Basins</h2>
+
+<p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the &ldquo;Level Path Identifier&rdquo; identifies an entire river from headwater to outlet using the &ldquo;hydrologic sequence identifier&rdquo; of the outlet. Similarly, the &ldquo;Terminal Path Identifier&rdquo; identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code>make_standalone()</code> accomplishes this task. </p>
+
+<p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
+
+<p>The example below shows how the outlet is modified. As described in the documentation os <code>make_standalone()</code> all related attribues upstream are also fixed such that the network is intact for further use.</p>
+
+<pre><code class="r">demo &lt;- get_nhdplushr(hr_data_dir, layers = &quot;NHDFlowline&quot;, 
+                    min_size_sqkm = 100, check_terminals = FALSE)
+
+# Create a standalone basin with the results for comparison.
+standalone_demo &lt;- make_standalone(demo$NHDFlowline)
+
+demo_outlet &lt;- dplyr::filter(demo$NHDFlowline, TotDASqKM == max(TotDASqKM)) 
+
+standalone_demo_outlet &lt;- dplyr::filter(standalone_demo, TotDASqKM == max(TotDASqKM))
+
+broken_outlet &lt;- dplyr::select(st_drop_geometry(demo_outlet), 
+                               Hydroseq, TerminalPa, TerminalFl, LevelPathI)
+fixed_outlet &lt;- dplyr::select(st_drop_geometry(standalone_demo_outlet), 
+                              Hydroseq, TerminalPa, TerminalFl, LevelPathI)
+
+print(data.frame(broken_outlet))
+print(data.frame(fixed_outlet))
+
+(broken &lt;- dplyr::filter(demo$NHDFlowline, TerminalPa == demo_outlet$Hydroseq))
+(standalone &lt;- dplyr::filter(standalone_demo, TerminalPa == standalone_demo_outlet$Hydroseq))
+
+plot(st_geometry(standalone))
 </code></pre>
 
 </body>

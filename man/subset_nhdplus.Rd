@@ -4,8 +4,9 @@
 \alias{subset_nhdplus}
 \title{Subset NHDPlus}
 \usage{
-subset_nhdplus(comids, output_file, nhdplus_data = NULL,
-  simplified = TRUE, overwrite = FALSE, status = TRUE)
+subset_nhdplus(comids = NULL, output_file = NULL,
+  nhdplus_data = NULL, bbox = NULL, simplified = TRUE,
+  overwrite = FALSE, return_data = TRUE, status = TRUE)
 }
 \arguments{
 \item{comids}{integer vector of COMIDs to include.}
@@ -19,10 +20,16 @@ or "download" to use a web service to download NHDPlusV2.1 data.
 Not required if \code{\link{nhdplus_path}} has been set or the default
 has been adopted. See details for more.}
 
+\item{bbox}{object of class "bbox" as returned by sf::st_bbox in Latitude/Longitude.
+If no CRS is present, will be assumed to be in WGS84 Latitude Longitude.}
+
 \item{simplified}{boolean if TRUE (the default) the CatchmentSP layer
 will be included. Not relevant to the "download" option or NHDPlusHR data.}
 
 \item{overwrite}{boolean should the output file be overwritten}
+
+\item{return_data}{boolean if FALSE path to output file is returned silently otherwise
+data is returned in a list.}
 
 \item{status}{boolean should the function print status messages}
 }
@@ -102,27 +109,19 @@ subset_nhdplus(comids = comids,
 sf::st_layers(output_file)
 
 # NHDPlusHR
-temp_dir <- tempdir()
-temp_file <- tempfile(fileext = ".zip", tmpdir = temp_dir)
-download.file("https://usgs-r.github.io/nhdplusTools/data/03_sub.zip",
-              temp_file)
-unzip(temp_file, exdir = temp_dir)
+source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 
-hr_data <- get_nhdplushr(temp_dir,
-                         out_gpkg = file.path(temp_dir, "nhd_hr.gpkg"),
-                         layers = NULL)
-flowlines <- sf::read_sf(hr_data, "NHDFlowline")
+up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
 
-up_ids <- get_UT(flowlines, 15000500028335)
+sub_gpkg <- file.path(work_dir, "sub.gpkg")
+sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,
+                            nhdplus_data = hr_gpkg, overwrite = TRUE)
 
-sub_nhdhr <- subset_nhdplus(up_ids, file.path(temp_dir, "sub.gpkg"),
-                      hr_data, overwrite = TRUE)
+sf::st_layers(sub_gpkg)
+names(sub_nhdhr)
 
-sf::st_layers(sub_nhdhr)
-
-sub_flowline <- sf::read_sf(sub_nhdhr, "NHDFlowline")
-plot(sf::st_geometry(flowlines), lwd = 0.5)
-plot(sf::st_geometry(sub_flowline), lwd = 0.6, col = "red", add = TRUE)
+plot(sf::st_geometry(hr_data$NHDFlowline), lwd = 0.5)
+plot(sf::st_geometry(sub_nhdhr$NHDFlowline), lwd = 0.6, col = "red", add = TRUE)
 }
 
 }

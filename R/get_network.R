@@ -31,7 +31,7 @@ get_UT <- function(network, comid, distance = NULL) {
   network <- network %>% check_names("get_UT") %>%
     dplyr::select(get("get_UT_attributes", nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   if (!is.null(distance)) {
     if (distance < start_comid$LENGTHKM) return(comid)
@@ -175,13 +175,13 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 
   if ("sf" %in% class(network)) { network <- sf::st_set_geometry(network, NULL) }
 
-  type <- ifelse(is.null(distance),  "get_DM_nolength_attributes", "get_DM_attributes")
+  type <- ifelse(is.null(distance),  "get_DM_nolength", "get_DM")
 
   network <- network %>%
-    check_names("get_DM") %>%
-    select(get(type, nhdplusTools_env))
+    check_names(type) %>%
+    select(get(paste0(type, "_attributes"), nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   if (!is.null(distance)) {
     if (distance < start_comid$LENGTHKM){
@@ -276,7 +276,7 @@ get_DD <- function(network, comid, distance = NULL) {
   network <- network %>% check_names("get_DD") %>%
     dplyr::select(get("get_DD_attributes", nhdplusTools_env))
 
-  start_comid <- filter(network, COMID == comid)
+  start_comid <- get_start_comid(network, comid)
 
   stop_pathlength <- 0
 
@@ -337,4 +337,14 @@ private_get_DD <- function(network, comid, stop_pathlength = 0) {
   } else {
     return(ds_main$COMID)
   }
+}
+
+get_start_comid <- function(network, comid) {
+  start_comid <- filter(network, COMID == comid)
+
+  if(nrow(start_comid) > 1) {
+    stop("Found duplicate ID for starting catchment. Duplicate rows in network?")
+  }
+
+  start_comid
 }

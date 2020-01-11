@@ -1,7 +1,8 @@
 context("get_DM")
 
 pt_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                   package = "nhdplusTools"))
+                                   package = "nhdplusTools")) %>%
+  align_nhdplus_names()
 
 cida <- sf::read_sf("data/cida_flowlines.gpkg") %>%
   align_nhdplus_names()
@@ -156,6 +157,11 @@ test_that("get_UT works", {
   expect_equal(length(result), 5)
   result <- get_UT(pt_data, 11687224)
   expect_equal(length(result), 7)
+
+  test_error <- rbind(pt_data, pt_data)
+
+  expect_error(get_UT(test_error, 11687180),
+               "Found duplicate ID for starting catchment. Duplicate rows in network?")
 })
 
 test_that("get_UT works with distance", {
@@ -214,6 +220,8 @@ test_that("get_DD with distance 2 returns 4 specific", {
   expect_true(all(c(11688810, 11688826, 11688828, 11688884) %in% result))
 })
 
+context("get_network edge cases")
+
 test_that("get_DM works if missing the outlet", {
   pt_data_borkd <- dplyr::filter(pt_data, TerminalFl == 0)
   result <- get_DM(pt_data_borkd, 11688810)
@@ -228,13 +236,9 @@ test_that("get_DM sorts (eg returns different order)", {
   expect_true(sum(result == result2) < length(result))
 })
 
-cida_data <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                     package = "nhdplusTools"))
-
 test_that("get_DM sorts correctly", {
-  cida_data = cida_data %>% align_nhdplus_names()
-  comid = cida_data$COMID[33]
-  result <- get_DM(cida_data, comid, sort = TRUE)
+  comid = pt_data$COMID[33]
+  result <- get_DM(pt_data, comid, sort = TRUE)
   correct_order = c(c(11690560, 11690226, 11690556, 11690558, 11690604, 11690566,
                       11690602, 11690246, 11690538, 11690564, 11690570, 11690256,
                       11690258, 11690568, 11690262, 11690260))
@@ -242,9 +246,8 @@ test_that("get_DM sorts correctly", {
 })
 
 test_that("get_DM sorts correctly with distance parameter", {
-  cida_data = cida_data %>% align_nhdplus_names()
-  comid = cida_data$COMID[33]
-  result <- get_DM(cida_data, comid, sort = TRUE, distance = 5)
+  comid = pt_data$COMID[33]
+  result <- get_DM(pt_data, comid, sort = TRUE, distance = 5)
 
   correct_order = c(c(11690560, 11690226, 11690556, 11690558, 11690604, 11690566,
                       11690602, 11690246, 11690538, 11690564, 11690570, 11690256,

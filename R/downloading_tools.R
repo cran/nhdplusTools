@@ -13,7 +13,7 @@
 #' }
 
 download_nhdplusv2 <- function(outdir,
-                               url = paste0("https://s3.amazonaws.com/nhdplus/NHDPlusV21/",
+                               url = paste0("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/",
                                             "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                                             "_Geodatabase_Lower48_07.7z")) {
 
@@ -52,7 +52,7 @@ download_nhdplusv2 <- function(outdir,
 
 download_wbd <- function(outdir,
                          url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
-                                      "Hydrography/WBD/National/GDB/WBD_National_GDB.zip")) {
+                                      "Hydrography/WBD/National/GDB/National_WBD_GDB.zip")) {
 
   file <- downloader(outdir, url, "WBD")
 
