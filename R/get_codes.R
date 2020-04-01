@@ -76,8 +76,11 @@ get_streamorder <- function(x) {
 #' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
 #' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
 #'
-#' fl <- prepare_nhdplus(hr_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-#'   left_join(select(hr_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#' fl <-  select(hr_flowline, COMID, AreaSqKM) %>%
+#'   right_join(prepare_nhdplus(hr_flowline, 0, 0,
+#'                              purge_non_dendritic = FALSE,
+#'                              warn = FALSE),
+#'              by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
@@ -105,8 +108,10 @@ get_streamorder <- function(x) {
 #'
 #' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
 #'
-#' fl <- prepare_nhdplus(walker_flowline, 0, 0, purge_non_dendritic = FALSE, warn = FALSE) %>%
-#'   left_join(select(walker_flowline, COMID, AreaSqKM), by = "COMID") %>%
+#' fl <- select(walker_flowline, COMID, AreaSqKM) %>%
+#'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
+#'                             purge_non_dendritic = FALSE, warn = FALSE),
+#'             by = "COMID") %>%
 #'   sf::st_sf() %>%
 #'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
 #'
@@ -237,13 +242,13 @@ cleanup_pfaf <- function(pfaf) {
 
   # replace NAs with known values.
   for(i in 3:ncol(pfaf)) {
-    pfaf[, i][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] <-
-      1 + (pfaf[, (i - 1)][is.na(pfaf[, i]) & !is.na(pfaf[, (i - 1)]), ] * 10)
+    pfaf[, i][is.na(pfaf[, i, drop = TRUE]) & !is.na(pfaf[, (i - 1), drop = TRUE]), ] <-
+      1 + (pfaf[, (i - 1)][is.na(pfaf[, i, drop = TRUE]) & !is.na(pfaf[, (i - 1), drop = TRUE]), ] * 10)
   }
 
   for(i in (ncol(pfaf) - 1):2) {
-    pfaf[, i][is.na(pfaf[, i]), ] <-
-      floor(pfaf[, (i + 1)][is.na(pfaf[, i]), ] / 10)
+    pfaf[, i][is.na(pfaf[, i, drop = TRUE]), ] <-
+      floor(pfaf[, (i + 1)][is.na(pfaf[, i, drop = TRUE]), ] / 10)
   }
 
   return(pfaf)

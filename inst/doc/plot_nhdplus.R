@@ -135,7 +135,9 @@ options(scipen = 9999)
 #  library(ggmap)
 #  library(ggplot2)
 #  
-#  upstream_nwis[c("lon", "lat")] <- sf::st_coordinates(upstream_nwis)
+#  upstream_nwis <- dplyr::bind_cols(upstream_nwis,
+#                             dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis)),
+#                                           lat = Y, lon = X))
 #  
 #  basemap_toner <- get_map(source = "stamen", maptype = "toner",
 #                           location = ggmap_bbox, zoom = 11, messaging = FALSE)

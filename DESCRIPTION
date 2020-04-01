@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.3.12
+Version: 0.3.13
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -21,12 +21,12 @@ Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, sp, lwgeom,
 License: CC0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-01-10 15:35:35 UTC; dblodgett
+Packaged: 2020-04-01 15:33:22 UTC; dblodgett
 Author: David Blodgett [aut, cre],
   Mike Johnson [ctb]
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2020-01-11 13:00:02 UTC
+Date/Publication: 2020-04-01 16:10:02 UTC
