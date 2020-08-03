@@ -2,7 +2,7 @@ context("plot tests")
 
 sample_data <- system.file("extdata/sample_natseamless.gpkg",
                            package = "nhdplusTools")
-
+options("rgdal_show_exportToProj4_warnings"="none")
 test_that("basics work", {
   skip_on_cran()
   tempd <- tempdir(check = TRUE)
@@ -17,7 +17,7 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
-  expect_equal(l$features, c(431, 402, 1, 90))
+  expect_equal(l$features, c(433, 402, 1, 90))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
@@ -84,6 +84,8 @@ test_that("basics work", {
 
 test_that("local data", {
 
+  testthat::skip_on_cran()
+
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   gage <- sf::read_sf(sample_data, "Gage")
 
@@ -125,7 +127,7 @@ test_that("local data", {
   outlet <- c(list(outlet), list(c("nwissite", "USGS-05428500")))
   plot_data <- nhdplusTools:::get_plot_data(outlets = outlet, streamorder = 3, nhdplus_data = sample_data)
 
-  expect_equal(names(plot_data$outlets), c("comid", "geom", "type"))
+  expect_true(all(names(plot_data$outlets) %in% c("comid", "geom", "type")))
   expect_equal(plot_data$outlets$comid, c("13293970", "13293750"))
 
   expect_s3_class(sf::st_geometry(plot_data$flowline)[[1]], "XY")

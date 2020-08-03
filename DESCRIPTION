@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.3.13
+Version: 0.3.14
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -24,9 +24,9 @@ LazyData: true
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-04-01 15:33:22 UTC; dblodgett
+Packaged: 2020-08-03 12:32:51 UTC; dblodgett
 Author: David Blodgett [aut, cre],
   Mike Johnson [ctb]
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2020-04-01 16:10:02 UTC
+Date/Publication: 2020-08-03 15:30:10 UTC

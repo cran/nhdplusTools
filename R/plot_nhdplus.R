@@ -43,6 +43,8 @@
 #' @export
 #' @examples
 #' \donttest{
+#' rosm::set_default_cachedir(tempfile())
+#'
 #' plot_nhdplus("05428500")
 #'
 #' plot_nhdplus("05428500", streamorder = 2)
@@ -201,7 +203,7 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
   }
 
   if(!is.null(bbox)) {
-    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg)
+    flowline <- dl_plot_data_by_bbox(bbox, nhdplus_data, gpkg, overwrite)
     catchment <- flowline$catchment
     basin <- flowline$basin
     nexus <- flowline$nexus

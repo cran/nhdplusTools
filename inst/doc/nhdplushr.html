@@ -15,30 +15,60 @@
 
 <title>Working with NHDPlusHR</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -47,9 +77,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -307,122 +337,122 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>TL;DR;</h2>
 <p>Most functions in <code>nhdplusTools</code> work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results.</p>
 <p><em>Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior.</em></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(nhdplusTools)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">work_dir &lt;-<span class="st"> </span><span class="kw">tempdir</span>(<span class="dt">check =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">sample_data &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/sample_natseamless.gpkg&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;nhdplusTools&quot;</span>)</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">hr_gpkg &lt;-<span class="st"> </span><span class="kw">file.path</span>(work_dir, <span class="st">&quot;hr_data.gpkg&quot;</span>)</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">plot_data &lt;-<span class="st"> </span><span class="kw">plot_nhdplus</span>(<span class="kw">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="dt">streamorder =</span> <span class="dv">3</span>,</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">                          <span class="dt">nhdplus_data =</span> sample_data,</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">                          <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co"># Find the HU04 we are interested in.</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">hu04 &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">substr</span>(plot_data<span class="op">$</span>flowline<span class="op">$</span>REACHCODE, <span class="dv">1</span>, <span class="dv">4</span>))</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># Download some NHDPlusHR Data</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">hr_data_dir &lt;-<span class="st"> </span><span class="kw">download_nhdplushr</span>(work_dir, hu04)</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co"># Projection and simplification for demo purposes.</span></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(work_dir, <span class="dt">out_gpkg =</span> hr_gpkg,</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22">                    <span class="dt">proj =</span> <span class="dv">3857</span>)</a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">(start_index &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(<span class="kw">st_transform</span>(hr<span class="op">$</span>NHDFlowline, <span class="dv">5070</span>),</a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">                                   <span class="kw">st_transform</span>(plot_data<span class="op">$</span>outlets, <span class="dv">5070</span>),</a>
-<a class="sourceLine" id="cb1-26" data-line-number="26">                                   <span class="dt">search_radius =</span> <span class="dv">200</span>)) <span class="co"># meters albers eq area</span></a>
-<a class="sourceLine" id="cb1-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb1-28" data-line-number="28">ids &lt;-<span class="st"> </span><span class="kw">get_UT</span>(hr<span class="op">$</span>NHDFlowline, start_index<span class="op">$</span>COMID)</a>
-<a class="sourceLine" id="cb1-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb1-30" data-line-number="30">hr_subset &lt;-<span class="st"> </span><span class="kw">subset_nhdplus</span>(ids, <span class="dt">nhdplus_data =</span> hr_gpkg)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(nhdplusTools)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a>work_dir &lt;-<span class="st"> </span><span class="kw">tempdir</span>(<span class="dt">check =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>sample_data &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/sample_natseamless.gpkg&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;nhdplusTools&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>hr_gpkg &lt;-<span class="st"> </span><span class="kw">file.path</span>(work_dir, <span class="st">&quot;hr_data.gpkg&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>plot_data &lt;-<span class="st"> </span><span class="kw">plot_nhdplus</span>(<span class="kw">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="dt">streamorder =</span> <span class="dv">3</span>,</span>
+<span id="cb1-11"><a href="#cb1-11"></a>                          <span class="dt">nhdplus_data =</span> sample_data,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>                          <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co"># Find the HU04 we are interested in.</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>hu04 &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">substr</span>(plot_data<span class="op">$</span>flowline<span class="op">$</span>REACHCODE, <span class="dv">1</span>, <span class="dv">4</span>))</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># Download some NHDPlusHR Data</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>hr_data_dir &lt;-<span class="st"> </span><span class="kw">download_nhdplushr</span>(work_dir, hu04)</span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co"># Projection and simplification for demo purposes.</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(work_dir, <span class="dt">out_gpkg =</span> hr_gpkg,</span>
+<span id="cb1-22"><a href="#cb1-22"></a>                    <span class="dt">proj =</span> <span class="dv">3857</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a>(start_index &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(<span class="kw">st_transform</span>(hr<span class="op">$</span>NHDFlowline, <span class="dv">5070</span>),</span>
+<span id="cb1-25"><a href="#cb1-25"></a>                                   <span class="kw">st_transform</span>(plot_data<span class="op">$</span>outlets, <span class="dv">5070</span>),</span>
+<span id="cb1-26"><a href="#cb1-26"></a>                                   <span class="dt">search_radius =</span> <span class="dv">200</span>)) <span class="co"># meters albers eq area</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>ids &lt;-<span class="st"> </span><span class="kw">get_UT</span>(hr<span class="op">$</span>NHDFlowline, start_index<span class="op">$</span>COMID)</span>
+<span id="cb1-29"><a href="#cb1-29"></a></span>
+<span id="cb1-30"><a href="#cb1-30"></a>hr_subset &lt;-<span class="st"> </span><span class="kw">subset_nhdplus</span>(ids, <span class="dt">nhdplus_data =</span> hr_gpkg)</span></code></pre></div>
 <p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a subset upstream of a point of interest, we can plot things up and see what it looks like. This plot uses NHDPlusV2 as returned by <code>plot_nhdplus()</code> as a base layer and adds NHDPlusHR data on top of it.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">plot_nhdplus</span>(<span class="kw">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="dt">streamorder =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">             <span class="dt">nhdplus_data =</span> sample_data, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">             <span class="dt">plot_config =</span> <span class="kw">list</span>(<span class="dt">flowline =</span> <span class="kw">list</span>(<span class="dt">lwd =</span> <span class="fl">2.5</span>),</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">                                <span class="dt">basin =</span> <span class="kw">list</span>(<span class="dt">lwd =</span> <span class="dv">3</span>)),</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">             <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDPlusCatchment), <span class="dt">lwd =</span> <span class="fl">0.25</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(<span class="kw">st_transform</span>(hr_subset<span class="op">$</span>NHDFlowline, <span class="dv">3857</span>)),</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">     <span class="dt">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">plot_nhdplus</span>(<span class="kw">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="dt">streamorder =</span> <span class="dv">2</span>, </span>
+<span id="cb2-2"><a href="#cb2-2"></a>             <span class="dt">nhdplus_data =</span> sample_data, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb2-3"><a href="#cb2-3"></a>             <span class="dt">plot_config =</span> <span class="kw">list</span>(<span class="dt">flowline =</span> <span class="kw">list</span>(<span class="dt">lwd =</span> <span class="fl">2.5</span>),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>                                <span class="dt">basin =</span> <span class="kw">list</span>(<span class="dt">lwd =</span> <span class="dv">3</span>)),</span>
+<span id="cb2-5"><a href="#cb2-5"></a>             <span class="dt">stoponlargerequest =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDPlusCatchment), <span class="dt">lwd =</span> <span class="fl">0.25</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.5</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(<span class="kw">st_transform</span>(hr_subset<span class="op">$</span>NHDFlowline, <span class="dv">3857</span>)),</span>
+<span id="cb2-11"><a href="#cb2-11"></a>     <span class="dt">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">lwd =</span> <span class="dv">1</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="download" class="section level2">
 <h2>Download</h2>
 <p>NHDPlusHR support in nhdplusTools begins with the function <code>download_nhdplushr()</code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/core-science-systems/ngp/national-hydrography/access-national-hydrography-products">four digit hydrologic unit code subsets here.</a> <code>download_nhdplushr()</code> facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.</p>
 <p><em>Note: Data for each HU02 are put in their own output folder.</em></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">(hr_urls &lt;-<span class="st"> </span><span class="kw">download_nhdplushr</span>(work_dir, <span class="st">&quot;06&quot;</span>, <span class="dt">download_files =</span> <span class="ot">FALSE</span>))</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># already downloaded:</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw">list.files</span>(hr_data_dir)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>(hr_urls &lt;-<span class="st"> </span><span class="kw">download_nhdplushr</span>(work_dir, <span class="st">&quot;06&quot;</span>, <span class="dt">download_files =</span> <span class="ot">FALSE</span>))</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># already downloaded:</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">list.files</span>(hr_data_dir)</span></code></pre></div>
 </div>
 <div id="basic-functionality" class="section level2">
 <h2>Basic functionality</h2>
 <p>The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called <code>get_nhdplushr()</code>. At it’s core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 1. joins flowline attributes to the flowline geometry, 1. can return one or more selected layers, 1. can save the result to a standalone geopackage for later use, and 1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren’t in the subset.</p>
 <p>Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of <code>get_nhdplushr()</code></p>
 <p>First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">sapply</span>(hr, class)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">lwd =</span> (hr<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde <span class="op">/</span><span class="st"> </span><span class="dv">6</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">sapply</span>(hr, class)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">lwd =</span> (hr<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde <span class="op">/</span><span class="st"> </span><span class="dv">6</span>))</span></code></pre></div>
 <p>If we want more data, we can get any of the layer options listed in the <code>get_nhdplushr()</code> documentation.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="kw">c</span>(<span class="st">&quot;NHDFlowline&quot;</span>, <span class="st">&quot;NHDWaterbody&quot;</span>, <span class="st">&quot;NHDArea&quot;</span>))</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">sapply</span>(hr, class)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">sapply</span>(hr, nrow)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">lwd =</span> (hr<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde <span class="op">/</span><span class="st"> </span><span class="dv">6</span>), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw">plot</span>(<span class="kw">c</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDWaterbody), <span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDArea)), </a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">     <span class="dt">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">border =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.25</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<p>Since this function can work over large ammounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">demo_gpkg &lt;-<span class="st"> </span><span class="kw">file.path</span>(work_dir, <span class="st">&quot;demo.gpkg&quot;</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">out_gpkg =</span> demo_gpkg)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw">st_layers</span>(demo_gpkg)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="kw">c</span>(<span class="st">&quot;NHDFlowline&quot;</span>, <span class="st">&quot;NHDWaterbody&quot;</span>, <span class="st">&quot;NHDArea&quot;</span>))</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">sapply</span>(hr, class)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">sapply</span>(hr, nrow)</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDFlowline), <span class="dt">lwd =</span> (hr<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde <span class="op">/</span><span class="st"> </span><span class="dv">6</span>), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">plot</span>(<span class="kw">c</span>(<span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDWaterbody), <span class="kw">st_geometry</span>(hr<span class="op">$</span>NHDArea)), </span>
+<span id="cb5-7"><a href="#cb5-7"></a>     <span class="dt">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">border =</span> <span class="st">&quot;cyan&quot;</span>, <span class="dt">lwd =</span> <span class="fl">0.25</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p>Since this function can work over large amounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>demo_gpkg &lt;-<span class="st"> </span><span class="kw">file.path</span>(work_dir, <span class="st">&quot;demo.gpkg&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>hr &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">out_gpkg =</span> demo_gpkg)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">st_layers</span>(demo_gpkg)</span></code></pre></div>
 </div>
 <div id="hr-modification-and-filtering" class="section level2">
 <h2>HR modification and filtering</h2>
 <p>Since NHDPlusHR data can be very large, <code>get_nhdplushr()</code> offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the <code>get_hr_data()</code> utility function. 1. <code>min_size_sqkm</code> will remove flowlines under a certain size threshold. 1. <code>sim</code> will simplify all geometry to a given tolerance using <code>sf::st_simplify()</code>. 1. <code>proj</code> will project the output into the desired projection. 1. <code>keep_cols</code> is used to specify which attributes are desired in the output. 1. <code>rename</code> controls whether output is automatically renamed to be compatible with <code>nhdplusTools</code> functions.</p>
 <p><em>Note: These options only operate on the flowline network.</em></p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">                               <span class="dt">min_size_sqkm =</span> <span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(demo<span class="op">$</span>NHDFlowline), </a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">     <span class="dt">lwd =</span> demo<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde<span class="op">/</span><span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">                      <span class="dt">min_size_sqkm =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">                      <span class="dt">proj =</span> <span class="st">&quot;+init=epsg:5070&quot;</span>, <span class="dt">simp =</span> <span class="dv">200</span>,</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">                      <span class="dt">keep_cols =</span> <span class="kw">c</span>(<span class="st">&quot;COMID&quot;</span>, <span class="st">&quot;StreamOrde&quot;</span>))</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="kw">names</span>(demo<span class="op">$</span>NHDFlowline)</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(demo<span class="op">$</span>NHDFlowline), </a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">     <span class="dt">lwd =</span> demo<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde<span class="op">/</span><span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </span>
+<span id="cb7-2"><a href="#cb7-2"></a>                               <span class="dt">min_size_sqkm =</span> <span class="dv">50</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(demo<span class="op">$</span>NHDFlowline), </span>
+<span id="cb7-4"><a href="#cb7-4"></a>     <span class="dt">lwd =</span> demo<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde<span class="op">/</span><span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </span>
+<span id="cb8-2"><a href="#cb8-2"></a>                      <span class="dt">min_size_sqkm =</span> <span class="dv">100</span>, </span>
+<span id="cb8-3"><a href="#cb8-3"></a>                      <span class="dt">proj =</span> <span class="st">&quot;+init=epsg:5070&quot;</span>, <span class="dt">simp =</span> <span class="dv">200</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>                      <span class="dt">keep_cols =</span> <span class="kw">c</span>(<span class="st">&quot;COMID&quot;</span>, <span class="st">&quot;StreamOrde&quot;</span>))</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw">names</span>(demo<span class="op">$</span>NHDFlowline)</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(demo<span class="op">$</span>NHDFlowline), </span>
+<span id="cb8-7"><a href="#cb8-7"></a>     <span class="dt">lwd =</span> demo<span class="op">$</span>NHDFlowline<span class="op">$</span>StreamOrde<span class="op">/</span><span class="dv">4</span>, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 </div>
 <div id="make-standalone-basins" class="section level2">
 <h2>Make Standalone Basins</h2>
 <p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code>make_standalone()</code> accomplishes this task.</p>
 <p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
-<p>The example below shows how the outlet is modified. As described in the documentation os <code>make_standalone()</code> all related attribues upstream are also fixed such that the network is intact for further use.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">                    <span class="dt">min_size_sqkm =</span> <span class="dv">100</span>, <span class="dt">check_terminals =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co"># Create a standalone basin with the results for comparison.</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">standalone_demo &lt;-<span class="st"> </span><span class="kw">make_standalone</span>(demo<span class="op">$</span>NHDFlowline)</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">demo_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(demo<span class="op">$</span>NHDFlowline, TotDASqKM <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(TotDASqKM)) </a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9">standalone_demo_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(standalone_demo, TotDASqKM <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(TotDASqKM))</a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11">broken_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(demo_outlet), </a>
-<a class="sourceLine" id="cb9-12" data-line-number="12">                               Hydroseq, TerminalPa, TerminalFl, LevelPathI)</a>
-<a class="sourceLine" id="cb9-13" data-line-number="13">fixed_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(standalone_demo_outlet), </a>
-<a class="sourceLine" id="cb9-14" data-line-number="14">                              Hydroseq, TerminalPa, TerminalFl, LevelPathI)</a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="kw">print</span>(<span class="kw">data.frame</span>(broken_outlet))</a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="kw">print</span>(<span class="kw">data.frame</span>(fixed_outlet))</a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19">(broken &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(demo<span class="op">$</span>NHDFlowline, TerminalPa <span class="op">==</span><span class="st"> </span>demo_outlet<span class="op">$</span>Hydroseq))</a>
-<a class="sourceLine" id="cb9-20" data-line-number="20">(standalone &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(standalone_demo, TerminalPa <span class="op">==</span><span class="st"> </span>standalone_demo_outlet<span class="op">$</span>Hydroseq))</a>
-<a class="sourceLine" id="cb9-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(standalone))</a></code></pre></div>
+<p>The example below shows how the outlet is modified. As described in the documentation os <code>make_standalone()</code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>demo &lt;-<span class="st"> </span><span class="kw">get_nhdplushr</span>(hr_data_dir, <span class="dt">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </span>
+<span id="cb9-2"><a href="#cb9-2"></a>                    <span class="dt">min_size_sqkm =</span> <span class="dv">100</span>, <span class="dt">check_terminals =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co"># Create a standalone basin with the results for comparison.</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>standalone_demo &lt;-<span class="st"> </span><span class="kw">make_standalone</span>(demo<span class="op">$</span>NHDFlowline)</span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a>demo_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(demo<span class="op">$</span>NHDFlowline, TotDASqKM <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(TotDASqKM)) </span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a>standalone_demo_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(standalone_demo, TotDASqKM <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(TotDASqKM))</span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a>broken_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(demo_outlet), </span>
+<span id="cb9-12"><a href="#cb9-12"></a>                               Hydroseq, TerminalPa, TerminalFl, LevelPathI)</span>
+<span id="cb9-13"><a href="#cb9-13"></a>fixed_outlet &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(standalone_demo_outlet), </span>
+<span id="cb9-14"><a href="#cb9-14"></a>                              Hydroseq, TerminalPa, TerminalFl, LevelPathI)</span>
+<span id="cb9-15"><a href="#cb9-15"></a></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="kw">print</span>(<span class="kw">data.frame</span>(broken_outlet))</span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="kw">print</span>(<span class="kw">data.frame</span>(fixed_outlet))</span>
+<span id="cb9-18"><a href="#cb9-18"></a></span>
+<span id="cb9-19"><a href="#cb9-19"></a>(broken &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(demo<span class="op">$</span>NHDFlowline, TerminalPa <span class="op">==</span><span class="st"> </span>demo_outlet<span class="op">$</span>Hydroseq))</span>
+<span id="cb9-20"><a href="#cb9-20"></a>(standalone &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(standalone_demo, TerminalPa <span class="op">==</span><span class="st"> </span>standalone_demo_outlet<span class="op">$</span>Hydroseq))</span>
+<span id="cb9-21"><a href="#cb9-21"></a></span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="kw">plot</span>(<span class="kw">st_geometry</span>(standalone))</span></code></pre></div>
 </div>
 
 

@@ -6,12 +6,16 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=nzchar(Sys.getenv("BUILD_VIGNETTES"))
 )
-oldoption <- options(scipen = 9999)
-options(scipen = 9999)
+oldoption <- options()
+options(scipen = 9999,
+        rmarkdown.html_vignette.check_title = FALSE,
+        "rgdal_show_exportToProj4_warnings"="none")
 
 ## ----data_dir_setup, echo=FALSE, include=FALSE--------------------------------
 #  temp_dir <- tempdir()
 #  dir.create(temp_dir)
+#  library(rosm)
+#  set_default_cachedir(tempfile())
 #  library(nhdplusTools)
 
 ## ----nwis_simple1, message=FALSE----------------------------------------------
@@ -107,7 +111,7 @@ options(scipen = 9999)
 #  prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 #  
 #  prettymapr::prettymap({
-#    rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none")
+#    rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none", cachedir = tempfile())
 #  
 #    plot(prep_layer(basin),
 #         lwd = 2, add = TRUE)

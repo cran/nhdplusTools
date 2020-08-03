@@ -32,9 +32,9 @@ test_that("subset runs as expected", {
   expect_equal(nhdplusTools:::get_catchment_layer_name(TRUE, "download"), "CatchmentSP")
   expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, "download"), "CatchmentSP")
 
-  nc <- read_sf(system.file("shape/nc.shp", package="sf"))
+  nc <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
   tempf <- file.path(temp_dir, "temp.geojson")
-  write_sf(nc, tempf, "Catchment")
+  sf::write_sf(nc, tempf, "Catchment")
   expect_equal(nhdplusTools:::get_catchment_layer_name(FALSE, tempf), "Catchment")
 
   nhdplus_path(sample_data)
@@ -58,6 +58,15 @@ test_that("subset runs as expected", {
                             "NHDFlowline_NonNetwork"))
   expect_equal(nrow(fi$CatchmentSP), 4)
   expect_equal(nrow(fi$NHDWaterbody), 1)
+
+  # flowline only
+  fi <- subset_nhdplus(comids = comids,
+                       output_file = NULL,
+                       nhdplus_data = sample_data,
+                       status = FALSE,
+                       flowline_only = TRUE)
+
+  expect_equal(names(fi), "NHDFlowline_Network")
 
   # write to output file
   fi <- subset_nhdplus(comids = comids,
@@ -163,7 +172,10 @@ test_that("subset by bounding box", {
   fi <- subset_nhdplus(bbox = bbox,
                        nhdplus_data = sample_data,
                        simplified = TRUE,
-                       status = FALSE)
+                       status = FALSE,
+                       flowline_only = TRUE)
+
+  expect_equal(names(fi), "NHDFlowline_Network")
 
   out_file <- tempfile(fileext = ".gpkg")
 
@@ -256,4 +268,18 @@ test_that("prep_nhdplus runs as expected", {
 
   unlink(sample_gpkg)
 
+})
+
+test_that("by rpu", {
+  sample_data <- system.file("extdata/sample_natseamless.gpkg",
+                             package = "nhdplusTools")
+
+  nhdplus_path(sample_data)
+
+  staged_nhdplus <- stage_national_data(output_path = tempdir())
+
+  sample_flines <- readRDS(staged_nhdplus$flowline)
+
+  expect(nrow(subset_rpu(sample_flines, rpu = "07b")), 267)
+  expect(nrow(subset_rpu(sample_flines, rpu = "07b", run_make_standalone = TRUE)), 267)
 })
