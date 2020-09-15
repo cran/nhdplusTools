@@ -22,12 +22,13 @@ options(scipen = 9999)
 #  flowline <- navigate_nldi(list(featureSource = "comid",
 #                                 featureID = start_comid),
 #                            mode = "upstreamTributaries",
-#                            data_source = "")
+#                            distance_km = 1000)
 #  
 #  subset_file <- tempfile(fileext = ".gpkg")
 #  subset <- subset_nhdplus(comids = flowline$nhdplus_comid,
 #                           output_file = subset_file,
 #                           nhdplus_data = "download",
+#                           flowline_only = FALSE,
 #                           return_data = TRUE)
 #  
 #  flowline <- subset$NHDFlowline_Network
@@ -123,7 +124,7 @@ options(scipen = 9999)
 #  
 #  flowline_nldi <- navigate_nldi(nldi_feature,
 #                                 mode = "upstreamTributaries",
-#                                 data_source = "")
+#                                 distance_km = 1000)
 #  
 #  plot(sf::st_geometry(flowline), lwd = 3, col = "black")
 #  plot(sf::st_geometry(flowline_nldi), lwd = 1, col = "red", add = TRUE)
@@ -151,7 +152,7 @@ options(scipen = 9999)
 #  
 #  flowline_nldi <- navigate_nldi(nldi_feature,
 #                                 mode = "upstreamTributaries",
-#                                 data_source = "")
+#                                 distance_km = 1000)
 #  
 #  output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
 #  
@@ -167,7 +168,8 @@ options(scipen = 9999)
 #  
 #  upstream_nwis <- navigate_nldi(nldi_feature,
 #                                 mode = "upstreamTributaries",
-#                                 data_source = "nwissite")
+#                                 data_source = "nwissite",
+#                                 distance_km = 1000)
 #  
 #  plot(sf::st_geometry(flowline_nwis),
 #       lwd = 3, col = "blue")

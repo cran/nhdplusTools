@@ -28,22 +28,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -336,134 +320,134 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="nhdplus-flowline-indexing" class="section level2">
 <h2>NHDPlus Flowline Indexing</h2>
 <p>First we’ll load up some data. In this case, we use flowlines from the NHDPlus subset that’s included in the package and a set of points to index. We’ll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(nhdplusTools)</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">nhdplus_path</span>(<span class="kw">file.path</span>(temp_dir, <span class="st">&quot;natseamless.gpkg&quot;</span>))</span>
-<span id="cb1-4"><a href="#cb1-4"></a></span>
-<span id="cb1-5"><a href="#cb1-5"></a>flowlines &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;Gage&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(nhdplusTools)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">nhdplus_path</span>(<span class="kw">file.path</span>(temp_dir, <span class="st">&quot;natseamless.gpkg&quot;</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>flowlines &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;Gage&quot;</span>)</span></code></pre></div>
 <p>Now we can call <code>nhdplusTools::get_flowline_index()</code> on the data we just loaded. Note that we are doing our spatial searching in units of degrees. The get_flowline_index has an input, <code>search_radius</code> which defaults to 0.1. See the documentation of the <a href="https://cran.r-project.org/package=RANN">nn2 function from the RANN package</a> for more information on how the search works.</p>
 <p>NOTE: If you have a small area in which you need flowline indexes, <code>get_flowline_index()</code> has an option to download flowlines in the bounding box of your input points.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages), </span>
-<span id="cb2-3"><a href="#cb2-3"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.01</span>, </span>
-<span id="cb2-4"><a href="#cb2-4"></a>                              <span class="dt">max_matches =</span> <span class="dv">1</span>)</span>
-<span id="cb2-5"><a href="#cb2-5"></a></span>
-<span id="cb2-6"><a href="#cb2-6"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(sf<span class="op">::</span><span class="kw">st_sf</span>(<span class="dt">id =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(gages)), </span>
-<span id="cb2-7"><a href="#cb2-7"></a>                               <span class="dt">geom =</span> sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)), </span>
-<span id="cb2-8"><a href="#cb2-8"></a>                     indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb2-9"><a href="#cb2-9"></a></span>
-<span id="cb2-10"><a href="#cb2-10"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(flowlines, indexes))</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages), </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.01</span>, </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>                              <span class="dt">max_matches =</span> <span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(sf<span class="op">::</span><span class="kw">st_sf</span>(<span class="dt">id =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(gages)), </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>                               <span class="dt">geom =</span> sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)), </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>                     indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(flowlines, indexes))</span></code></pre></div>
 <p>Now let’s look at the results and see how the <code>nhdplusTools::get_flowline_index()</code> did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
-<span id="cb3-3"><a href="#cb3-3"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
-<span id="cb3-7"><a href="#cb3-7"></a>       <span class="st">&quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a>matched &lt;-<span class="st"> </span><span class="kw">cbind</span>(indexes, </span>
-<span id="cb3-10"><a href="#cb3-10"></a>                 dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(gages), </span>
-<span id="cb3-11"><a href="#cb3-11"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
-<span id="cb3-12"><a href="#cb3-12"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
-<span id="cb3-13"><a href="#cb3-13"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
-<span id="cb3-16"><a href="#cb3-16"></a></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="kw">hist</span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
-<span id="cb3-18"><a href="#cb3-18"></a>     <span class="dt">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span>
-<span id="cb3-19"><a href="#cb3-19"></a></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="kw">round</span>(<span class="kw">quantile</span>(matched<span class="op">$</span>REACH_meas_diff, </span>
-<span id="cb3-21"><a href="#cb3-21"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), </span>
-<span id="cb3-22"><a href="#cb3-22"></a>      <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>       <span class="st">&quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>matched &lt;-<span class="st"> </span><span class="kw">cbind</span>(indexes, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>                 dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(gages), </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="kw">hist</span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="kw">round</span>(<span class="kw">quantile</span>(matched<span class="op">$</span>REACH_meas_diff, </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a>      <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
 </div>
 <div id="flowline-indexing-with-higher-precision" class="section level2">
 <h2>Flowline Indexing with higher precision</h2>
 <p>The above example used the native nodes of the NHDPlus as the potential measure snap locations. The <code>nhdplusTools::get_flowline_index()</code> function has the ability to refine these by segmentizing the line to some given resolution. Let’s try the same thing using a resolution of 10m and see if we can do any better.</p>
 <p>Note that the <code>sf::st_segmentize</code> function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines, </span>
-<span id="cb4-2"><a href="#cb4-2"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages), </span>
-<span id="cb4-3"><a href="#cb4-3"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.1</span>, </span>
-<span id="cb4-4"><a href="#cb4-4"></a>                              <span class="dt">precision =</span> <span class="dv">10</span>)</span>
-<span id="cb4-5"><a href="#cb4-5"></a></span>
-<span id="cb4-6"><a href="#cb4-6"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(<span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="kw">seq_len</span>(<span class="kw">nrow</span>(gages))), indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages), </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.1</span>, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>                              <span class="dt">precision =</span> <span class="dv">10</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(<span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="kw">seq_len</span>(<span class="kw">nrow</span>(gages))), indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
-<span id="cb5-3"><a href="#cb5-3"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
-<span id="cb5-7"><a href="#cb5-7"></a>       <span class="st">&quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a>matched &lt;-<span class="st"> </span><span class="kw">cbind</span>(indexes, </span>
-<span id="cb5-10"><a href="#cb5-10"></a>                 dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_set_geometry</span>(gages, <span class="ot">NULL</span>), </span>
-<span id="cb5-11"><a href="#cb5-11"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
-<span id="cb5-12"><a href="#cb5-12"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
-<span id="cb5-13"><a href="#cb5-13"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
-<span id="cb5-16"><a href="#cb5-16"></a></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="kw">hist</span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
-<span id="cb5-18"><a href="#cb5-18"></a>     <span class="dt">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span>
-<span id="cb5-19"><a href="#cb5-19"></a></span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="kw">round</span>(<span class="kw">quantile</span>(matched<span class="op">$</span>REACH_meas_diff, </span>
-<span id="cb5-21"><a href="#cb5-21"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>COMID <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>FLComID)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>p_match &lt;-<span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(indexes<span class="op">$</span>REACHCODE <span class="op">%in%</span><span class="st"> </span>gages<span class="op">$</span>REACHCODE)) <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(gages)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="kw">paste0</span>(<span class="kw">round</span>(p_match, <span class="dt">digits =</span> <span class="dv">1</span>), </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>       <span class="st">&quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>matched &lt;-<span class="st"> </span><span class="kw">cbind</span>(indexes, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>                 dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_set_geometry</span>(gages, <span class="ot">NULL</span>), </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>                               <span class="dt">REACHCODE_ref =</span> REACHCODE, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>                               <span class="dt">COMID_ref =</span> FLComID, </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>                               <span class="dt">REACH_meas_ref =</span> Measure)) <span class="op">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(REACHCODE <span class="op">==</span><span class="st"> </span>REACHCODE_ref) <span class="op">%&gt;%</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">REACH_meas_diff =</span> REACH_meas <span class="op">-</span><span class="st"> </span>REACH_meas_ref)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a><span class="kw">hist</span>(matched<span class="op">$</span>REACH_meas_diff, <span class="dt">breaks =</span> <span class="dv">100</span>, </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a><span class="kw">round</span>(<span class="kw">quantile</span>(matched<span class="op">$</span>REACH_meas_diff, </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a>               <span class="dt">probs =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="dt">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
 </div>
 <div id="finding-multiple-indexes" class="section level2">
 <h2>Finding multiple indexes</h2>
 <p><code>get_flowline_index()</code> has a parameter <code>max_matches</code> that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to. At the time of writing, that functionality is not included in nhdplusTools but is planned.</p>
 <p>For this example, we’ll just look at one point.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines,</span>
-<span id="cb6-2"><a href="#cb6-2"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)[<span class="dv">42</span>], </span>
-<span id="cb6-3"><a href="#cb6-3"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.01</span>, </span>
-<span id="cb6-4"><a href="#cb6-4"></a>                              <span class="dt">max_matches =</span> <span class="dv">10</span>)</span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(sf<span class="op">::</span><span class="kw">st_sf</span>(<span class="dt">id =</span> <span class="dv">1</span>, </span>
-<span id="cb6-7"><a href="#cb6-7"></a>                               <span class="dt">geom =</span> sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)[<span class="dv">42</span>]), </span>
-<span id="cb6-8"><a href="#cb6-8"></a>                     indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb6-9"><a href="#cb6-9"></a></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_buffer</span>(indexes, <span class="fl">0.005</span>)), <span class="dt">border =</span> <span class="ot">NA</span>)</span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(indexes), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_zm</span>(flowlines)), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb6-13"><a href="#cb6-13"></a>indexes</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">get_flowline_index</span>(flowlines,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>                              sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)[<span class="dv">42</span>], </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>                              <span class="dt">search_radius =</span> <span class="fl">0.01</span>, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>                              <span class="dt">max_matches =</span> <span class="dv">10</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(sf<span class="op">::</span><span class="kw">st_sf</span>(<span class="dt">id =</span> <span class="dv">1</span>, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>                               <span class="dt">geom =</span> sf<span class="op">::</span><span class="kw">st_geometry</span>(gages)[<span class="dv">42</span>]), </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a>                     indexes, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_buffer</span>(indexes, <span class="fl">0.005</span>)), <span class="dt">border =</span> <span class="ot">NA</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(indexes), <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="kw">plot</span>(sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_zm</span>(flowlines)), <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>indexes</span></code></pre></div>
 </div>
 <div id="waterbody-indexing" class="section level2">
 <h2>Waterbody Indexing</h2>
 <p>The <code>get_flowline_index()</code> function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbody. they are “artificial paths” and do not represent the waterbody. The <code>get_waterbody_index()</code> function is intended to address points that are in or near the shore of a waterbody.</p>
 <p>This next block of code loads the NHDPlus Waterbody layer and creates an interactive map. Of interest on gages that are near the short of bodies of water but far away from flowlines. Note that we drop the NHDPlus geometry and use the source <code>LonSite</code> and <code>LatSite</code> attributes for geometry.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;NHDWaterbody&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a>gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(gages) <span class="op">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(LonSite)) <span class="op">%&gt;%</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;LonSite&quot;</span>, <span class="st">&quot;LatSite&quot;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb7-6"><a href="#cb7-6"></a></span>
-<span id="cb7-7"><a href="#cb7-7"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(gages, flowlines, waterbody))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>waterbody &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="kw">nhdplus_path</span>(), <span class="st">&quot;NHDWaterbody&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>gages &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(gages) <span class="op">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(LonSite)) <span class="op">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;LonSite&quot;</span>, <span class="st">&quot;LatSite&quot;</span>), <span class="dt">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(gages, flowlines, waterbody))</span></code></pre></div>
 <p>This next block shows how to call <code>get_flowline_index()</code> and <code>get_waterbody_index()</code> and what the output looks like.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
-<span id="cb8-2"><a href="#cb8-2"></a>flowline_indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(<span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="kw">seq_len</span>(<span class="kw">nrow</span>(gages))),</span>
-<span id="cb8-3"><a href="#cb8-3"></a>                              <span class="kw">get_flowline_index</span>(</span>
-<span id="cb8-4"><a href="#cb8-4"></a>                                sf<span class="op">::</span><span class="kw">st_transform</span>(flowlines, <span class="dv">5070</span>), </span>
-<span id="cb8-5"><a href="#cb8-5"></a>                                sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_transform</span>(gages, <span class="dv">5070</span>)), </span>
-<span id="cb8-6"><a href="#cb8-6"></a>                                <span class="dt">search_radius =</span> <span class="dv">200</span>), <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb8-7"><a href="#cb8-7"></a>                              </span>
-<span id="cb8-8"><a href="#cb8-8"></a>indexed_gages &lt;-<span class="st"> </span><span class="kw">cbind</span>(dplyr<span class="op">::</span><span class="kw">select</span>(gages, </span>
-<span id="cb8-9"><a href="#cb8-9"></a>                                      <span class="dt">orig_REACHCODE =</span> REACHCODE, </span>
-<span id="cb8-10"><a href="#cb8-10"></a>                                      <span class="dt">orig_Measure =</span> Measure, </span>
-<span id="cb8-11"><a href="#cb8-11"></a>                                      FLComID, </span>
-<span id="cb8-12"><a href="#cb8-12"></a>                                      STATION_NM), </span>
-<span id="cb8-13"><a href="#cb8-13"></a>                        flowline_indexes,</span>
-<span id="cb8-14"><a href="#cb8-14"></a>                        <span class="kw">get_waterbody_index</span>(</span>
-<span id="cb8-15"><a href="#cb8-15"></a>                          <span class="kw">st_transform</span>(waterbody, <span class="dv">5070</span>), </span>
-<span id="cb8-16"><a href="#cb8-16"></a>                          <span class="kw">st_transform</span>(gages, <span class="dv">5070</span>), </span>
-<span id="cb8-17"><a href="#cb8-17"></a>                          <span class="kw">st_drop_geometry</span>(flowlines), </span>
-<span id="cb8-18"><a href="#cb8-18"></a>                          <span class="dt">search_radius =</span> <span class="dv">200</span>))</span>
-<span id="cb8-19"><a href="#cb8-19"></a></span>
-<span id="cb8-20"><a href="#cb8-20"></a></span>
-<span id="cb8-21"><a href="#cb8-21"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(indexed_gages, flowlines, waterbody))</span>
-<span id="cb8-22"><a href="#cb8-22"></a></span>
-<span id="cb8-23"><a href="#cb8-23"></a>dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(indexed_gages), near_wb_COMID, near_wb_dist, in_wb_COMID, outlet_fline_COMID)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>flowline_indexes &lt;-<span class="st"> </span><span class="kw">left_join</span>(<span class="kw">data.frame</span>(<span class="dt">id =</span> <span class="kw">seq_len</span>(<span class="kw">nrow</span>(gages))),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>                              <span class="kw">get_flowline_index</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>                                sf<span class="op">::</span><span class="kw">st_transform</span>(flowlines, <span class="dv">5070</span>), </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>                                sf<span class="op">::</span><span class="kw">st_geometry</span>(sf<span class="op">::</span><span class="kw">st_transform</span>(gages, <span class="dv">5070</span>)), </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>                                <span class="dt">search_radius =</span> <span class="dv">200</span>), <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>                              </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a>indexed_gages &lt;-<span class="st"> </span><span class="kw">cbind</span>(dplyr<span class="op">::</span><span class="kw">select</span>(gages, </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>                                      <span class="dt">orig_REACHCODE =</span> REACHCODE, </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a>                                      <span class="dt">orig_Measure =</span> Measure, </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a>                                      FLComID, </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a>                                      STATION_NM), </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a>                        flowline_indexes,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a>                        <span class="kw">get_waterbody_index</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a>                          <span class="kw">st_transform</span>(waterbody, <span class="dv">5070</span>), </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a>                          <span class="kw">st_transform</span>(gages, <span class="dv">5070</span>), </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a>                          <span class="kw">st_drop_geometry</span>(flowlines), </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a>                          <span class="dt">search_radius =</span> <span class="dv">200</span>))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true"></a>mapview<span class="op">::</span><span class="kw">mapview</span>(<span class="kw">list</span>(indexed_gages, flowlines, waterbody))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true"></a>dplyr<span class="op">::</span><span class="kw">select</span>(sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(indexed_gages), near_wb_COMID, near_wb_dist, in_wb_COMID, outlet_fline_COMID)</span></code></pre></div>
 </div>
 
 
