@@ -352,6 +352,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>bbox &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">st_bbox</span>(<span class="kw">c</span>(<span class="dt">xmin =</span> <span class="fl">-89.56684</span>, <span class="dt">ymin =</span> <span class="fl">42.99816</span>, <span class="dt">xmax =</span> <span class="fl">-89.24681</span>, <span class="dt">ymax =</span> <span class="fl">43.17192</span>),</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>                    <span class="dt">crs =</span> <span class="st">&quot;+proj=longlat +datum=WGS84 +no_defs&quot;</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="kw">plot_nhdplus</span>(<span class="dt">bbox =</span> bbox)</span></code></pre></div>
+<p>The plots above are all in the EPSG:3857 projection to be compatible with background tiles. Any data added to these plots must be projected to this coordinate system to be added to the plot.</p>
 </div>
 <div id="getting-data" class="section level2">
 <h2>Getting Data</h2>

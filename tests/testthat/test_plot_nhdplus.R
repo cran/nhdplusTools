@@ -21,7 +21,7 @@ test_that("basics work", {
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
-  expect_s3_class(p_ready, "sfc_MULTILINESTRING")
+  expect_s3_class(p_ready, "sfc_LINESTRING")
 
   pdf(NULL)
   tempf <- file.path(tempd, "temp.png")
@@ -294,6 +294,7 @@ test_that("bbox", {
 })
 
 test_that("comids", {
+  testthat::skip_on_cran()
   fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
   comids <- nhdplusTools::get_UT(fline, 13293970)
   d <- nhdplusTools:::get_plot_data(comids)

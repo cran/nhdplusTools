@@ -14,7 +14,8 @@ subset_nhdplus(
   return_data = TRUE,
   status = TRUE,
   flowline_only = NULL,
-  streamorder = NULL
+  streamorder = NULL,
+  out_prj = 4269
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ if TRUE only the flowline network and attributes will be returned}
 
 \item{streamorder}{integer only streams of order greater than or equal will be downloaded.
 Not implemented for local data.}
+
+\item{out_prj}{character override the default output CRS of NAD83 lat/lon (EPSG:4269)}
 }
 \value{
 path to the saved subset geopackage
@@ -56,9 +59,6 @@ Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.
 }
 \details{
-If \code{\link{stage_national_data}} has been run in the current
-session, this function will use the staged national data automatically.
-
 This function relies on the National Seamless Geodatabase or Geopackage.
 It can be downloaded
 \href{https://www.epa.gov/waterdata/nhdplus-national-data}{here.}
