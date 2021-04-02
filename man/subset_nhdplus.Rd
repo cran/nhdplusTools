@@ -57,6 +57,9 @@ path to the saved subset geopackage
 \description{
 Saves a subset of the National Seamless database or other
 nhdplusTools compatible data based on a specified collection of COMIDs.
+This function uses \code{\link{get_nhdplus}} for the "download" data
+source but returns data consistent with local data subsets in a subset
+file.
 }
 \details{
 This function relies on the National Seamless Geodatabase or Geopackage.
@@ -69,8 +72,8 @@ be available permenently.
 }
 \examples{
 \donttest{
-sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                           package = "nhdplusTools")
+
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 nhdplus_path(sample_data)
 
@@ -123,7 +126,7 @@ subset_nhdplus(comids = comids,
                output_file = output_file,
                nhdplus_data = "download",
                overwrite = TRUE,
-               status = TRUE)
+               status = TRUE, flowline_only = FALSE)
 
 sf::st_layers(output_file)
 

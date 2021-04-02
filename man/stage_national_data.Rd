@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset_nhdplus.R
 \name{stage_national_data}
 \alias{stage_national_data}
-\title{Stage NHDPlus National Data}
+\title{Stage NHDPlus National Data (deprecated)}
 \usage{
 stage_national_data(
   include = c("attribute", "flowline", "catchment"),
@@ -43,8 +43,8 @@ The returned list of paths is also added to the nhdplusTools_env
 as "national_data".
 }
 \examples{
-sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                           package = "nhdplusTools")
+
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 stage_national_data(nhdplus_data = sample_data, output_path = tempdir())
 

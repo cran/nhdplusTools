@@ -6,7 +6,8 @@
 #'
 #' @return Paths to geodatabases created.
 #' @importFrom xml2 read_xml xml_ns_strip xml_find_all xml_text
-#' @importFrom utils download.file unzip
+#' @importFrom utils download.file
+#' @importFrom zip unzip
 #' @export
 #' @examples
 #' \donttest{
@@ -59,7 +60,7 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
       if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
          !dir.exists(file.path(dirname(out_file), paste0(hu04, ".gdb")))) {
         download.file(url, out_file)
-        unzip(out_file, exdir = out[length(out)])
+        zip::unzip(out_file, exdir = out[length(out)])
         unlink(out_file)
       } else if(!download_files) {
         out <- c(out, url)
@@ -103,8 +104,10 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE) {
 #' @examples
 #' \donttest{
 #' # Note this will download a lot of data to a temp directory.
-#' # Change 'tempdir()' to your directory of choice.
-#' download_dir <- download_nhdplushr(tempdir(), c("0302", "0303"))
+#' # Change 'temp_dir' to your directory of choice.
+#' temp_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"), "hr_cache")
+#'
+#' download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
 #'
 #' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
 #'

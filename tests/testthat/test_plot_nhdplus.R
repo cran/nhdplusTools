@@ -1,9 +1,10 @@
 context("plot tests")
 
-sample_data <- system.file("extdata/sample_natseamless.gpkg",
-                           package = "nhdplusTools")
-options("rgdal_show_exportToProj4_warnings"="none")
+source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+
 test_that("basics work", {
+  options("rgdal_show_exportToProj4_warnings"="none")
+
   skip_on_cran()
   tempd <- tempdir(check = TRUE)
 
@@ -16,8 +17,8 @@ test_that("basics work", {
   expect_true(all(c("comid", "type") %in% names(d$outlets)))
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
-               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody"))
-  expect_equal(l$features, c(433, 402, 1, 90))
+               c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody", "NHDFlowline_NonNetwork"))
+  expect_equal(l$features, c(431, 402, 1, 90, 45))
 
   p_ready <- nhdplusTools:::gt(d$flowline)
   expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
@@ -48,8 +49,8 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
-                 "Gage", "NHDFlowline_NonNetwork"))
-  expect_equal(l$features, c(251, 250, 3, 117, 44, 48))
+                 "NHDFlowline_NonNetwork", "Gage"))
+  expect_equal(l$features, c(251, 250, 3, 117, 48, 44))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
@@ -67,8 +68,8 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("NHDFlowline_Network", "CatchmentSP", "NHDArea", "NHDWaterbody",
-                 "Gage", "NHDFlowline_NonNetwork"))
-  expect_equal(l$features, c(168, 167, 1, 90, 33, 45))
+                 "NHDFlowline_NonNetwork", "Gage"))
+  expect_equal(l$features, c(168, 167, 1, 90, 45, 33))
 
   expect_true(file.exists(tempf))
   unlink(tempf)
@@ -83,6 +84,8 @@ test_that("basics work", {
 })
 
 test_that("local data", {
+
+  options("rgdal_show_exportToProj4_warnings"="none")
 
   testthat::skip_on_cran()
 

@@ -3,7 +3,7 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
-                 k = ifelse(max_matches > 1, nrow(coords), 1),
+                 k = ifelse(max_matches > 1, 1000, 1),
                  searchtype = "radius",
                  radius = search_radius)
 
@@ -69,9 +69,9 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' @export
 #' @examples
 #' \donttest{
-#' sample_flines <- sf::read_sf(system.file("extdata",
-#'                                          "petapsco_flowlines.gpkg",
-#'                                          package = "nhdplusTools"))
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
 #' get_flowline_index(sample_flines,
 #'                    sf::st_sfc(sf::st_point(c(-76.87479,
 #'                                              39.48233)),
@@ -104,13 +104,15 @@ get_flowline_index <- function(flines, points,
 
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
-    flines <- subset_nhdplus(bbox = sf::st_bbox(sf::st_transform(points, 4326)),
-                             nhdplus_data = "download",
-                             status = FALSE,
-                             return_data = TRUE,
-                             flowline_only = TRUE)
+    if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
+      req <- suppressMessages(sf::st_buffer(points, 0.01))
+    } else {
+      req <- points
+    }
 
-    flines <- align_nhdplus_names(flines$NHDFlowline_Network)
+    flines <- align_nhdplus_names(
+      get_nhdplus(AOI = sf::st_transform(req, 4326),
+                  realization = "flowline"))
 
   }
 
@@ -233,10 +235,12 @@ get_flowline_index <- function(flines, points,
 #' @importFrom dplyr select mutate bind_cols
 #' @export
 #' @examples
-#' sample <- system.file("extdata/sample_natseamless.gpkg",
-#'                       package = "nhdplusTools")
 #'
-#' waterbodies <- sf::read_sf(sample, "NHDWaterbody")
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
+#'
+#' waterbodies <- sf::read_sf(sample_data, "NHDWaterbody")
+#'
 #' get_waterbody_index(waterbodies,
 #'                     sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
 #'                                crs = 4326, dim = "XY"))

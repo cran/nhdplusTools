@@ -57,7 +57,8 @@
 #'
 #' plot_nhdplus(list(13293970, 13293750))
 #'
-#' sample_data <- system.file("extdata/sample_natseamless.gpkg", package = "nhdplusTools")
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
 #' plot_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
 #'
 #' plot_nhdplus(list(list("comid", "13293970"),
@@ -117,7 +118,9 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
     prettymapr::prettymap({
       if(!add) {
-        rosm::osm.plot(pd$plot_bbox, type = "cartolight", quiet = TRUE, progress = "none", ...)
+        rosm::osm.plot(pd$plot_bbox, type = "cartolight",
+                       quiet = TRUE, progress = "none",
+                       cachedir = osm_cache_dir(), ...)
       }
       # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
       if(!is.null(pd$basin))
@@ -139,6 +142,22 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
   }
   return(invisible(pd))
 }
+
+osm_cache_dir <- function() {
+  osm_dir <- file.path(rappdirs::user_cache_dir(), "osm.cache")
+
+  test_dir <- file.path(osm_dir, "test")
+
+  dir.create(test_dir, recursive = TRUE, showWarnings = FALSE)
+
+  if(!dir.exists(test_dir)) {
+    return(file.path(tempdir(check = TRUE), "osm.cache"))
+  } else {
+    unlink(test_dir, recursive = TRUE)
+    return(osm_dir)
+  }
+}
+
 
 get_styles <- function(plot_config) {
   conf <- list(basin = list(lwd = 1, col = NA, border = "black"),
@@ -426,7 +445,7 @@ as_outlets <- function(o) {
         out <- c(out, make_comid_nldi_feature(discover_nhdplus_id(sf::st_geometry(o)[i])))
       }
     }
-    return(list(check_nldi_feature(out)))
+    return(list(check_nldi_feature(out, convert = FALSE)))
   }, error = function(f) {
     stop(paste0("Error trying to interpret outlet specification. Original error was:\n\n", f))
   })
@@ -445,7 +464,7 @@ individual_outlets <- function(o) {
 
   if(is.list(o) && !"sf" %in% class(o)) {
     if(length(o) == 2 && !is.list(o[[1]])) o <- as.list(o)
-    return(check_nldi_feature(o))
+    return(check_nldi_feature(o, convert = FALSE))
   }
 }
 

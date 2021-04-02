@@ -4,12 +4,18 @@
 \alias{get_levelpaths}
 \title{Get Level Paths}
 \usage{
-get_levelpaths(x, status = FALSE)
+get_levelpaths(x, override_factor = NULL, status = FALSE, cores = NULL)
 }
 \arguments{
 \item{x}{data.frame with ID, toID, nameID, and weight columns.}
 
+\item{override_factor}{numeric factor to use to override nameID.
+If `weight` is `numeric_factor` times larger on a path, it will be followed
+regardless of the nameID indication.}
+
 \item{status}{boolean if status updates should be printed.}
+
+\item{cores}{numeric number of cores to use in initial path ranking calculations.}
 }
 \value{
 data.frame with ID, outletID, topo_sort, and levelpath columns.

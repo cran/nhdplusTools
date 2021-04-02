@@ -2,18 +2,21 @@ context("point indexing")
 
 test_that("point indexing to nearest existing node works as expected", {
     skip_on_cran()
-    flines_in <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                         package = "nhdplusTools"))
+
+    source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+    flines_in <- sample_flines
+
     flines_in <- sf::st_transform(flines_in, 4269)
 
-    point <- sf::st_sfc(sf::st_point(c(-76.86934, 39.49328)), crs = 4269)
+    point <- sf::st_sfc(sf::st_point(c(-76.86876, 39.49345)), crs = 4269)
 
     expect_equal(get_flowline_index(flines_in, point, search_radius = 0.1),
                  dplyr::tibble(id = 1,
                                COMID = 11688298,
                                REACHCODE = "02060003000579",
-                               REACH_meas = 0,
-                               offset = 0.00006026811), tolerance = 0.0001)
+                               REACH_meas = 34.6,
+                               offset = 0.000348), tolerance = 0.01)
 
     expect_equal(suppressWarnings(get_flowline_index("download_nhdplusv2", point, search_radius = 0.1)$COMID),
                  11688298)
@@ -27,8 +30,8 @@ test_that("point indexing to nearest existing node works as expected", {
                  dplyr::tibble(id = 1,
                                COMID = 11688298,
                                REACHCODE = "02060003000579",
-                               REACH_meas = 0,
-                               offset = 0.00006026811), tolerance = 0.0001)
+                               REACH_meas = 25.9,
+                               offset = 0.0000959), tolerance = 0.001)
 
     point_w <- sf::st_sfc(sf::st_point(c(-76.86934, 39.49328)), crs = 4326)
 
@@ -44,8 +47,10 @@ test_that("point indexing to nearest existing node works as expected", {
 
 test_that("point indexing to for multiple points works", {
   skip_on_cran()
-  flines_in <- sf::read_sf(system.file("extdata/petapsco_flowlines.gpkg",
-                                       package = "nhdplusTools"))
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  flines_in <- sample_flines
+
   flines_in <- sf::st_transform(flines_in, 4269)
 
   point <- sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
