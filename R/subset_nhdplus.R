@@ -655,9 +655,16 @@ subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
   # !ToNode %in% FromNode finds non-terminal flowlines that exit the domain.
   outlets <- filter(fline, .data$RPUID %in% rpu)
 
-  outlets <- st_sf(filter(outlets, .data$TerminalFl == 1 |
-                                !.data$ToNode %in% .data$FromNode))
+  if("tocomid" %in% names(outlets)) outlets <- dplyr::rename(outlets, toCOMID = .data$tocomid)
 
+  if(any(c("tocomid", "toCOMID") %in% names(outlets))) {
+    outlets <- st_sf(filter(outlets, .data$Hydroseq == .data$TerminalPa |
+                              !.data$toCOMID %in% .data$COMID))
+  } else {
+
+    outlets <- st_sf(filter(outlets, .data$TerminalFl == 1 |
+                              !.data$ToNode %in% .data$FromNode))
+  }
   outlets <- arrange(outlets, desc(.data$ArbolateSu))
 
   # run nhdplusTools::get_UT for all outlets and concatenate.
@@ -717,6 +724,9 @@ get_nhdplus_bybox <- function(box, layer, streamorder = NULL) {
     stop("Layer must be one of nhdarea, nhdwaterbody")
   }
 
-  query_usgs_geoserver(AOI = box, type = dplyr::filter(query_usgs_geoserver(),
-                                                       .data$geoserver == layer)$user_call)
+  type <- dplyr::filter(query_usgs_geoserver(),
+                        .data$geoserver == layer)$user_call
+
+  query_usgs_geoserver(AOI = box,
+                       type = type)
 }

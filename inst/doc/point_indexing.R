@@ -155,4 +155,5 @@ dplyr::select(sf::st_drop_geometry(indexed_gages), near_wb_COMID, near_wb_dist, 
 
 ## ----teardown, include=FALSE--------------------------------------------------
 options(oldoption)
+unlink(rappdirs::user_cache_dir("nhdplusTools"), recursive = TRUE)
 

@@ -220,15 +220,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nhdplus_path</span>(<span class="fu">file.path</span>(temp_dir, <span class="st">&quot;natseamless.gpkg&quot;</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nhdplus_path</span>()</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpcXeHiJ/natseamless.gpkg&quot;</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\Rtmpo5s0FL/natseamless.gpkg&quot;</span></span></code></pre></div>
 <p>If you are going to be loading and reloading the flowlines, flowline attributes, or catchments, repeatedly, the <code>stage_national_data()</code> function will speed things up a bit. It creates three staged files that are quicker for R to read at the path you tell it. If you call it and its output files exist, it won’t overwrite and just return the paths to your staged files.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>staged_data <span class="ot">&lt;-</span> <span class="fu">stage_national_data</span>(<span class="at">output_path =</span> <span class="fu">tempdir</span>())</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(staged_data)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; List of 3</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ attributes: chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpcXeHiJ/nhdplus_flowline_attributes.rds&quot;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ flowline  : chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpcXeHiJ/nhdplus_flowline.rds&quot;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ catchment : chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\RtmpcXeHiJ/nhdplus_catchment.rds&quot;</span></span></code></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ attributes: chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\Rtmpo5s0FL/nhdplus_flowline_attributes.rds&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ flowline  : chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\Rtmpo5s0FL/nhdplus_flowline.rds&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  $ catchment : chr &quot;C:\\Users\\DBLODG~1\\AppData\\Local\\Temp\\1\\Rtmpo5s0FL/nhdplus_catchment.rds&quot;</span></span></code></pre></div>
 <p>As you can see, <code>stage_national_data()</code> assumes you want to stage data in the same folder as the nhdplus_path database and returns a list of .rds files that can be read with readRDS. The flowlines and catchments are <a href="https://r-spatial.github.io/sf/"><code>sf</code></a> <code>data.frame</code>s and attributes is a plain <code>data.frame</code> with the attributes from <code>flowline</code>. Note that this introduction uses a small subset of the national seamless database as shown in the plot.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>flowline <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(staged_data<span class="sc">$</span>flowline)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(flowline)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span>
@@ -308,20 +308,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataRetrieval<span class="sc">::</span><span class="fu">get_nldi_sources</span>()<span class="sc">$</span>source</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;comid&quot;    &quot;huc12pp&quot;  &quot;nwissite&quot; &quot;ref_gage&quot; &quot;wade&quot;     &quot;WQP&quot;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>nldi_feature <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">featureSource =</span> <span class="st">&quot;comid&quot;</span>, <span class="at">featureID =</span> start_comid)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">get_nldi_feature</span>(nldi_feature)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 1 feature and 3 fields</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geometry type: LINESTRING</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -89.37037 ymin: 43.08521 xmax: -89.35393 ymax: 43.09491</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 x 4</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sourceName   identifier comid                                         geometry</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;                                 &lt;LINESTRING [°]&gt;</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDPlus com~ 13293750   13293~ (-89.37037 43.09491, -89.36997 43.09475, -89.3~</span></span></code></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;comid&quot;      &quot;ca_gages&quot;   &quot;gfv11_pois&quot; &quot;huc12pp&quot;    &quot;nwissite&quot;  </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;ref_gage&quot;   &quot;wade&quot;       &quot;WQP&quot;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>nldi_feature <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">featureSource =</span> <span class="st">&quot;comid&quot;</span>, <span class="at">featureID =</span> start_comid)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">get_nldi_feature</span>(nldi_feature)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 1 feature and 3 fields</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geometry type: LINESTRING</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -89.37037 ymin: 43.08521 xmax: -89.35393 ymax: 43.09491</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 x 4</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   sourceName   identifier comid                                         geometry</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;                                 &lt;LINESTRING [°]&gt;</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDPlus com~ 13293750   13293~ (-89.37037 43.09491, -89.36997 43.09475, -89.3~</span></span></code></pre></div>
 <p>We can use <code>get_nldi_feature()</code> as a way to make sure the featureID is available for the chosen “featureSource”. Now that we know the NLDI has our comid, we can use the “upstreamTributaries” navigation option to get all the flowlines upstream or all the features from any of the “featureSources” as shown below.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>flowline_nldi <span class="ot">&lt;-</span> <span class="fu">navigate_nldi</span>(nldi_feature, </span>

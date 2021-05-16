@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -25,9 +25,9 @@ Encoding: UTF-8
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2021-04-02 16:57:25 UTC; dblodgett
+Packaged: 2021-05-15 22:10:46 UTC; dblodgett
 Author: David Blodgett [aut, cre],
   Mike Johnson [ctb] (<https://orcid.org/0000-0002-5288-8350>)
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2021-04-02 21:40:07 UTC
+Date/Publication: 2021-05-16 13:40:05 UTC

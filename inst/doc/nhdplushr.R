@@ -122,4 +122,5 @@ plot(st_geometry(standalone))
 
 ## ----teardown, include=FALSE--------------------------------------------------
 options(oldoption)
+unlink(rappdirs::user_cache_dir("nhdplusTools"), recursive = TRUE)
 
