@@ -12,7 +12,7 @@
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines?
 #' @param ... parameters passed on to rosm.
-#' @return plot data is returned invisibly in NAD83 Lat/Lon.
+#' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
 #' is used to convert the outlet formats as described below.
 #' \enumerate{
@@ -104,8 +104,9 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' # Cleanup downloaded open street map cache if desired.
-#' unlink(nhdplusTools:::osm_cache_dir(), recursive = TRUE)
+#' # Cleanup downloaded open street map cache and temp data dir if desired.
+#' # This is included for CRAN checks primarily.
+#' unlink(nhdplusTools::nhdplusTools_data_dir(), recursive = TRUE)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
@@ -146,7 +147,7 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 }
 
 osm_cache_dir <- function() {
-  osm_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"),
+  osm_dir <- file.path(nhdplusTools_data_dir(),
                        "osm.cache")
 
   test_dir <- file.path(osm_dir, "test")
@@ -384,7 +385,7 @@ make_basin <- function(x, catchment_layer, comids = NULL) {
   if(!is.null(comids)) {
     x <- x[x$FEATUREID %in% comids, ]
   }
-  sf::st_precision(x) <- 10000 # kills slivers
+  sf::st_precision(x) <- ifelse(sf::sf_use_s2(), 1e8, 10000) # kills slivers -- doesn't work with s2?
   sf::st_sf(geom = sf::st_union(sf::st_geometry(x)))
 }
 

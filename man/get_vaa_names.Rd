@@ -23,10 +23,11 @@ To view aggregate data and documentation, see
 \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 }
 \examples{
-\donttest{
+\dontrun{
+# This will download the vaa file to the path from get_vaa_path()
 get_vaa_names()
 
 #cleanup if desired
-unlink(get_vaa_path(), recursive = TRUE)
+unlink(dirname(get_vaa_path()), recursive = TRUE)
 }
 }

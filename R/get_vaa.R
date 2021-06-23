@@ -1,17 +1,16 @@
 #' @title File path to value added attribute (vaa) Cache
 #' @description nhdplusTools will download and cache an `fst` file with
 #' NHDPlusV2 attribute data sans geometry. This function returns the
-#' file path to the cached file. Will use the user cache dir indicated
-#' by \link[rappdirs]{user_cache_dir}.
+#' file path to the cached file. Will use the user data dir indicated
+#' by \link{nhdplusTools_data_dir}.
 #' @inherit download_vaa details
-#' @return file.path character
-#' @importFrom rappdirs user_cache_dir
+#' @return character file path
 #' @export
 #' @examples
 #' get_vaa_path()
 
 get_vaa_path <- function() {
-  file.path(rappdirs::user_cache_dir(), "nhdplus-vaa/nhdplusVAA.fst")
+  file.path(nhdplusTools_data_dir(), "nhdplusVAA.fst")
 }
 
 #' @title Available NHDPlusV2 Attributes
@@ -21,11 +20,12 @@ get_vaa_path <- function() {
 #' @importFrom fst metadata_fst
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' # This will download the vaa file to the path from get_vaa_path()
 #' get_vaa_names()
 #'
 #' #cleanup if desired
-#' unlink(get_vaa_path(), recursive = TRUE)
+#' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
 get_vaa_names <- function() {
   path <- get_vaa_path()
@@ -40,21 +40,23 @@ get_vaa_names <- function() {
 #' @inherit download_vaa details
 #' @param atts character The variable names you would like, always includes comid
 #' @param path character path where the file should be saved. Default is a
-#' persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+#' persistent system data as retrieved by \link{nhdplusTools_data_dir}.
 #' Also see: \link{get_vaa_path}
 #' @param download logical if TRUE, the default, will download VAA table if not
 #' found at path.
-#' @return data.frame
+#' @return data.frame containing requested VAA data
+#' @importFrom fst read.fst
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' # This will download the vaa file to the path from get_vaa_path()
+#'
 #' get_vaa("slope")
 #' get_vaa(c("slope", "lengthkm"))
 #'
 #' #cleanup if desired
-#' unlink(get_vaa_path(), recursive = TRUE)
+#' unlink(dirname(get_vaa_path()), recursive = TRUE)
 #' }
-#' @importFrom fst read.fst
 
 get_vaa <- function(atts = NULL,
                     path = get_vaa_path(),
@@ -103,7 +105,7 @@ check_vaa_path <- function(path = get_vaa_path(), download = TRUE) {
 #' \href{https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/}{here}
 #' @inheritParams  get_vaa
 #' @param force logical. Force data re-download. Default = FALSE
-#' @return path to cached data
+#' @return character path to cached data
 #' @export
 #' @importFrom httr GET progress write_disk
 

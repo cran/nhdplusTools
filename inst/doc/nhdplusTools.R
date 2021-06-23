@@ -1,14 +1,26 @@
 ## ----setup, include = FALSE---------------------------------------------------
+library(nhdplusTools)
+
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE
+  eval=local,
+  cache=local,
+  cache.path=(cache_path)
 )
+
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
+
 
 ## ----tldr---------------------------------------------------------------------
 # Uncomment to install!
@@ -30,7 +42,7 @@ subset <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
                          output_file = subset_file,
                          nhdplus_data = "download", 
                          flowline_only = FALSE,
-                         return_data = TRUE)
+                         return_data = TRUE, overwrite = TRUE)
 
 flowline <- subset$NHDFlowline_Network
 catchment <- subset$CatchmentSP
@@ -55,17 +67,17 @@ plot(sf::st_geometry(waterbody), col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 library(nhdplusTools)
 
 ## ----nhdplus_path_setup, echo=FALSE, include=FALSE----------------------------
-temp_dir <- tempdir()
+work_dir <- file.path(nhdplusTools_data_dir(), "nhdpt_v_cache")
 
-dir.create(temp_dir)
+dir.create(work_dir, showWarnings = FALSE, recursive = TRUE)
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
 file.copy(sample_data,
-          file.path(temp_dir, "natseamless.gpkg"))
+          file.path(work_dir, "natseamless.gpkg"))
 
 ## ----nhdplus_path, echo=TRUE--------------------------------------------------
-nhdplus_path(file.path(temp_dir, "natseamless.gpkg"))
+nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 
 nhdplus_path()
 
@@ -134,15 +146,16 @@ plot(sf::st_geometry(flowline_nldi$origin), lwd = 3, col = "red", add = TRUE)
 plot(sf::st_geometry(flowline_nldi$UT), lwd = 1, col = "red", add = TRUE)
 
 ## ----subset_nhdplus_download--------------------------------------------------
-output_file_download <- file.path(temp_dir, "subset_download.gpkg")
+output_file_download <- file.path(work_dir, "subset_download.gpkg")
 
 output_file_download <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
-                             output_file = output_file_download,
-                             nhdplus_data = "download", return_data = FALSE)
+                                      output_file = output_file_download,
+                                      nhdplus_data = "download", return_data = FALSE,
+                                      overwrite = TRUE)
 
 sf::st_layers(output_file_download)
 
-flowline_download <- sf::read_sf(file.path(temp_dir, "subset_download.gpkg"), 
+flowline_download <- sf::read_sf(file.path(work_dir, "subset_download.gpkg"), 
                                  "NHDFlowline_Network")
 
 plot(sf::st_geometry(dplyr::filter(flowline_download, 
@@ -158,12 +171,12 @@ flowline_nldi <- navigate_nldi(nldi_feature,
                                mode = "upstreamTributaries", 
                                distance_km = 1000)
 
-output_file_nwis <- file.path(temp_dir, "subset_download_nwis.gpkg")
+output_file_nwis <- file.path(work_dir, "subset_download_nwis.gpkg")
 
 output_file_nwis <-subset_nhdplus(comids = flowline_nldi$UT$nhdplus_comid,
                                   output_file = output_file_nwis,
                                   nhdplus_data = "download",
-                                  return_data = FALSE)
+                                  return_data = FALSE, overwrite = TRUE)
 
 sf::st_layers(output_file_download)
 
@@ -191,12 +204,12 @@ plot(sf::st_geometry(dplyr::filter(flowline, COMID %in% UT_comids)),
      add=TRUE, col = "red", lwd = 2)
 
 ## ----subset_nhdplus-----------------------------------------------------------
-output_file <- file.path(temp_dir, "subset.gpkg")
+output_file <- file.path(work_dir, "subset.gpkg")
 
 output_file <-subset_nhdplus(comids = UT_comids,
                              output_file = output_file,
                              nhdplus_data = nhdplus_path(), 
-                             return_data = FALSE)
+                             return_data = FALSE, overwrite = TRUE)
 
 sf::st_layers(output_file)
 
@@ -221,4 +234,8 @@ get_flowline_index(flowline, sf::st_geometry(gage), precision = 10)
 
 ## ----teardown, include=FALSE--------------------------------------------------
 options(oldoption)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
 

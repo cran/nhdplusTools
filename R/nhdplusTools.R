@@ -34,6 +34,7 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
+toCOMID = "toCOMID"
 
 
 # List of input names that should be changed to replacement names
@@ -64,7 +65,8 @@ nhdplus_attributes <- list(
   REACHCODE = REACHCODE, ReachCode = REACHCODE,
   REACH_meas = REACH_meas,
   HUC12 = HUC12,
-  TOHUC = TOHUC)
+  TOHUC = TOHUC,
+  toCOMID = toCOMID)
 
 .data <- . <- NULL
 
@@ -149,7 +151,12 @@ assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_flines_attributes",
-       c("COMID", "WBAREACOMI", "Hydroseq"), envir = nhdplusTools_env)
+       c("COMID", "WBAREACOMI", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("disambiguate_flowline_indexes_attributes",
+       c("id", "COMID", "REACHCODE", "REACH_meas", "offset"),
+       envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
@@ -179,6 +186,36 @@ nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/"
 assign("nhdhr_bucket", nhdhr_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 
+assign("nhdpt_dat_dir",
+       tools::R_user_dir("usgs_r/nhdplusTools"),
+       envir = nhdplusTools_env)
+
+#' get or set nhdplusTools data directory
+#' @description if left unset, will return the user data dir
+#' as returned by \link[tools]{R_user_dir} for this package.
+#' @param dir path of desired data directory
+#' @return character path of data directory (silent when setting)
+#' @importFrom tools R_user_dir
+#' @export
+#' @examples
+#' nhdplusTools_data_dir()
+#'
+#' nhdplusTools_data_dir("demo")
+#'
+#' nhdplusTools_data_dir(tools::R_user_dir("usgs_r/nhdplusTools"))
+#'
+nhdplusTools_data_dir <- function(dir = NULL) {
+
+  if(is.null(dir)) {
+    return(get("nhdpt_dat_dir", envir = nhdplusTools_env))
+  } else {
+    assign("nhdpt_dat_dir",
+           dir,
+           envir = nhdplusTools_env)
+    return(invisible(get("nhdpt_dat_dir", envir = nhdplusTools_env)))
+  }
+}
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste(strwrap(
     "USGS Support Package:
@@ -193,7 +230,7 @@ assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
 #' geodatabase or geopackage format.
 #' @param path character path ending in .gdb or .gpkg
 #' @param warn boolean controls whether warning an status messages are printed
-#' @return 1 if set successfully, the path if no input.
+#' @return 0 (invisibly) if set successfully, character path if no input.
 #' @export
 #' @examples
 #' nhdplus_path("/data/NHDPlusV21_National_Seamless.gdb")
@@ -223,7 +260,7 @@ nhdplus_path <- function(path = NULL, warn = FALSE) {
 #' @title Align NHD Dataset Names
 #' @description this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
 #' @param x a \code{sf} object of nhdplus flowlines
-#' @return a renamed \code{sf} object
+#' @return data.frame renamed \code{sf} object
 #' @export
 #' @examples
 #' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
@@ -275,4 +312,20 @@ drop_geometry <- function(x) {
   } else {
     x
   }
+}
+
+get_cl <- function(cl) {
+  if(!is.null(cl)) {
+    if(!requireNamespace("parallel", quietly = TRUE)) {
+      stop("parallel required if using cores input")
+    }
+    if(is.numeric(cl)) {
+      cl <- parallel::makeCluster(cl)
+    } else {
+      if(!"cluster" %in% class(cl)) {
+        stop("cores must be numeric or a cluster object")
+      }
+    }
+  }
+  return(cl)
 }

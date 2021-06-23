@@ -62,6 +62,8 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 #' Note 4: See `dfMaxLength` input to sf::st_segmentize() for details of
 #' handling of precision parameter.
 #'
+#' Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet
+#'
 #' @importFrom dplyr filter select mutate right_join left_join
 #' @importFrom dplyr group_by summarise distinct desc lag n arrange
 #' @importFrom RANN nn2
@@ -105,7 +107,7 @@ get_flowline_index <- function(flines, points,
   if(is.character(flines) && flines == "download_nhdplusv2") {
 
     if((!is.null(nrow(points)) && nrow(points)) == 1 | length(points) == 1) {
-      req <- suppressMessages(sf::st_buffer(points, 0.01))
+      req <- suppressMessages(sf::st_buffer(points, ifelse(sf::sf_use_s2(), 200, 0.01)))
     } else {
       req <- points
     }
@@ -194,19 +196,15 @@ get_flowline_index <- function(flines, points,
                                                  NA, .data$nn.dists))
   }
 
-  flines <- as.data.frame(flines) %>%
-    mutate(index = seq_len(nrow(flines))) %>%
+  flines <- flines %>%
+    add_index() %>%
     filter(.data$L1 %in% matched$L1) %>%
     group_by(.data$L1) %>%
-    mutate(len  = sqrt( ( (.data$X - (lag(.data$X))) ^ 2) +
-                          ( ( (.data$Y - (lag(.data$Y))) ^ 2)))) %>%
-    mutate(len = ifelse(is.na(.data$len), 0, .data$len)) %>%
-    mutate(len = cumsum(.data$len)) %>%
-    mutate(measure = .data$len / max(.data$len)) %>%
+    add_len() %>%
     left_join(select(matched, .data$L1, .data$COMID), by = "L1") %>%
     left_join(select(fline_atts, -.data$index), by = "COMID") %>%
-    mutate(REACH_meas = .data$ToMeas +
-             (.data$FromMeas - .data$ToMeas) * (.data$measure)) %>%
+    mutate(REACH_meas = .data$FromMeas +
+             (.data$ToMeas - .data$FromMeas) * (.data$measure / 100)) %>%
     ungroup() %>% distinct()
 
   matched <- select(matched, .data$id, node = .data$nn.idx, offset = .data$nn.dists, .data$COMID)
@@ -217,6 +215,110 @@ get_flowline_index <- function(flines, points,
     select(.data$id, .data$COMID, .data$REACHCODE, .data$REACH_meas, .data$offset)
 
   return(matched)
+}
+
+#' @title Disambiguate Flowline Indexes
+#' @description Given a set of flowline indexes and numeric or ascii criteria,
+#' return closest match. If numeric criteria are used, the minimum difference
+#' in the numeric attribute is used for disambiguation. If ascii criteria are used,
+#' the \link[utils]{adist} function is used with the following algorithm:
+#' `1 - adist_score / max_string_length`. Comparisons ignore case.
+#' @param indexes data.frame as output from \link{get_flowline_index} with more than
+#' one hydrologic location per indexed point.
+#' @param flowpath data.frame with two columns. The first should join to the COMID
+#' field of the indexes and the second should be the numeric or ascii metric such as drainage
+#' area or GNIS Name. Names of this data.frame are not used.
+#' @param hydro_location data.frame with two columns. The first should join to the
+#' id field of the indexes and the second should be the numeric or ascii metric such as drainage
+#' area or GNIS Name.. Names of this data,frame are not used.
+#' @return data.frame indexes deduplicated according to the minimum difference
+#' between the values in the metric columns. If two or more result in the same "minimum"
+#' value, duplicates will be returned.
+#' @export
+#' @examples
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' hydro_location <- sf::st_sf(id = c(1, 2, 3),
+#'                             geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
+#'                                                    sf::st_point(c(-76.91711, 39.40884)),
+#'                                                    sf::st_point(c(-76.88081, 39.36354))),
+#'                                               crs = 4326),
+#'                             totda = c(23.6, 7.3, 427.9),
+#'                             nameid = c("Patapsco", "", "Falls Run River"))
+#'
+#' flowpath <- dplyr::select(sample_flines,
+#'                           comid = COMID,
+#'                           totda = TotDASqKM,
+#'                           nameid = GNIS_NAME,
+#'                           REACHCODE,
+#'                           ToMeas,
+#'                           FromMeas)
+#'
+#' indexes <- get_flowline_index(flowpath,
+#'                               hydro_location,
+#'                               search_radius = 0.2,
+#'                               max_matches = 10)
+#'
+#' disambiguate_flowline_indexes(indexes,
+#'                               dplyr::select(flowpath, comid, totda),
+#'                               dplyr::select(hydro_location, id, totda))
+#'
+#' result <- disambiguate_flowline_indexes(indexes,
+#'                                         dplyr::select(flowpath, comid, nameid),
+#'                                         dplyr::select(hydro_location, id, nameid))
+#'
+#' result[result$id == 1, ]
+#'
+#' result[result$id == 2, ]
+#'
+#' result[result$id == 3, ]
+#'
+disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
+  check_names(indexes, "disambiguate_flowline_indexes")
+
+  flowpath <- drop_geometry(flowpath)
+  hydro_location <- drop_geometry(hydro_location)
+
+  if(ncol(flowpath) != 2 | ncol(hydro_location) != 2) {
+    stop("flowpath and hydrolocation must be two-column data.frames")
+  }
+
+  names(flowpath) <- c("comid", "metric_fp")
+
+  names(hydro_location) <- c('id', "metric_hl")
+
+  if(is.numeric(flowpath$metric_fp) & is.numeric(hydro_location$metric_hl)) {
+
+    indexes %>%
+      left_join(flowpath, by = c("COMID" = "comid")) %>%
+      left_join(hydro_location, by = "id") %>%
+      mutate(metric_diff = abs(.data$metric_fp - .data$metric_hl)) %>%
+      group_by(.data$id) %>%
+      filter(.data$metric_diff == min(.data$metric_diff)) %>%
+      ungroup() %>%
+      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+
+  } else if(is.character(flowpath$metric_fp) & is.character(hydro_location$metric_hl)) {
+
+    indexes %>%
+      left_join(flowpath, by = c("COMID" = "comid")) %>%
+      left_join(hydro_location, by = "id") %>%
+      mutate(metric_diff = sapply(mapply(c, .data$metric_fp, .data$metric_hl,
+                                         USE.NAMES = FALSE, SIMPLIFY = FALSE),
+                                  string_score)) %>%
+      group_by(.data$id) %>%
+      filter(.data$metric_diff == max(.data$metric_diff)) %>%
+      ungroup() %>%
+      select(-.data$metric_hl, -.data$metric_fp, -.data$metric_diff)
+
+  } else  stop("flowpath and hydrolocation metrics must both be numeric or character")
+
+}
+
+string_score <- function(x) {
+  raw_score <- as.numeric(utils::adist(x[[1]], x[[2]], ignore.case = TRUE))
+
+  (1 - (raw_score) / max(c(nchar(x[[1]]), nchar(x[[2]]))))
 }
 
 #' @title Get Waterbody Index
@@ -322,4 +424,112 @@ match_crs <- function(x, y, warn_text = "") {
     x <- sf::st_transform(x, sf::st_crs(y))
   }
   x
+}
+
+#' get hydro location
+#' @description given a flowline index, returns the hydrologic location (point)
+#' along the specific linear element referenced by the index.
+#' @param indexes data.frame as output from \link{get_flowline_index}.
+#' @param flowpath data.frame with two columns. The first should join to the COMID
+#' field of the indexes and the second should be linear geometry.
+#' @export
+#' @examples
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' indexes <- get_flowline_index(sample_flines,
+#'                    sf::st_sfc(sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
+#'                                               sf::st_point(c(-76.91711, 39.40884)),
+#'                                               sf::st_point(c(-76.88081, 39.36354))),
+#'                               crs = 4326)))
+#'
+#' get_hydro_location(indexes, sample_flines)
+#'
+get_hydro_location <- function(indexes, flowpath) {
+  in_list <- Map(list,
+                 indexes$REACH_meas,
+                 split(flowpath[match(indexes$COMID, flowpath$COMID), ],
+                                 seq(1, nrow(indexes))))
+
+  do.call(c, lapply(in_list, get_hydro_location_single))
+
+}
+
+get_hydro_location_single <- function(x) {
+
+  coords <- sf::st_coordinates(x[[2]]) %>%
+    add_index() %>%
+    add_len()
+
+  # First rescale 0-100 measures passed in.
+  m <- rescale_measures(x[[1]], x[[2]]$FromMeas, x[[2]]$ToMeas)
+
+  nus <- nrow(coords) - sum(coords$measure <= m)
+
+  if(nus == 0) {
+    nus <- 1
+  }
+
+  nds <- ifelse(nus < nrow(coords), nus + 1, nus)
+
+  if(nds == nus) {
+    return(
+    sf::st_sfc(sf::st_point(c(coords$X[nds], coords$Y[nds])),
+               crs = sf::st_crs(x[[2]]))
+  )}
+
+  new_m <- rescale_measures(m, coords$measure[nds], coords$measure[nus])
+
+  new <- interp_meas(new_m, coords$X[nds], coords$Y[nds], coords$X[nus], coords$Y[nus])
+
+  return(sf::st_sfc(sf::st_point(c(new[[1]], new[[2]])), crs = sf::st_crs(x[[2]])))
+}
+
+interp_meas <- function(m, x1, y1, x2, y2) {
+  list(x1 + (m / 100) * (x2 - x1),
+       y1 + (m / 100) * (y2 - y1))
+}
+
+add_index <- function(x) {
+  x %>%
+    as.data.frame() %>%
+    mutate(index = seq_len(nrow(.)))
+}
+
+add_len <- function(x) {
+  x %>%
+    mutate(len  = sqrt( ( (.data$X - (lag(.data$X))) ^ 2) +
+                          ( ( (.data$Y - (lag(.data$Y))) ^ 2)))) %>%
+    mutate(len = ifelse(is.na(.data$len), 0, .data$len)) %>%
+    mutate(len = cumsum(.data$len)) %>%
+    mutate(measure = 100 - (100 * .data$len / max(.data$len)))
+}
+
+#' Rescale reachcode measure to comid flowline measure.
+#' @description Given a reachcode measure and the from and to measure for a
+#' comid flowline, returns the measure along the comid flowline. This is
+#' a utility specific to the NHDPlus data model where many comid flowlines make
+#' up a single reachcode / reach. "Measures" are typically referenced to
+#' reaches. Flowlines have a stated from-measure / to-measure. In some cases
+#' it is useful to rescale the measure such that it is relative only to the
+#' flowline.
+#'
+#' from is downstream -- 0 is the outlet
+#' to is upstream -- 100 is the inlet
+#'
+#' @param measure numeric reach measure between 0 and 100
+#' @param from numeric flowline from-measure relative to the reach
+#' @param to numeric flowline to-measure relative to the reach
+#' @return numeric rescaled measure
+#' @export
+#' @examples
+#' rescale_measures(40, 0, 50)
+#' rescale_measures(60, 50, 100)
+#'
+rescale_measures <- function(measure, from, to) {
+
+  if(!dplyr::between(measure, from, to))
+    stop("measure must be between from and to")
+
+  100 * (measure - from) / (to - from)
+
 }

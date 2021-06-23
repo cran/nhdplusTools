@@ -1,21 +1,32 @@
 ## ----setup, include = FALSE---------------------------------------------------
+library(nhdplusTools)
+
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=6, 
   fig.height=4,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE
+  eval=local,
+  cache=local,
+  cache.path=(cache_path)
 )
-oldoption <-
-  options(scipen = 9999,
-          "rgdal_show_exportToProj4_warnings"="none")
+
+oldoption <- options(scipen = 9999,
+                     "rgdal_show_exportToProj4_warnings"="none")
+
 
 ## ----data_dir_setup, echo=FALSE, include=FALSE--------------------------------
-temp_dir <- tempdir()
-dir.create(temp_dir)
+work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
+dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
 library(rosm)
-set_default_cachedir(tempfile())
+set_default_cachedir(work_dir)
 library(nhdplusTools)
 
 ## ----nwis_simple1, message=FALSE----------------------------------------------
@@ -66,7 +77,7 @@ flowline <- navigate_nldi(nwissite,
                           data_source = "flowlines")
 
 nhdplus <- subset_nhdplus(comids = flowline$UT$nhdplus_comid,
-                          output_file = file.path(temp_dir, "nhdplus.gpkg"),
+                          output_file = file.path(work_dir, "nhdplus.gpkg"),
                           nhdplus_data = "download",
                           overwrite = TRUE, return_data = FALSE)
 
@@ -113,7 +124,8 @@ ggmap_bbox
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
 prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, progress = "none", cachedir = tempfile())
+  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, 
+                 progress = "none", cachedir = work_dir)
   
   plot(prep_layer(basin), 
        lwd = 2, add = TRUE)
@@ -169,4 +181,8 @@ terrain_map + geom_sf(data = basin,
 
 ## ----teardown, include=FALSE--------------------------------------------------
 options(oldoption)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
 

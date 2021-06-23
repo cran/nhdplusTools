@@ -8,13 +8,13 @@ download_vaa(path = get_vaa_path(), force = FALSE)
 }
 \arguments{
 \item{path}{character path where the file should be saved. Default is a
-persistent system cache as retrieved by \link[rappdirs]{user_cache_dir}.
+persistent system data as retrieved by \link{nhdplusTools_data_dir}.
 Also see: \link{get_vaa_path}}
 
 \item{force}{logical. Force data re-download. Default = FALSE}
 }
 \value{
-path to cached data
+character path to cached data
 }
 \description{
 downloads and caches nhdplusVAA data on your computer

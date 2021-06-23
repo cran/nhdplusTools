@@ -1,20 +1,32 @@
 ## ----setup, include = FALSE---------------------------------------------------
+library(nhdplusTools)
+
+local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+if(local) {
+  cache_path <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
+} else {
+  cache_path <- tempdir()
+}
+
 knitr::opts_chunk$set(
+  collapse = TRUE,
   comment = "#>",
-  fig.width=8.5, 
-  fig.height=8,
-  eval=nzchar(Sys.getenv("BUILD_VIGNETTES")),
-  cache=TRUE,
-  cache.path=(rappdirs::user_cache_dir("nhdplusTools"))
+  fig.width=6, 
+  fig.height=4,
+  eval=local,
+  cache=local,
+  cache.path=(cache_path)
 )
+
 oldoption <- options(scipen = 9999,
                      "rgdal_show_exportToProj4_warnings"="none")
+
 
 ## ----tldr---------------------------------------------------------------------
 library(nhdplusTools)
 library(sf)
 
-work_dir <- file.path(rappdirs::user_cache_dir("nhdplusTools"), "hr_v_cache")
+work_dir <- file.path(nhdplusTools_data_dir(), "hr_v_cache")
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
@@ -122,5 +134,8 @@ plot(st_geometry(standalone))
 
 ## ----teardown, include=FALSE--------------------------------------------------
 options(oldoption)
-unlink(rappdirs::user_cache_dir("nhdplusTools"), recursive = TRUE)
+
+if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
+  unlink(work_dir, recursive = TRUE)
+}
 
