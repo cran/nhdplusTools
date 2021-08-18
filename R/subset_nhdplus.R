@@ -488,7 +488,7 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
     }
 
     align_nhdplus_names(
-      sf::read_sf(nhdplus_data, layer_name,
+      sf::read_sf(nhdplus_data,
                   query = get_query(nhdplus_data, layer_name,
                                     id, x)))
   }, total = sum(lengths(sets)))
@@ -498,7 +498,7 @@ get_nhd_data <- function(nhdplus_data, layer_name, comids, id, status) {
 }
 
 get_query <- function(nhdplus_data, layer_name, id, comids) {
-  layer_atts <- sf::read_sf(nhdplus_data, layer_name,
+  layer_atts <- sf::read_sf(nhdplus_data,
                             query = paste0("SELECT * FROM ",
                                            layer_name, " LIMIT 1"))
 
@@ -550,13 +550,46 @@ clean_bbox <- function(x) {
   return(x)
 }
 
+get_empty <- function(type) {
+  if(type == "POLYGON") {
+    sf::st_polygon()
+  } else if(type == "MULTIPOLYGON") {
+    sf::st_multipolygon()
+  } else if(type == "LINESTRING") {
+    sf::st_linestring()
+  } else if(type == "MULTILINESTRING") {
+    sf::st_multilinestring()
+  } else if(type == "POINT") {
+    sf::st_point()
+  } else if(type == "MULTIPOINT") {
+    sf::st_multipoint()
+  } else {
+    stop("unexpected geometry type")
+  }
+}
+
 fix_g_type <- function(g, type = "POLYGON", orig_type = "MULTIPOLYGON") {
 
   tryCatch({
-    sf::st_cast(sf::st_sfc(g[grepl(type, sapply(g, sf::st_geometry_type))]),
-                orig_type)
+
+    if(sf::st_is_empty(g)) {
+
+      get_empty(type)
+
+    } else if(grepl("^MULTI|^GEOM", sf::st_geometry_type(g))) {
+
+      sf::st_cast(sf::st_sfc(g[grepl(type, sapply(g, sf::st_geometry_type))]),
+                  orig_type)
+
+    } else {
+
+      sf::st_cast(g, orig_type)
+
+    }
   }, error = function(e) {
+
     sf::st_sfc(g)
+
   })
 
 }
@@ -582,8 +615,9 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
         if(any(grepl("^GEOMETRY", sf::st_geometry_type(x)))) {
 
           sf::st_geometry(x) <-
-            sf::st_sfc(do.call(c, lapply(sf::st_geometry(x), fix_g_type,
-                                         type = gsub("^MULTI", "", orig_type))),
+            sf::st_sfc(lapply(sf::st_geometry(x), fix_g_type,
+                                         type = gsub("^MULTI", "", orig_type),
+                                         orig_type = orig_type),
                        crs = sf::st_crs(x))
 
           x <- sf::st_cast(x, orig_type)
