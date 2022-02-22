@@ -114,6 +114,7 @@
 #'
 #' unlink(output_file)
 #' unlink(sub_gpkg)
+#'
 #' }
 #'
 
@@ -164,6 +165,8 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
 
   if(is.null(bbox)) {
     if(is.null(comids)) stop("must provide comids or bounding box")
+
+    comids <- round(comids)
 
     out_list <- c(get_flowline_subset(nhdplus_data, comids,
                                       output_file,
@@ -217,10 +220,15 @@ subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NUL
   if (nhdplus_data == "download") {
 
     for (layer_name in intersection_names) {
-      layer <- sf::st_transform(envelope, 4326) %>%
-        get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
+      if(is.null(out_list[layer_name][[1]])) {
+        layer <- sf::st_transform(envelope, 4326) %>%
+          get_nhdplus_bybox(layer = tolower(layer_name), streamorder = streamorder)
+      } else {
+        layer <- out_list[layer_name][[1]]
+      }
 
       if(!is.null(nrow(layer)) && nrow(layer) > 0) {
+
         layer <- check_valid(layer, out_prj)
 
         if(return_data) {
@@ -616,8 +624,8 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
 
           sf::st_geometry(x) <-
             sf::st_sfc(lapply(sf::st_geometry(x), fix_g_type,
-                                         type = gsub("^MULTI", "", orig_type),
-                                         orig_type = orig_type),
+                              type = gsub("^MULTI", "", orig_type),
+                              orig_type = orig_type),
                        crs = sf::st_crs(x))
 
           x <- sf::st_cast(x, orig_type)
@@ -628,16 +636,22 @@ check_valid <- function(x, out_prj = sf::st_crs(x)) {
   }
 
   if (any(grepl("POLYGON", class(sf::st_geometry(x))))) {
-    suppressMessages(suppressWarnings(x <- sf::st_buffer(x, 0)))
+    suppressMessages(suppressWarnings(
+      {
+        use_s2 <- sf::sf_use_s2()
+        sf::sf_use_s2(FALSE)
+        x <- sf::st_buffer(x, 0)
+        sf::sf_use_s2(use_s2)
+      }))
   }
 
   if (sf::st_crs(x) != sf::st_crs(out_prj)) {
     x <- sf::st_transform(x, out_prj)
   }
 
-  types <- as.character(sf::st_geometry_type(x, by_geometry = FALSE))
+  types <- as.character(sf::st_geometry_type(x, by_geometry = TRUE))
 
-  if(grepl("^GEOME", types)) {
+  if(any(grepl("^GEOME", types))) {
     unq <- unique(as.character(
       sf::st_geometry_type(x, by_geometry = TRUE)))
 
@@ -692,14 +706,86 @@ get_flowline_layer_name <- function(nhdplus_data) {
   layer_name
 }
 
-#' Subset by Raster Processing Unit.
+#' Subset by Vector Processing Unit
+#' @description Calls \link{subset_rpu} for all raster processing units for the
+#' requested vector processing unit.
+#' @param fline sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
+#' hydroseq, levelpathi, rpuid, vpuid, and arbolatesu
+#' (dnhydroseq is required if tocomid is not provided).
+#' @param vpu character e.g. "01"
+#' @param include_null_rpuid logical default TRUE. Note that there are some
+#' flowlines that may have a NULL rpuid but be included in the vector
+#' processing unit.
+#' @param run_make_standalone logical default TRUE
+#' should the run_make_standalone function be run on result?
+#' @export
+#' @importFrom dplyr filter select
+#' @return data.frame containing subset network
+#' @examples
+#'
+#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
+#'
+#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
+#'
+#' subset_vpu(sample_flines, "07")
+#'
+subset_vpu <- function(fline, vpu,
+                       include_null_rpuid = TRUE,
+                       run_make_standalone = TRUE) {
+
+  orig_names <- names(fline)
+
+  fline <- check_names(fline, "subset_vpu", tolower = TRUE)
+
+  all_rpuid <- unique(filter(drop_geometry(fline),
+                             .data$vpuid == vpu)[["rpuid"]])
+
+  all_rpuid <- all_rpuid[(!is.na(all_rpuid) & !is.null(all_rpuid))]
+
+  all_vpu <- lapply(all_rpuid,
+                    function(x, fline, run_ms) {
+                      subset_rpu(fline, x, run_ms)
+                    }, fline = fline, run_ms = run_make_standalone)
+
+  all_vpu <- do.call(rbind, all_vpu)
+
+  if(include_null_rpuid) {
+
+    all_vpu <- rbind(all_vpu, filter(fline, .data$vpuid == vpu &
+                                       (is.null(.data$rpuid) |
+                                          is.na(.data$rpuid))))
+
+  }
+
+  return(recase_sf(all_vpu, orig_names))
+
+}
+
+recase_sf <- function(x, orig_names) {
+  names(x) <- orig_names
+
+  if(inherits(x, "sf")) {
+    attr(x, "sf_column") <- orig_names[grepl(attr(x, "sf_column"),
+                                             orig_names,
+                                             ignore.case = TRUE)]
+  }
+
+  x
+}
+
+
+#' Subset by Raster Processing Unit
 #' @description Given flowlines and an rpu_code, performs a network-safe subset such
 #' that the result can be used in downstream processing. Has been tested to work
 #' against the entire NHDPlusV2 domain and satisfies a number of edge cases.
-#' @param fline sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
-#' LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.
+#' @param fline sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
+#' hydroseq, levelpathi, rpuid, and arbolatesu (dnhydroseq
+#' is required if tocomid is not provided).
 #' @param rpu character e.g. "01a"
-#' @param run_make_standalone boolean should the run_make_standalone function be run on result?
+#' @param run_make_standalone logical default TRUE
+#' should the run_make_standalone function be run on result?
+#' @param strict logical if TRUE, paths that extend outside the RPU but
+#' have no tributaries in the upstream RPU will be included in the output.
 #' @export
 #' @return data.frame containing subset network
 #' @importFrom dplyr filter arrange summarize
@@ -708,65 +794,111 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #'
 #' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 #'
-#' nhdplus_path(sample_data)
-#'
-#' staged_nhdplus <- stage_national_data(output_path = tempdir())
-#'
-#' sample_flines <- readRDS(staged_nhdplus$flowline)
+#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 #'
 #' subset_rpu(sample_flines, rpu = "07b")
-subset_rpu <- function(fline, rpu, run_make_standalone = TRUE) {
-  # Find all outlets of current rpu and sort by size
-  # !ToNode %in% FromNode finds non-terminal flowlines that exit the domain.
-  outlets <- filter(fline, .data$RPUID %in% rpu)
+#'
+subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
+  orig_names <- names(fline)
 
-  if("tocomid" %in% names(outlets)) outlets <- dplyr::rename(outlets, toCOMID = .data$tocomid)
+  fline <- check_names(fline, "subset_rpu", tolower = TRUE)
 
-  if(any(c("tocomid", "toCOMID") %in% names(outlets))) {
-    outlets <- st_sf(filter(outlets, .data$Hydroseq == .data$TerminalPa |
-                              !.data$toCOMID %in% .data$COMID))
-  } else {
-
-    outlets <- st_sf(filter(outlets, .data$TerminalFl == 1 |
-                              !.data$ToNode %in% .data$FromNode))
+  if(!any(c("tocomid") %in% names(fline))) {
+    # derive tocomid from dnhydroseq
+    # this avoids using get_tocomid() which requires additional attributes.
+    fline$tocomid <- fline$comid[match(fline$dnhydroseq, fline$hydroseq)]
+    fline$tocomid[is.na(fline$tocomid)] <- 0
   }
-  outlets <- arrange(outlets, desc(.data$ArbolateSu))
-
-  # run nhdplusTools::get_UT for all outlets and concatenate.
-  network <- lapply(outlets$COMID,
-                    function(x, fline) get_UT(fline, x),
-                    fline = fline)
-  network <- do.call(c, network)
 
   # Filter so only navigable flowlines are included.
-  fline <- fline[fline$COMID %in% network, ]
+  fline <- fline[fline$comid %in% get_all_navigable(fline, rpu), ]
 
-  # For flowlines labaled as in the RPU, find the top and bottom of each
+  # For flowlines labeled as in the RPU, find the top and bottom of each
   # LevelPath. This was required for some unique network situations.
-  fline_sub <- filter(drop_geometry(fline), .data$RPUID %in% rpu)
+  fline_sub_in <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
 
-  fline_sub <- group_by(fline_sub, .data$LevelPathI)
+  fline_sub_in <- group_by(fline_sub_in, .data$levelpathi)
 
-  fline_sub <- summarize(fline_sub,
-                         lp_top = max(.data$Hydroseq),
-                         lp_bot = min(.data$Hydroseq))
+  fline_sub_in <- summarize(fline_sub_in,
+                            lp_top = max(.data$hydroseq),
+                            lp_bot = min(.data$hydroseq))
+
+  if(!strict) {
+    # find flowlines completely outside the RPU
+    fline_sub_out <- filter(drop_geometry(fline), !.data$rpuid %in% rpu)
+
+    # join to the paths within the RPU
+    fline_sub_out <- left_join(fline_sub_out,
+                               ungroup(fline_sub_in),
+                               by = "levelpathi")
+
+    # filter so we have the stuff that is complete upstream of the rpu
+    fline_sub_out <- filter(group_by(fline_sub_out, "levelpathi"),
+                            .data$hydroseq > .data$lp_top)
+
+    # want to keep anything left that does not have anything flowing to it.
+    # first select only levelpath and dnlevelpat and get rid of cruft
+    fline_sub_out <- distinct(select(ungroup(fline_sub_out),
+                                     .data$levelpathi, .data$dnlevelpat))
+    # get rid of the ones along the same path -- dnlevelpaths that are left
+    # can be removed
+    fline_sub_out <- filter(fline_sub_out,
+                            .data$dnlevelpat != .data$levelpathi)
+  }
+
 
   # Using the levelpath top and bottoms found above, filter the complete
   # domain to the hydrosequence of the levelpath top and bottoms instead
-  # of trusting the RPUID to be useable.
-  fline <- left_join(fline, fline_sub, by = "LevelPathI")
+  # of trusting the rpuid to be useable.
+  fline <- left_join(fline, fline_sub_in, by = "levelpathi")
 
-  fline <- group_by(filter(fline, .data$LevelPathI %in% fline_sub$LevelPathI),
-                    .data$LevelPathI)
+  fline <- group_by(filter(fline, .data$levelpathi %in% fline_sub_in$levelpathi),
+                    .data$levelpathi)
 
-  fline <- ungroup(filter(fline, .data$Hydroseq >= .data$lp_bot &
-                            .data$Hydroseq <= .data$lp_top))
+  if(strict) {
+
+    # filter to the top and bottom that are required to connect things
+    # fully within the rpu
+    fline <- filter(fline, .data$hydroseq >= .data$lp_bot &
+                      .data$hydroseq <= .data$lp_top)
+
+  } else if(!nrow(fline_sub_out) == 0) {
+    # if nothing is left in fline_sub_out, we are fine and can move on.
+    fline <- filter(fline,
+                    .data$levelpathi %in% fline_sub_in$levelpathi &
+                      (.data$hydroseq >= .data$lp_bot &
+                         .data$hydroseq <= .data$lp_top))
+
+  }
+
+  fline <- select(ungroup(fline), -.data$lp_top, -.data$lp_bot)
 
   if(run_make_standalone) {
-    make_standalone(fline)
-  } else {
-    fline
+    fline <- make_standalone(fline)
   }
+
+  if(!any(grepl("tocomid", orig_names, ignore.case = TRUE))) {
+    fline <- select(fline, -.data$toCOMID) # case if required for make_standalone
+  }
+
+  recase_sf(fline, orig_names)
+}
+
+#' @noRd
+get_all_navigable <- function(fline, rpu) {
+
+  # Find all outlets of current rpu and sort by size
+  outlets <- filter(drop_geometry(fline), .data$rpuid %in% rpu)
+
+  outlets <- filter(outlets, .data$hydroseq == .data$terminalpa |
+                      !.data$tocomid %in% .data$comid)
+
+  outlets <- arrange(outlets, desc(.data$arbolatesu))
+
+  network <- get_sorted(fline[c("comid", "tocomid")],
+                        split = FALSE, outlets = outlets$comid)
+
+  network$comid
 }
 
 #' @noRd

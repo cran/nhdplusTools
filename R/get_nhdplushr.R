@@ -77,7 +77,7 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
   layer_names <- c()
   if(!is.null(out_gpkg) && file.exists(out_gpkg))
-    layer_names <- st_layers(out_gpkg)$names
+    layer_names <- st_layers(out_gpkg)$name
 
   for(layer in layers) {
     if(!is.null(out_gpkg) && layer %in% layer_names & !overwrite) {
@@ -232,13 +232,14 @@ cull_cols <- function(x, keep_cols) {
 #'}
 make_standalone <- function(flowlines) {
 
-  if("toCOMID" %in% names(flowlines)) {
+  if(any(grepl("tocomid", names(flowlines), ignore.case = TRUE))) {
     flowlines <- check_names(flowlines, "make_standalone_tocomid")
 
     # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$Hydroseq != flowlines$TerminalPa), ]
+    flowlines <- flowlines[!(flowlines$FCODE == 566 &
+                               flowlines$Hydroseq != flowlines$TerminalPa), ]
 
-    outlets <- select(st_drop_geometry(flowlines),
+    outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$toCOMID,
                       .data$Hydroseq, .data$TerminalPa,
                       .data$LevelPathI)
@@ -250,9 +251,9 @@ make_standalone <- function(flowlines) {
     flowlines <- check_names(flowlines, "make_standalone_tonode")
 
     # Remove non-terminal coastal flowlines
-    flowlines <- flowlines[!(flowlines$FTYPE == 566 & flowlines$TerminalFl != 1), ]
+    flowlines <- flowlines[!(flowlines$FCODE == 566 & flowlines$TerminalFl != 1), ]
 
-    outlets <- select(st_drop_geometry(flowlines),
+    outlets <- select(drop_geometry(flowlines),
                       .data$COMID, .data$ToNode,
                       .data$FromNode, .data$TerminalFl,
                       .data$Hydroseq, .data$TerminalPa,
@@ -280,6 +281,10 @@ fix_term <- function(term, flowlines) {
   term_hydroseq <- term$Hydroseq
   term_comid <- term$COMID
 
+  if("toCOMID" %in% names(term)) {
+    flowlines$toCOMID[flowlines$COMID == term_comid] <- 0
+  }
+
   # old_term_levelpath is the levelpath of the mainstem of the basin.
   old_term_levelpath <- flowlines$LevelPathI[flowlines$Hydroseq == term_hydroseq]
   old_term_levelpath <- old_term_levelpath[!is.na(old_term_levelpath)]
@@ -299,15 +304,22 @@ fix_term <- function(term, flowlines) {
     # Change the old Down Level Paths so they point to the new mainstem levelpath ID
     flowlines$DnLevelPat[flowlines$DnLevelPat == old_term_levelpath] <- term_hydroseq
 
-    # Change olf Up Level Path to point to the new mainstem levelpath ID
-    flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
-
-    # Make the Down Hydrosequence and Down Level and Path look like an outlet.
-    flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
     flowlines$DnLevelPat[flowlines$Hydroseq == term_hydroseq] <- 0
   }
 
-  flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
+  if("UpLevelPat" %in% names(flowlines)) {
+    # Change olf Up Level Path to point to the new mainstem levelpath ID
+    flowlines$UpLevelPat[flowlines$UpLevelPat == old_term_levelpath] <- term_hydroseq
+  }
+
+  # Make the Down Hydrosequence and Down Level and Path look like an outlet.
+  if("DnLevel" %in% names(flowlines)) {
+    flowlines$DnLevel[flowlines$Hydroseq == term_hydroseq] <- 0
+  }
+
+  if("DnHydroseq" %in% names(flowlines)) {
+    flowlines$DnHydroseq[flowlines$Hydroseq == term_hydroseq] <- 0
+  }
 
   return(flowlines)
 }

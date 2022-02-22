@@ -4,15 +4,20 @@
 \alias{subset_rpu}
 \title{Subset by Raster Processing Unit.}
 \usage{
-subset_rpu(fline, rpu, run_make_standalone = TRUE)
+subset_rpu(fline, rpu, run_make_standalone = TRUE, strict = FALSE)
 }
 \arguments{
-\item{fline}{sf data.frame NHD Flowlines with COMID, Pathlength, LENGTHKM, and Hydroseq.
-LevelPathI, RPUID, ToNode, FromNode, and ArbolateSu.}
+\item{fline}{sf data.frame NHD Flowlines with comid, pathlength, lengthkm,
+hydroseq, levelpathi, rpuid, and arbolatesu (dnhydroseq
+is required if tocomid is not provided).}
 
 \item{rpu}{character e.g. "01a"}
 
-\item{run_make_standalone}{boolean should the run_make_standalone function be run on result?}
+\item{run_make_standalone}{logical default TRUE
+should the run_make_standalone function be run on result?}
+
+\item{strict}{logical if TRUE, paths that extend outside the RPU but
+have no tributaries in the upstream RPU will be included in the output.}
 }
 \value{
 data.frame containing subset network
@@ -26,11 +31,8 @@ against the entire NHDPlusV2 domain and satisfies a number of edge cases.
 
 source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
 
-nhdplus_path(sample_data)
-
-staged_nhdplus <- stage_national_data(output_path = tempdir())
-
-sample_flines <- readRDS(staged_nhdplus$flowline)
+sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
 
 subset_rpu(sample_flines, rpu = "07b")
+
 }

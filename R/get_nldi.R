@@ -41,7 +41,7 @@ type_check <- function(type) {
 #' @description Navigate the Network Linked Data Index network.
 #' @param nldi_feature list with names `featureSource` and `featureID` where
 #' `featureSource` is derived from the "source" column of  the response of
-#' dataRetrieval::get_nldi_sources() and the `featureSource` is a known identifier
+#' dataRetrieval::get_nldi_sources() and the `featureID` is a known identifier
 #' from the specified `featureSource`.
 #' @param mode character chosen from ("UM", "UT", DM", "DD"). See examples.
 #' @param data_source character chosen from "source" column of the response
@@ -211,17 +211,6 @@ query_nldi <- function(query, tier = "prod", base_path = "/linked-data", parse_j
     } else {
       req_data
     }
-  }
-}
-
-#' @noRd
-get_nldi_url <- function(tier = "prod") {
-  if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi"
-  } else if (tier == "test") {
-    "https://labs-beta.waterdata.usgs.gov/api/nldi"
-  } else {
-    stop("only prod or test allowed.")
   }
 }
 

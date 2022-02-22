@@ -1,7 +1,7 @@
 
 matcher <- function(coords, points, search_radius, max_matches = 1) {
 
-  max_match_ <- ifelse(nrow(coords < 1000), nrow(coords), 1000)
+  max_match_ <- ifelse(nrow(coords) < 1000, nrow(coords), 1000)
 
   matched <- nn2(data = coords[, 1:2],
                  query = matrix(points[, c("X", "Y")], ncol = 2),
@@ -11,12 +11,13 @@ matcher <- function(coords, points, search_radius, max_matches = 1) {
 
   matched <- dplyr::tibble(nn.idx = as.integer(matched$nn.idx),
                            nn.dists = as.numeric(matched$nn.dists),
-                           id = rep(1:nrow(points), ncol(matched[["nn.idx"]])))
+                           id = rep(1:nrow(points), ncol(matched$nn.idx)))
 
-  matched <- left_join(matched, mutate(select(as.data.frame(coords), .data$L1),
+  matched <- left_join(matched, mutate(data.frame(L1 = coords[, "L1"]),
                                        index = seq_len(nrow(coords))),
                        by = c("nn.idx" = "index"))
 
+  rm(coords)
 
   matched <- filter(matched, .data$nn.dists <= search_radius)
 
@@ -124,6 +125,10 @@ get_flowline_index <- function(flines, points,
 
   in_crs <- sf::st_crs(flines)
 
+  if(sf::st_is_longlat(in_crs) & search_radius > 1) {
+    warning("search radius is large for lat/lon input, are you sure?")
+  }
+
   if (sf::st_crs(points) != in_crs) {
     warning(paste("crs of lines and points don't match.",
                   "attempting st_transform of points"))
@@ -135,7 +140,11 @@ get_flowline_index <- function(flines, points,
 
   fline_atts <- sf::st_set_geometry(flines, NULL)
 
-  flines <- sf::st_zm(sf::st_cast(flines, "LINESTRING", warn = FALSE))
+  flines <- sf::st_cast(flines, "LINESTRING", warn = FALSE)
+
+  if(!"XY" %in% class(sf::st_geometry(flines)[[1]])) {
+    flines <- sf::st_zm(flines)
+  }
 
   if (nrow(flines) != nrow(fline_atts)) {
 
@@ -429,12 +438,13 @@ match_crs <- function(x, y, warn_text = "") {
   x
 }
 
-#' get hydro location
+#' Get Hydro Location
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
 #' @param indexes data.frame as output from \link{get_flowline_index}.
-#' @param flowpath data.frame with two columns. The first should join to the COMID
-#' field of the indexes and the second should be linear geometry.
+#' @param flowpath data.frame with two three columns, COMID, FromMeas, and ToMeas.
+#' The first should join to the COMID field of the indexes and the second
+#' should be linear geometry.
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -448,9 +458,13 @@ match_crs <- function(x, y, warn_text = "") {
 #' get_hydro_location(indexes, sample_flines)
 #'
 get_hydro_location <- function(indexes, flowpath) {
+  flowpath <- check_names(flowpath, "get_hydro_location", tolower = TRUE)
+
+  names(indexes) <- tolower(names(indexes))
+
   in_list <- Map(list,
-                 indexes$REACH_meas,
-                 split(flowpath[match(indexes$COMID, flowpath$COMID), ],
+                 indexes$reach_meas,
+                 split(flowpath[match(indexes$comid, flowpath$comid), ],
                                  seq(1, nrow(indexes))))
 
   do.call(c, lapply(in_list, get_hydro_location_single))
@@ -464,7 +478,7 @@ get_hydro_location_single <- function(x) {
     add_len()
 
   # First rescale 0-100 measures passed in.
-  m <- rescale_measures(x[[1]], x[[2]]$FromMeas, x[[2]]$ToMeas)
+  m <- rescale_measures(x[[1]], x[[2]]$frommeas, x[[2]]$tomeas)
 
   nus <- nrow(coords) - sum(coords$measure <= m)
 
@@ -502,12 +516,12 @@ add_len <- function(x) {
   x %>%
     mutate(len  = sqrt( ( (.data$X - (lag(.data$X))) ^ 2) +
                           ( ( (.data$Y - (lag(.data$Y))) ^ 2)))) %>%
-    mutate(len = ifelse(is.na(.data$len), 0, .data$len)) %>%
+    mutate(len = tidyr::replace_na(.data$len, 0)) %>%
     mutate(len = cumsum(.data$len)) %>%
     mutate(measure = 100 - (100 * .data$len / max(.data$len)))
 }
 
-#' Rescale reachcode measure to comid flowline measure.
+#' Rescale reachcode measure to comid flowline measure
 #' @description Given a reachcode measure and the from and to measure for a
 #' comid flowline, returns the measure along the comid flowline. This is
 #' a utility specific to the NHDPlus data model where many comid flowlines make

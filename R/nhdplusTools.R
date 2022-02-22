@@ -2,22 +2,30 @@
 vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
+vaa_sciencebase <-
+  'https://www.sciencebase.gov/catalog/file/get/60c92503d34e86b9389df1c9?f=__disk__eb%2Fe0%2F3f%2Febe03f6e23c5b37a854e50c4ae7875dbb846c143'
+
 nhdplusTools_env <- new.env()
 
 # NHDPlus Attributes
 COMID <- "COMID"
 FEATUREID <- "FEATUREID"
 Hydroseq <- "Hydroseq"
+UpHydroseq <- "UpHydroseq"
 DnHydroseq <- "DnHydroseq"
 DnMinorHyd <- "DnMinorHyd"
+UpLevelPat <- "UpLevelPat"
 LevelPathI <- "LevelPathI"
+LevelPathID <- "LevelPathID"
 DnLevelPat <- "DnLevelPat"
+DnLevel <- "DnLevel"
 ToNode <- "ToNode"
 FromNode <- "FromNode"
 TotDASqKM <- "TotDASqKM"
 AreaSqKM <- "AreaSqKM"
 LENGTHKM <- "LENGTHKM"
 Pathlength <- "Pathlength"
+ArbolateSu <- "ArbolateSu"
 StreamCalc <- "StreamCalc"
 StreamOrde <- "StreamOrde"
 TerminalFl <- "TerminalFl"
@@ -34,23 +42,33 @@ HUC12 <- "HUC12"
 TOHUC <- "TOHUC"
 ReachCode <- "ReachCode"
 VPUID <- "VPUID"
+RPUID <- "RPUID"
 toCOMID <- "toCOMID"
+WBAREACOMI <- "WBAREACOMI"
 
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
   COMID = COMID, NHDPlusID = COMID,
+  RPUID = RPUID,
+  VPUID = VPUID,
   FEATUREID = FEATUREID,
+  WBAREACOMI = WBAREACOMI,
   Hydroseq = Hydroseq, HydroSeq = Hydroseq,
+  UpHydroseq = UpHydroseq, UpHydroSeq = UpHydroseq,
   DnHydroseq = DnHydroseq, DnHydroSeq = DnHydroseq,
   DnMinorHyd = DnMinorHyd,
   LevelPathI = LevelPathI,
+  LevelPathID = LevelPathID,
+  UpLevelPat = UpLevelPat,
   DnLevelPat = DnLevelPat,
+  DnLevel = DnLevel,
   ToNode = ToNode,
   FromNode = FromNode,
   TotDASqKM = TotDASqKM, TotDASqKm = TotDASqKM,
   AreaSqKM = AreaSqKM, AreaSqKm = AreaSqKM,
   LENGTHKM = LENGTHKM, LengthKM = LENGTHKM,
+  ArbolateSu = ArbolateSu,
   Pathlength = Pathlength, PathLength = Pathlength,
   StreamCalc = StreamCalc,
   StreamOrde = StreamOrde,
@@ -137,11 +155,12 @@ assign("get_pfaf_attributes",
 
 assign("make_standalone_tonode_attributes",
        c("COMID", "ToNode", "FromNode", "TerminalFl", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+         "LevelPathI", "FCODE"),
+       envir = nhdplusTools_env)
 
 assign("make_standalone_tocomid_attributes",
        c("COMID", "toCOMID", "Hydroseq", "TerminalPa",
-         "LevelPathI", "FTYPE"), envir = nhdplusTools_env)
+         "LevelPathI", "FCODE"), envir = nhdplusTools_env)
 
 assign("get_waterbody_index_waterbodies_attributes",
        c("COMID"), envir = nhdplusTools_env)
@@ -155,13 +174,53 @@ assign("disambiguate_flowline_indexes_attributes",
        envir = nhdplusTools_env)
 
 assign("add_plus_network_attributes_attributes",
-       c("comid", "tocomid", "nameID", "lengthkm", "areasqkm"),
+       c("comid", "tocomid", "nameID", "lengthkm"),
+       envir = nhdplusTools_env)
+
+assign("subset_rpu_attributes",
+       c("COMID", "Pathlength", "LENGTHKM",
+         "Hydroseq", "LevelPathI", "DnLevelPat",
+         "RPUID", "ArbolateSu", "TerminalPa"),
+       envir = nhdplusTools_env)
+
+assign("subset_vpu_attributes",
+       c(get("subset_rpu_attributes",
+             envir = nhdplusTools_env),
+         "VPUID"),
+       envir = nhdplusTools_env)
+
+assign("fix_flowdir_attributes",
+       c("COMID", "toCOMID"),
+       envir = nhdplusTools_env)
+
+assign("get_hydro_location_attributes",
+       c("COMID", "ToMeas", "FromMeas"),
+       envir = nhdplusTools_env)
+
+assign("get_wb_outlet_mres_attributes",
+       c("COMID", "Hydroseq", "WBAREACOMI"),
+       envir = nhdplusTools_env)
+
+assign("get_wb_outlet_hires_attributes",
+       c("WBArea_Permanent_Identifier", "Hydroseq"),
+       envir = nhdplusTools_env)
+
+assign("on_off_network_attributes",
+       c("COMID", "WBAREACOMI"),
+       envir = nhdplusTools_env)
+
+assign("get_tocomid_attributes",
+       c("COMID", "ToNode", "FromNode"),
+       envir = nhdplusTools_env)
+
+assign("get_partial_length_attributes",
+       c("REACHCODE", "FromNode", "ToNode", "LENGTHKM"),
        envir = nhdplusTools_env)
 
 # assigned here for record keeping. Used as a status counter in apply functions.
 assign("cur_count", 0, envir = nhdplusTools_env)
 
-check_names <- function(x, function_name, align = TRUE) {
+check_names <- function(x, function_name, align = TRUE, tolower = FALSE) {
   if(align) {
     x <- align_nhdplus_names(x)
   }
@@ -175,6 +234,14 @@ check_names <- function(x, function_name, align = TRUE) {
                                              names_x))],
                       collapse = ", "), " or NHDPlusHR equivalents."))
   }
+
+  if(tolower) {
+    names(x) <- tolower(names(x))
+    if(inherits(x, "sf")) {
+      attr(x, "sf_column") <- tolower(attr(x, "sf_column"))
+    }
+  }
+
   return(x)
 }
 
@@ -192,9 +259,20 @@ assign("nhdpt_dat_dir",
        tools::R_user_dir("usgs_r/nhdplusTools"),
        envir = nhdplusTools_env)
 
-#' get or set nhdplusTools data directory
+#' @noRd
+get_nldi_url <- function(tier = "prod") {
+  if (tier == "prod") {
+    "https://labs.waterdata.usgs.gov/api/nldi"
+  } else if (tier == "test") {
+    "https://labs-beta.waterdata.usgs.gov/api/nldi"
+  } else {
+    stop("only prod or test allowed.")
+  }
+}
+
+#' Get or set nhdplusTools data directory
 #' @description if left unset, will return the user data dir
-#' as returned by \link[tools]{R_user_dir} for this package.
+#' as returned by `tools::R_user_dir` for this package.
 #' @param dir path of desired data directory
 #' @return character path of data directory (silent when setting)
 #' @importFrom tools R_user_dir
@@ -314,6 +392,54 @@ drop_geometry <- function(x) {
   } else {
     x
   }
+}
+
+#' make spatial inputs compatible
+#' @description makes sf1 compatible with sf2 by projecting into
+#' the projection of 2 and ensuring that the geometry columns are the
+#' same name.
+#' @param sf1 sf data.frame
+#' @param sf2 sf data.frame
+#' @export
+#' @examples
+#'
+#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+#'
+#' (one <- dplyr::select(sample_flines))
+#' (two <- sf::st_transform(one, 5070))
+#'
+#' attr(one, "sf_column") <- "geotest"
+#' names(one)[names(one) == "geom"] <- "geotest"
+#'
+#' st_compatibalize(one, two)
+#'
+st_compatibalize <- function(sf1, sf2) {
+
+  sf1 <- st_transform(sf1, st_crs(sf2))
+
+  rename_geometry(sf1, attr(sf2, "sf_column"))
+
+}
+
+#' rename_geometry
+#' @description correctly renames the geometry column
+#' of a sf object.
+#' @param g sf data.table
+#' @param name character name to be used for geometry
+#' @export
+#' @examples
+#'
+#' (g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2))))
+#' rename_geometry(g, "geometry")
+#'
+rename_geometry <- function(g, name){
+  current = attr(g, "sf_column")
+
+  names(g)[names(g)==current] = name
+
+  attr(g, "sf_column") <- name
+
+  g
 }
 
 get_cl <- function(cl) {

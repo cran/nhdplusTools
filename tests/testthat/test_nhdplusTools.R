@@ -1,10 +1,12 @@
-context("package setup")
+
 
 source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
 
 pt_data <- sample_flines
 
 test_that("nhdplus_data path sets and gets right", {
+  nhdplus_path("../NHDPlusV21_National_Seamless.gdb")
+
   expect_equal(nhdplus_path(), "../NHDPlusV21_National_Seamless.gdb")
 
   expect_equal(nhdplus_path("test", warn = FALSE), 0)
@@ -19,6 +21,8 @@ test_that("nhdplus_data path sets and gets right", {
 test_that("nhdplusTools_data_path works", {
   check <- tools::R_user_dir("usgs_r/nhdplusTools")
 
+  orig <- nhdplusTools_data_dir()
+
   expect_equal(nhdplusTools_data_dir(),
                check)
 
@@ -27,9 +31,11 @@ test_that("nhdplusTools_data_path works", {
 
   expect_equal(nhdplusTools_data_dir(check),
                check)
+
+  nhdplusTools_data_dir(orig)
 })
 
-context("discover nhdplus id")
+
 
 test_that("discover nhdplus id errors", {
   skip_on_cran()
@@ -42,9 +48,13 @@ test_that("discover nhdplus id errors", {
 
 test_that("discover nhdplus id works as expected", {
   skip_on_cran()
-  point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)), crs = 4326)
+  point <- sf::st_sfc(sf::st_point(c(-76.874, 39.482)), crs = 4326)
   expect_equal(discover_nhdplus_id(point), 11689978)
+
   expect_equal(discover_nhdplus_id(point = point), 11689978)
+
+  # raindrop is broken for now
+  # expect_equal(discover_nhdplus_id(point, raindrop = TRUE)$comid[1], 11689978)
 
   nldi_huc12 <- list(featureSource = "huc12pp", featureID = "070700051701")
   expect_equal(discover_nhdplus_id(nldi_feature = nldi_huc12), 13637491)
@@ -55,7 +65,7 @@ test_that("discover nhdplus id works as expected", {
 
 })
 
-context("prepare_nhdplus")
+
 
 test_that("prep_nhdplus_works and errors as expected", {
   flines_in <- pt_data
@@ -109,7 +119,8 @@ test_that("prep_nhdplus leaves non-dendritic", {
 
 test_that("prep_nhdplus removes tiny networks", {
   expect_warning(flines <- prepare_nhdplus(
-    sf::st_set_geometry(readRDS("data/tiny_network.rds"), NULL),
+    sf::st_set_geometry(readRDS(
+      list.files(pattern = "tiny_network.rds", full.names = TRUE, recursive = TRUE)), NULL),
     min_network_size = 10,
     min_path_length = 1,
     purge_non_dendritic = FALSE),
@@ -124,7 +135,7 @@ test_that("prep_nhdplus works with inland network", {
 
   flines <- dplyr::filter(flines_in, COMID %in% get_UT(flines_in, 11690564))
   flines <- sf::st_set_geometry(flines, NULL)
-  expect_warning(prepare_nhdplus(flines, 0, 0, FALSE, FALSE),
+  expect_warning(prepare_nhdplus(flines, 0, 0, 0, FALSE, FALSE),
                  "Got NHDPlus data without a Terminal catchment. Attempting to find it.")
 })
 
@@ -137,5 +148,53 @@ test_that("prep_nhdplus removes small drainage basins", {
                             purge_non_dendritic = FALSE,
                             warn = FALSE)
   expect_equal(nrow(flines), 303)
+})
+
+test_that("get_tocomid", {
+
+  tocomid <- get_tocomid(sample_flines)
+
+  expect_equal(nrow(tocomid), nrow(sample_flines))
+
+  expect_true(!any(is.na(tocomid$tocomid)))
+
+  tocomid <- get_tocomid(sample_flines, missing = NA, return_dendritic = FALSE)
+
+  expect(length(tocomid$tocomid), 714)
+
+  expect(sum(is.na(tocomid$tocomid)), 1)
+
+  expect_error(get_tocomid(dplyr::select(sample_flines, -Divergence)))
+
+  tocomid <- get_tocomid(sample_flines, add = FALSE)
+
+  expect_equal(names(tocomid), c("comid", "tocomid"))
+})
+
+test_that("compatibalize", {
+  one <- pt_data
+
+  attr(one, "sf_column") <- "geotest"
+  names(one)[names(one) == "geom"] <- "geotest"
+
+  two <- sf::st_transform(pt_data, 5070)
+
+  three <- st_compatibalize(one, two)
+
+  expect_equal(sf::st_crs(two), sf::st_crs(three))
+
+  expect_true(all(names(two) == names(three)))
+
+})
+
+test_that("rname geometry", {
+  g <- sf::st_sf(a=3, geo = sf::st_sfc(sf::st_point(1:2)))
+
+  g <- rename_geometry(g, "geometry")
+
+  expect_true("geometry" %in% names(g))
+
+  expect_equal(attr(g, "sf_column"), "geometry")
+
 })
 

@@ -1,4 +1,4 @@
-context("levelpath")
+
 
 test_that("reweight", {
   x <- readRDS(list.files(pattern = "reweight_test.rds",
@@ -85,3 +85,54 @@ test_that("hr levelpath", {
 
 })
 
+test_that("degenerate", {
+  net <- structure(list(ID = 11000020, toID = 0, nameID = "constant",
+                        lengthkm = 12.2243026760847, areasqkm = 54.2851667150928,
+                        weight = 12.2243026760847, terminalID = 11000020), row.names = 2938080L, class = "data.frame")
+
+  er <- get_levelpaths(net, 5)
+
+  expect_equal(er$topo_sort, 1)
+
+  expect_equal(er$levelpath, 1)
+})
+
+test_that("from vignette works", {
+  source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
+
+  suppressWarnings(fpath <- get_tocomid(
+    dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
+                  AreaSqKM, LENGTHKM, GNIS_ID)) %>%
+    sf::st_cast("LINESTRING") %>%
+    select(-tonode, -fromnode, -divergence, -ftype) %>%
+    get_sorted(split = TRUE))
+
+  fpath[["arbolatesum"]] <- calculate_arbolate_sum(
+    dplyr::select(fpath, ID = comid, toID = tocomid, length = lengthkm))
+
+  lp <- get_levelpaths(
+    dplyr::select(fpath, ID = comid, toID = tocomid,
+                  nameID = gnis_id, weight = arbolatesum),
+    status = FALSE)
+
+  fpath <- dplyr::left_join(fpath, lp, by = c("comid" = "ID"))
+
+  expect_equal(names(fpath),
+               c("comid", "tocomid", "areasqkm", "lengthkm",
+                 "gnis_id", "terminalID",
+                 "arbolatesum", "outletID",
+                 "topo_sort", "levelpath", "geom"))
+
+  expect_equal(length(unique(fpath$levelpath)),
+               length(unique(new_hope_flowline$LevelPathI)))
+
+  expect_equal(length(unique(fpath$levelpath)),
+               length(unique(fpath$outletID)))
+
+  plus <- add_plus_network_attributes(dplyr::select(fpath, comid, tocomid,
+                                                    lengthkm, areasqkm,
+                                                    nameID = gnis_id),
+                                      status = FALSE)
+
+  expect_s3_class(plus, "sf")
+})

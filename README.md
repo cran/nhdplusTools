@@ -1,6 +1,6 @@
 # nhdplusTools <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-![R-CMD-check](https://github.com/usgs-r/nhdplusTools/workflows/R-CMD-check/badge.svg) [![codecov](https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg)](https://codecov.io/gh/usgs-r/nhdplusTools) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
+![R-CMD-check](https://github.com/usgs-r/nhdplusTools/workflows/R-CMD-check/badge.svg) [![codecov](https://codecov.io/gh/usgs-r/nhdplusTools/branch/master/graph/badge.svg)](https://app.codecov.io/gh/usgs-r/nhdplusTools) [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools) [![CRAN](https://www.r-pkg.org/badges/version/nhdplusTools)](https://cran.r-project.org/package=nhdplusTools)
 
 ## nhdplusTools: Tools for Accessing and Working with the NHDPlus
 
@@ -17,8 +17,8 @@ install.packages("nhdplusTools")
 
 For the latest development:
 ```
-install.packages("devtools")
-devtools::install_github("USGS-R/nhdplusTools")
+install.packages("remotes")
+remotes::install_github("USGS-R/nhdplusTools")
 ```
 
 ### Resources
@@ -34,22 +34,23 @@ Terms for rivers:
 
 Terms used for hydrologic units:  
 **Catchment:** The most abstract unit of hydrology in HY_Features is the catchment. It is a physiographic unit with zero or one inlets and one outlet. It does not inherently have any conceptual realizations. Rather, a given catchment can be realized in a number of ways; flowpath, divide, and networks of flowpaths and divides are the primary realizations.  
-**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon representations of catchments.  
+**Catchment divide:** NHD "catchment" polygons are more accurately described as "catchment divide" features. Because of the overlap with the HY_Features abstract "catchment" feature type, "catchment divide" is used for polygon representations of catchments.
 
 ### Data:
 
 [A National Dataset of NHDPlusV2.1 is available here.](https://www.epa.gov/waterdata/nhdplus-national-data)  
-Also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
+
+For data subsetting, also see: [`get_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplus.html), [`subset_nhdplus`](https://usgs-r.github.io/nhdplusTools/reference/subset_nhdplus.html), [`navigate_network`](https://usgs-r.github.io/nhdplusTools/reference/navigate_network.html), [`download_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/download_nhdplushr.html) and [`get_nhdplushr`](https://usgs-r.github.io/nhdplusTools/reference/get_nhdplushr.html)
 
 ## Package Vision
 
 The `nhdplusTools` package is intended to provide a reusable set of tools to
-subset and relate data to NHDPlus data. 
+subset, relate data to, and generate network attributes for NHDPlus data. 
 
 It implements a data model consistent with both the [NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-hydrography-dataset-plus)
-and [HY\_Features](http://opengeospatial.github.io/HY_Features/). The package
-aims to provide a set of tools with minimal dependencies that can be used
-to build workflows using NHDPlus data.
+dataset and the [HY\_Features](http://opengeospatial.github.io/HY_Features/) data 
+model. The package aims to provide a set of tools that can be used to build 
+workflows using NHDPlus data.
 
 **This vision is intended as a guide to contributors -- conveying what kinds of
 contributions are of interest to the package's long term vision. It is a
@@ -128,7 +129,7 @@ used for data discovery.
 
 ##### NHDPlus Version
 Initial package development focused on the [National Seamless NHDPlus](https://www.epa.gov/waterdata/nhdplus-national-data)
-database. [NHDPlus High Resolution](https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution) is
+database. [NHDPlus High Resolution](https://www.usgs.gov/national-hydrography/nhdplus-high-resolution) is
 also supported.
 
 ### Related similar packages:
@@ -153,7 +154,9 @@ devtools::build()
 In addition to typical R package checking, a Dockerfile is included in this repository. Once built, it can be run with the following command.
 
 ```
-docker run --rm -it -v %cd%:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
+docker build -t nhdplustools_test .
+
+docker run --rm -it -v $PWD:/src nhdplustools_test /bin/bash -c "cp -r /src/* /check/ && cp /src/.Rbuildignore /check/ && cd /check && Rscript -e 'devtools::build()' && R CMD check --as-cran ../nhdplusTools_*"
 ```
 
 ### Contributing:

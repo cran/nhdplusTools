@@ -1,4 +1,4 @@
-context("calculate network attributes")
+
 
 test_that("total drainage area works", {
   source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
@@ -17,6 +17,10 @@ test_that("total drainage area works", {
 
   expect(mean(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-3, "drainage area not close enough")
   expect(max(abs(catchment_area$totda - catchment_area$nhdptotda)) < 1e-2, "drainage area not close enough")
+
+  catchment_area$area[1] <- NA
+
+  expect_warning(calculate_total_drainage_area(catchment_area))
 })
 
 test_that("arbolate sum works", {
@@ -48,9 +52,9 @@ test_that("get_terminal", {
 
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
   fl$toID[which(!fl$toID %in% fl$ID)] <- 0
-  terminal <- get_terminal(fl, outlet)
+  expect_message(terminal <- get_terminal(fl, outlet))
 
-  expect_equal(names(terminal), c("terminalID", "ID"))
+  expect_equal(names(terminal), c("ID", "terminalID"))
   expect_true(is.numeric(terminal$ID))
   expect_equal(nrow(terminal), nrow(fl))
 
@@ -62,7 +66,7 @@ test_that("get_terminal", {
   outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
   fl$toID[which(!fl$toID %in% fl$ID)] <- 0
 
-  terminal <- get_terminal(fl, outlet)
+  expect_message(terminal <- get_terminal(fl, outlet))
 
   expect_equal(nrow(terminal), nrow(fl))
   expect_true(is.integer(terminal$ID))

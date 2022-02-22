@@ -1,4 +1,4 @@
-context("get_nhdplushr")
+
 
 work_dir <- file.path(tempdir(), "test_hr")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
@@ -11,12 +11,12 @@ test_that("we get urls for nhdplushr", {
   expect_equal(length(urls), 11)
 })
 
+get_test_file(work_dir)
+
+out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
+
 test_that("get_nhdplushr layers and gpkg", {
   skip_on_cran()
-
-  get_test_file(work_dir)
-
-  out <- get_nhdplushr(work_dir, out_gpkg = out_gpkg)
 
   layers <- sf::st_layers(out_gpkg)
   expect_equal(layers$name, c("NHDFlowline", "NHDPlusCatchment"))
@@ -35,6 +35,17 @@ test_that("get_nhdplushr layers and gpkg", {
   out <- get_nhdplushr(work_dir, layers = NULL)
 
   expect(length(names(out)), 7)
+})
+
+test_that("nhdplus hr waterbody", {
+  out <- get_nhdplushr(work_dir, layers = c("NHDFlowline",
+                                            "NHDWaterbody"),
+                       out_gpkg = out_gpkg)
+
+  wb <- out$NHDWaterbody[out$NHDWaterbody$Permanent_Identifier == 46376571,]
+
+  expect_equal(get_wb_outlet(wb$Permanent_Identifier, out$NHDFlowline)$Permanent_Identifier,
+               "46338320")
 })
 
 test_that("get_nhdplushr overwrite gpkg and pattern", {
@@ -131,6 +142,16 @@ test_that("make_standalone", {
   expect_equal(sa_UT, fl_UT)
 
   expect_true(all(sa[sa$Hydroseq == min(sa$Hydroseq), ][c("DnLevel", "DnLevelPat", "DnHydroseq")] == 0))
+
+  source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
+
+  sample_flines <- get_tocomid(sample_flines)
+
+  sample_flines[sample_flines$tocomid == 0] <- "12345"
+
+  sample_flines <- make_standalone(sample_flines)
+
+  expect_true(0 %in% sample_flines$toCOMID)
 })
 
 unlink(work_dir, recursive = TRUE)
