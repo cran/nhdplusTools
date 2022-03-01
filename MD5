@@ -1,4 +1,4 @@
-99c6c2db3f88e3bf3d1e7ea799a48164 *DESCRIPTION
+f4c4cf4e64063c1616d2dcb8fedd0342 *DESCRIPTION
 72839cd4d00f31068ad9c3da9897a067 *NAMESPACE
 6a65cc00d45165ee9cfb4f4a68e84085 *NEWS.md
 82811a6e6c779dfa35e3af45a45f41c0 *R/calc_network.R
@@ -30,7 +30,7 @@ f18b12e89fc05a371de8ac744bbcc99b *inst/doc/US_data.R
 90d6ce5ca8ff93bc1bb0bc5736b91dd6 *inst/doc/US_data.html
 5b7dd2ec045e43c426e7b6eb3a8c8315 *inst/doc/advanced_network.R
 01f4dfc28292bd201c25be973865a4af *inst/doc/advanced_network.Rmd
-16f1835a4753db4f6c5b687c3d3c116c *inst/doc/advanced_network.html
+6be91013a57f19bfaee067699db9d7d4 *inst/doc/advanced_network.html
 ba2c430b02ca32648ecbbf4d753a01cb *inst/doc/indexing.R
 2fc2bf81a307bbcacbc0abfa455544e9 *inst/doc/indexing.Rmd
 96962710faadbece8fe838344c758b22 *inst/doc/indexing.html
@@ -144,13 +144,13 @@ b908df9d82e6745b916450d5a8486a5d *tests/testthat/test_get_geometry.R
 85f9e1853b09663c93d805544d458eaa *tests/testthat/test_get_network.R
 f355d13c25d476849d3f8becc825cd5c *tests/testthat/test_get_nhdplus.R
 98fc86a11d705e9ac72c414535db2094 *tests/testthat/test_get_nhdplushr.R
-0204998a21b664de11d855f99583606f *tests/testthat/test_get_path.R
+498c326134a78e9bc2e364dd62d214ac *tests/testthat/test_get_path.R
 db1df6366b29be522195f9ebe41ded89 *tests/testthat/test_get_path_lengths.R
 64a0c79475d72b5bd9e5512148af8008 *tests/testthat/test_get_vaa.R
 f71369afb1d0f2f68f8375bfe1bef21e *tests/testthat/test_index.R
 0a8380a95aaf6fe8fb431f309422f7b4 *tests/testthat/test_navigate.R
 0a480d3d39a9e86fc6bdd3c4bcaadb2b *tests/testthat/test_nhdplusTools.R
-776c611eb86312551fea7025d936fafb *tests/testthat/test_run_plus_attributes.R
+8168649145792dd089491a35aabd0fcd *tests/testthat/test_run_plus_attributes.R
 a18e4e47a8fee700bc0172acf08d26e8 *tests/testthat/test_wb_index.R
 269bea0d0c99048aa9c8c4d0e5ca6da6 *vignettes/US_data.Rmd
 01f4dfc28292bd201c25be973865a4af *vignettes/advanced_network.Rmd
