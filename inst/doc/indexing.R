@@ -41,9 +41,9 @@ flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
 gages <- sf::read_sf(nhdplus_path(), "Gage")
 
 ## ----get_indexes--------------------------------------------------------------
-indexes <- get_flowline_index(flowlines,
-                              sf::st_geometry(gages), 
-                              search_radius = 0.01, 
+indexes <- get_flowline_index(sf::st_transform(flowlines, 5070), # albers
+                              sf::st_transform(sf::st_geometry(gages), 5070), 
+                              search_radius = units::set_units(200, "meters"), 
                               max_matches = 1)
 
 indexes <- left_join(sf::st_sf(id = c(1:nrow(gages)), 
@@ -81,7 +81,7 @@ round(quantile(matched$REACH_meas_diff,
 ## ----get_indexes_precise------------------------------------------------------
 indexes <- get_flowline_index(flowlines, 
                               sf::st_geometry(gages), 
-                              search_radius = 0.1, 
+                              search_radius = units::set_units(0.1, "degrees"), 
                               precision = 10)
 
 indexes <- left_join(data.frame(id = seq_len(nrow(gages))), indexes, by = "id")
@@ -112,7 +112,7 @@ round(quantile(matched$REACH_meas_diff,
 ## ----multi--------------------------------------------------------------------
 all_indexes <- get_flowline_index(flowlines,
                                   sf::st_geometry(gages), 
-                                  search_radius = 0.01, 
+                                  search_radius = units::set_units(0.01, "degrees"), 
                                   max_matches = 10)
 
 indexes <- left_join(sf::st_sf(id = 42, 
@@ -161,7 +161,7 @@ flowline_indexes <- left_join(data.frame(id = seq_len(nrow(gages))),
                               get_flowline_index(
                                 sf::st_transform(flowlines, 5070), 
                                 sf::st_geometry(sf::st_transform(gages, 5070)), 
-                                search_radius = 200), by = "id")
+                                search_radius = units::set_units(200, "m")), by = "id")
                               
 indexed_gages <- cbind(dplyr::select(gages, 
                                       orig_REACHCODE = REACHCODE, 
@@ -173,7 +173,7 @@ indexed_gages <- cbind(dplyr::select(gages,
                           st_transform(waterbody, 5070), 
                           st_transform(gages, 5070), 
                           st_drop_geometry(flowlines), 
-                          search_radius = 200))
+                          search_radius = units::set_units(200, "m")))
 
 plot(sf::st_geometry(sf::st_zm(flowlines)))
 plot(sf::st_geometry(waterbody), add = TRUE)

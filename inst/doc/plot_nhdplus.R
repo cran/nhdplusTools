@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
   fig.height=4,
   eval=local,
   cache=local,
-  cache.path=(cache_path)
+  cache.path=(cache_path),
+  dpi=72
 )
 
 oldoption <- options(scipen = 9999,

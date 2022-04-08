@@ -17,11 +17,7 @@ test_that("basics work", {
   l <- sf::st_layers(g_temp)
   expect_equal(l$name,
                c("CatchmentSP", "NHDFlowline_Network", "NHDArea", "NHDWaterbody", "NHDFlowline_NonNetwork"))
-  expect_equal(l$features, c(431, 402, 1, 90, 45))
-
-  p_ready <- nhdplusTools:::gt(d$flowline)
-  expect_equal(sf::st_crs(p_ready), sf::st_crs(3857))
-  expect_s3_class(p_ready, "sfc_LINESTRING")
+  expect_equal(l$features, c(431, 84, 1, 90, 45))
 
   pdf(NULL)
   tempf <- file.path(tempd, "temp.png")

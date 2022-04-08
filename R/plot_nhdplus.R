@@ -8,11 +8,14 @@
 #' @param gpkg path and file with .gpkg ending. If omitted, no file is written.
 #' @param overwrite passed on the \link{subset_nhdplus}.
 #' @param plot_config list containing plot configuration, see details.
+#' @param basemap character indicating which basemap type to use. Chose from:
+#' \link[rosm]{osm.types}.
 #' @param add boolean should this plot be added to an already built map.
 #' @param actually_plot boolean actually draw the plot? Use to get data subset only.
 #' @param flowline_only boolean only subset and plot flowlines only, default=FALSE
 #' @param cache_data character path to rds file where all plot data can be cached.
-#' If file doesn't exist, it will be created.
+#' If file doesn't exist, it will be created. If set to FALSE, all caching will
+#' be turned off -- this includes basemap tiles.
 #' @param ... parameters passed on to rosm.
 #' @return data.frame plot data is returned invisibly in NAD83 Lat/Lon.
 #' @details plot_nhdplus supports several input specifications. An unexported function "as_outlet"
@@ -54,6 +57,10 @@
 #' @examples
 #' \donttest{
 #' options("rgdal_show_exportToProj4_warnings"="none")
+#' # Beware plot_nhdplus caches data to the default location.
+#' # If you do not want data in "user space" change the default.
+#' old_dir <- nhdplusTools::nhdplusTools_data_dir()
+#' nhdplusTools_data_dir(tempdir())
 #'
 #' plot_nhdplus("05428500")
 #'
@@ -109,26 +116,32 @@
 #' plot_nhdplus(comids, nhdplus_data = sample_data, streamorder = 3, add = TRUE,
 #'              plot_config = list(flowline = list(col = "darkblue")))
 #'
-#' # Cleanup downloaded open street map cache and temp data dir if desired.
-#' # This is included for CRAN checks primarily.
-#' unlink(nhdplusTools::nhdplusTools_data_dir(), recursive = TRUE)
+#' nhdplusTools::nhdplusTools_data_dir(old_dir)
 #' }
 
 plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
                          nhdplus_data = NULL, gpkg = NULL, plot_config = NULL,
-                         add = FALSE, actually_plot = TRUE, overwrite = TRUE,
-                         flowline_only = NULL, cache_data = NULL, ...) {
+                         basemap = "cartolight", add = FALSE, actually_plot = TRUE,
+                         overwrite = TRUE, flowline_only = NULL,
+                         cache_data = NULL, ...) {
+
+  gt <- function(x) { sf::st_geometry(sf::st_transform(x, 3857)) }
 
   # Work with cache data
   save <- FALSE
   fetch <- TRUE
-  if(!is.null(cache_data)) {
-    if(file.exists(cache_data)) {
-      pd <- readRDS(cache_data)
-      fetch <- FALSE
-    } else {
-      save <- TRUE
+  if(!isFALSE(cache_data)) {
+    if(!is.null(cache_data)) {
+      if(file.exists(cache_data)) {
+        pd <- readRDS(cache_data)
+        fetch <- FALSE
+      } else {
+        save <- TRUE
+      }
     }
+    cache_osm <- osm_cache_dir()
+  } else {
+    cache_osm <- file.path(tempdir(check = TRUE), "osm.cache")
   }
 
   if(fetch)
@@ -144,9 +157,14 @@ plot_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,
 
     prettymapr::prettymap({
       if(!add) {
-        rosm::osm.plot(pd$plot_bbox, type = "cartolight",
+        tryCatch({
+        rosm::osm.plot(pd$plot_bbox, type = basemap,
                        quiet = TRUE, progress = "none",
-                       cachedir = osm_cache_dir(), ...)
+                       cachedir = cache_osm, ...)},
+        error = function(e) {
+          warning("Something went wrong trying to get the basemap.")
+          return(NULL)
+        })
       }
       # plot(gt(catchment), lwd = 0.5, col = NA, border = "grey", add = TRUE)
       if(!is.null(pd$basin))
@@ -327,12 +345,21 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
       nexus <- c(nexus, lapply(outlets, get_outlet_from_nldi))
     }
 
+    if(is.null(tail(nexus, 1)[[1]])) {
+      warning("something went wrong trying to get web service data.")
+      return(NULL)
+    }
+
     all_comids <- lapply(nexus, function(x) get_UT(align_nhdplus_names(flowline), x$comid))
 
     subsets <- subset_nhdplus(comids = unlist(all_comids), output_file = gpkg,
                               nhdplus_data = nhdplus_data, status = FALSE,
                               overwrite = overwrite, streamorder = streamorder,
                               flowline_only = flowline_only)
+    if(is.null(subsets)) {
+      warning("Something went wrong trying to get data subset, can't continue.")
+      return(NULL)
+    }
 
     flowline <- sf::st_zm(subsets[[fline_layer]])
 
@@ -364,8 +391,21 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
 
     nexus <- do.call(rbind, lapply(outlets, get_outlet_from_nldi))
 
-    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data, gpkg, overwrite, streamorder = streamorder, flowline_only = flowline_only)
+    if(is.null(basin) | is.null(nexus)) {
+      warning("something went wrong trying to get data.")
+      return(NULL)
+    }
+
+    if((ba <- max(sf::st_area(basin))) > units::set_units(1000^2, "m^2")) {
+      if(is.null(flowline_only)) flowline_only <- TRUE
+      if(is.null(streamorder)) streamorder <- auto_streamorder(ba)
+    }
+
+    nhd_data <- dl_plot_data_by_bbox(sf::st_bbox(basin), nhdplus_data,
+                                     gpkg, overwrite, streamorder = streamorder,
+                                     flowline_only = flowline_only)
     flowline <- align_nhdplus_names(nhd_data$flowline)
+
     flowline <- do.call(rbind, lapply(nexus$comid, function(x) {
       flowline[flowline$COMID %in% get_UT(align_nhdplus_names(flowline), x), ]
     }))
@@ -387,6 +427,12 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
     nhd_data <- subset_nhdplus(comids, nhdplus_data = nhdplus_data,
                                status = FALSE, overwrite = overwrite,
                                flowline_only = flowline_only)
+
+    if(is.null(nhd_data)) {
+      warning("Something went wrong trying to subset nhdplus data.")
+      return(NULL)
+    }
+
     if("CatchmentSP" %in% names(nhd_data)) {
       bbox <- sf::st_bbox(nhd_data$CatchmentSP)
       catchment <- nhd_data[[catchment_layer]]
@@ -429,6 +475,13 @@ get_plot_data <- function(outlets = NULL, bbox = NULL,
               off_network_wtbd=off_network_wtbd))
 }
 
+auto_streamorder <- function(x) {
+  if(x <= units::set_units(10000^2, "m^2")) return(1)
+  if(x <= units::set_units(18000^2, "m^2")) return(2)
+  if(x <= units::set_units(28000^2, "m^2")) return(3)
+  return(4)
+}
+
 dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorder = NULL, flowline_only = FALSE) {
 
   bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), 4326))
@@ -439,17 +492,20 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
     source <- "download"
   }
   if(is.null(flowline_only) && source == "download") {
-    flowline_only <- FALSE
-  } else {
+    flowline_only <- TRUE
+  } else if(is.null(flowline_only)) {
     flowline_only <- FALSE
   }
 
-  test_cache_f <- paste0("nhd_data",
-                         paste0(as.character(round(bbox, 2)), collapse = ""), ".rds")
-
   d <- subset_nhdplus(bbox = bbox, output_file = gpkg, nhdplus_data = source,
                       simplified = TRUE, status = FALSE,
-                      overwrite = overwrite, flowline_only = flowline_only, streamorder = streamorder)
+                      overwrite = overwrite, flowline_only = flowline_only,
+                      streamorder = streamorder)
+
+  if(is.null(d)) {
+    warning("Something went wrong trying to subset NHDPlus data.")
+    return(NULL)
+  }
 
   d <- lapply(d, align_nhdplus_names)
 
@@ -458,8 +514,6 @@ dl_plot_data_by_bbox <- function(bbox, nhdplus_data, gpkg, overwrite, streamorde
               waterbody = d$NHDWaterbody,
               nexus = NULL, basin = NULL))
 }
-
-gt <- function(x) sf::st_geometry(sf::st_transform(x, 3857))
 
 sp_bbox <- function(g) {
   matrix(as.numeric(sf::st_bbox(g)),
@@ -491,7 +545,11 @@ get_comid_outlets <- function(o, flowline) {
 }
 
 get_outlet_from_nldi <- function(outlet) {
-  make_point(get_nldi_feature(outlet))
+  f <- get_nldi_feature(outlet)
+
+  if(is.null(f)) return(NULL)
+
+  make_point(f)
 }
 
 make_point <- function(x, crs = 4326) {

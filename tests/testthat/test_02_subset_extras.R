@@ -155,6 +155,13 @@ test_that("big rpu test", {
                           "rpuid", "vpuid", "fcode", "arbolatesu",
                           "terminalfl", "terminalpa", "dnlevelpat"))
 
+
+  vaa_sub <- dplyr::filter(vaa, vpuid == "17")
+
+  sub <- subset_rpu(vaa_sub, "17b", strict = FALSE)
+
+  expect_false(24192564 %in% sub$comid)
+
   vaa <- dplyr::filter(vaa, vpuid == "14")
 
   sub <- subset_rpu(vaa, "14a", strict = TRUE)
@@ -199,8 +206,8 @@ test_that("projection check", {
 
   mr <- nhdplusTools::plot_nhdplus(list(13293970), gpkg = out,
                                    nhdplus_data = out,
-                                   overwrite = FALSE, actually_plot = FALSE)
-
+                                   overwrite = FALSE,
+                                   actually_plot = FALSE)
 
   expect_true(sf::st_crs(mr$flowline) == sf::st_crs(4269))
 
