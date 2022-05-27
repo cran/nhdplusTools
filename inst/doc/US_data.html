@@ -27,6 +27,7 @@
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -249,14 +250,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>(layers <span class="ot">&lt;-</span> <span class="fu">st_layers</span>(out_gpkg))</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name geometry_type features fields</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          NHDArea       Polygon       10     14</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          NHDLine   Line String      142     12</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name geometry_type features fields             crs_name</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          NHDArea       Polygon       10     14 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          NHDLine   Line String      142     12 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      NHDPlusSink         Point        1     10 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(hr_data)</span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;NHDFlowline&quot;      &quot;NHDPlusCatchment&quot;</span></span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(out_gpkg)</span>
@@ -267,14 +268,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>(layers <span class="ot">&lt;-</span> <span class="fu">st_layers</span>(out_gpkg))</span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name geometry_type features fields</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          NHDArea       Polygon       10     14</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          NHDLine   Line String      142     12</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      NHDPlusSink         Point        1     10</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         NHDPoint      3D Point        7     10</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name geometry_type features fields             crs_name</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline   Line String     2691     57 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment Multi Polygon     2603      7 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     NHDWaterbody       Polygon     1044     15 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          NHDArea       Polygon       10     14 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          NHDLine   Line String      142     12 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      NHDPlusSink         Point        1     10 GRS 1980(IUGG, 1980)</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         NHDPoint      3D Point        7     10 GRS 1980(IUGG, 1980)</span></span>
 <span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(hr_data)</span>
 <span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;NHDFlowline&quot;      &quot;NHDPlusCatchment&quot; &quot;NHDWaterbody&quot;     &quot;NHDArea&quot;         </span></span>
 <span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;NHDLine&quot;          &quot;NHDPlusSink&quot;      &quot;NHDPoint&quot;</span></span></code></pre></div>
@@ -310,8 +311,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 x 8</span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id       gnis_name   comid reachcode raindrop_pathDi~ measure intersection_po~</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;                &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;          </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 nhdFlow~ Yahara R~  1.33e7 07090002~             90.5    42.0 &lt;dbl [2]&gt;       </span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 raindro~ &lt;NA&gt;      NA      &lt;NA&gt;                  NA      NA   &lt;dbl [0]&gt;       </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 nhdFlow~ Yahara R~  1.33e7 07090002~             124.    40.1 &lt;dbl [2]&gt;       </span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 raindro~ &lt;NA&gt;      NA      &lt;NA&gt;                   NA     NA   &lt;dbl [0]&gt;       </span></span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 1 more variable: geometry &lt;LINESTRING [°]&gt;</span></span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(start_comid))</span>
@@ -324,9 +325,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><code>nhdplusTools</code> supports discovery and data subsetting using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data Index</a> (NLDI) and the <a href="https://labs.waterdata.usgs.gov/geoserver">National Water Census Geoserver.</a> The code below shows how to use the NLDI functions to build a dataset upstream of our <code>start_comid</code> that we found above.</p>
 <p>The NLDI can be queried with any set of watershed outlet locations that it has in its index. We call these “featureSources”. We can query the NLDI for an identifier of a given feature from any of its “featureSources” and find out what our navigation options are as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dataRetrieval<span class="sc">::</span><span class="fu">get_nldi_sources</span>()<span class="sc">$</span>source</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;comid&quot;      &quot;ca_gages&quot;   &quot;gfv11_pois&quot; &quot;huc12pp&quot;    &quot;nmwdi-st&quot;  </span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;nwisgw&quot;     &quot;nwissite&quot;   &quot;ref_gage&quot;   &quot;vigil&quot;      &quot;wade&quot;      </span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] &quot;WQP&quot;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;comid&quot;          &quot;ca_gages&quot;       &quot;geoconnex-demo&quot; &quot;gfv11_pois&quot;    </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;huc12pp&quot;        &quot;nmwdi-st&quot;       &quot;nwisgw&quot;         &quot;nwissite&quot;      </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;ref_gage&quot;       &quot;vigil&quot;          &quot;wade&quot;           &quot;WQP&quot;</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>nldi_feature <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">featureSource =</span> <span class="st">&quot;comid&quot;</span>, </span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">featureID =</span> <span class="fu">as.integer</span>(start_comid<span class="sc">$</span>comid)[<span class="dv">1</span>])</span>
@@ -364,8 +365,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_layers</span>(output_file_download)</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            layer_name geometry_type features fields</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138    NAD83</span></span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>flowline_download <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="fu">file.path</span>(work_dir, <span class="st">&quot;subset_download.gpkg&quot;</span>), </span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
@@ -398,8 +399,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_layers</span>(output_file_download)</span>
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            layer_name geometry_type features fields</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            layer_name geometry_type features fields crs_name</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 NHDFlowline_Network   Line String      168    138    NAD83</span></span>
 <span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>flowline_nwis <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(output_file_nwis, </span>
 <span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
@@ -479,13 +480,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_layers</span>(output_file)</span>
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               layer_name geometry_type features fields</span></span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    NHDFlowline_Network   Line String      168    136</span></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2            CatchmentSP Multi Polygon      167      6</span></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                NHDArea       Polygon        1     14</span></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           NHDWaterbody       Polygon       90     21</span></span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 NHDFlowline_NonNetwork   Line String       45     12</span></span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                   Gage         Point       33     19</span></span></code></pre></div>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               layer_name geometry_type features fields crs_name</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    NHDFlowline_Network   Line String      168    136    NAD83</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2            CatchmentSP Multi Polygon      167      6    NAD83</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                NHDArea       Polygon        1     14    NAD83</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           NHDWaterbody       Polygon       90     21    NAD83</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 NHDFlowline_NonNetwork   Line String       45     12    NAD83</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                   Gage         Point       33     19    NAD83</span></span></code></pre></div>
 <p>Now we have an output geopackage that can be used later. It contains the network subset of catchments and flowlines as well as a spatial subset of other layers as shown in the status output above. To complete the demonstration, here are a couple more layers plotted up.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>catchment <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(output_file, <span class="st">&quot;CatchmentSP&quot;</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>waterbody <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(output_file, <span class="st">&quot;NHDWaterbody&quot;</span>)</span>

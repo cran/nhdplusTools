@@ -3,7 +3,7 @@ vaa_hydroshare <-
   'https://www.hydroshare.org/resource/6092c8a62fac45be97a09bfd0b0bf726/data/contents/nhdplusVAA.fst'
 
 vaa_sciencebase <-
-  'https://www.sciencebase.gov/catalog/file/get/60c92503d34e86b9389df1c9?f=__disk__eb%2Fe0%2F3f%2Febe03f6e23c5b37a854e50c4ae7875dbb846c143'
+  'https://www.sciencebase.gov/catalog/file/get/60c92503d34e86b9389df1c9?name=enhd_nhdplusatts.fst'
 
 nhdplusTools_env <- new.env()
 
@@ -259,8 +259,18 @@ assign("nhdpt_dat_dir",
        tools::R_user_dir("nhdplusTools"),
        envir = nhdplusTools_env)
 
+assign("nldi_tier", "prod",
+       envir = nhdplusTools_env)
+
+nhdplus_debug <- function() {
+  Sys.getenv("debug_nhdplusTools") == "true"
+}
+
 #' @noRd
-get_nldi_url <- function(tier = "prod") {
+get_nldi_url <- function() {
+
+  tier <- get("nldi_tier", envir = nhdplusTools_env)
+
   if (tier == "prod") {
     "https://labs.waterdata.usgs.gov/api/nldi"
   } else if (tier == "test") {

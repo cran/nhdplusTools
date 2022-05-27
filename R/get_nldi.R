@@ -265,13 +265,17 @@ get_nldi_index <- function(location) {
 #' @importFrom httr GET
 #' @importFrom jsonlite fromJSON
 #' @noRd
-query_nldi <- function(query, tier = "prod", base_path = "/linked-data", parse_json = TRUE) {
-  nldi_base_url <- paste0(get_nldi_url(tier), base_path)
+query_nldi <- function(query, base_path = "/linked-data", parse_json = TRUE) {
+  nldi_base_url <- paste0(get_nldi_url(), base_path)
 
   url <- paste(nldi_base_url, query,
                sep = "/")
 
   tryCatch({
+    if(nhdplus_debug()) {
+      message(url)
+    }
+
     req_data <- rawToChar(httr::RETRY("GET", url)$content)
 
     if (nchar(req_data) == 0) {

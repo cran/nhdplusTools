@@ -371,8 +371,9 @@ string_score <- function(x) {
 #' @param flines sf data.frame of type LINESTRING or MULTILINESTRING including
 #' COMID, WBAREACOMI, and Hydroseq attributes
 #' @param points sfc of type POINT
-#' @param search_radius units how far to search for a waterbody boundary in
-#' units of provided projection
+#' @param search_radius units class with a numeric value indicating how far to
+#' search for a waterbody boundary in units of provided projection. Set units with
+#' \link[units]{set_units}.
 #' @return data.frame with two columns, COMID, in_wb_COMID, near_wb_COMID,
 #' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
 #' @importFrom sf st_join st_geometry_type
@@ -479,9 +480,8 @@ match_crs <- function(x, y, warn_text = "") {
 #' @description given a flowline index, returns the hydrologic location (point)
 #' along the specific linear element referenced by the index.
 #' @param indexes data.frame as output from \link{get_flowline_index}.
-#' @param flowpath data.frame with two three columns, COMID, FromMeas, and ToMeas.
-#' The first should join to the COMID field of the indexes and the second
-#' should be linear geometry.
+#' @param flowpath data.frame with three columns: COMID, FromMeas, and ToMeas
+#' as well as geometry.
 #' @export
 #' @examples
 #' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
@@ -580,10 +580,24 @@ add_len <- function(x) {
 #' rescale_measures(60, 50, 100)
 #'
 rescale_measures <- function(measure, from, to) {
+  tryCatch({
 
-  if(!dplyr::between(measure, from, to))
-    stop("measure must be between from and to")
+    if(!dplyr::between(measure, from, to))
+      stop("measure must be between from and to")
 
-  100 * (measure - from) / (to - from)
+    100 * (measure - from) / (to - from)
 
+  }, error = function(e) {
+    if(measure < from & from - measure < 0.1 |
+       measure > to & measure - to < 0.1) {
+
+      to <- round(to, 1)
+      from <- round(from, 1)
+      measure <- round(measure, 1)
+      100 * (measure - from) / (to - from)
+
+    } else {
+      stop(e)
+    }
+  })
 }
