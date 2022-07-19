@@ -15,7 +15,19 @@
 
 <title>Indexing and Referencing</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -127,7 +139,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -146,22 +338,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><code>nhdplusTools</code> offers a few indexing functions and some supporting functions that are worth being aware of.</p>
-<p>The core functions are: <code>get_flowline_index()</code> and <code>get_waterbody_index()</code> – they do the heavy lifting of finding flowlines and waterbodies near point locations.</p>
-<p>For flowline indexes, there are a number of useful utilities: - <code>disambiguate_flowline_indexes()</code> uses numeric or character attributes to attempt to determine the best flowline match when many near by matches exist. This is especially useful for mainstem / tributary disambiguation. - <code>get_hydro_location()</code> retrieves the point location of an index along a flowline. - <code>rescale_measures()</code> converts 0:100 reachcode measures to 0:100 flowline measures. - <code>get_partial_length()</code> retrieves a partial length (upstream and downstream) of an index location. - <code>get_path_lengths()</code> retrieves the distance between the outlets of pairs of flowlines. Use with <code>get_partial_length()</code> to determine network distance between indexes.</p>
-<p>For waterbody indexes, the <code>get_wb_outlet()</code> function is helpful too determine which flowline is the outlet of a waterbody.</p>
+<p><code>nhdplusTools</code> offers a few indexing functions and some
+supporting functions that are worth being aware of.</p>
+<p>The core functions are: <code>get_flowline_index()</code> and
+<code>get_waterbody_index()</code> – they do the heavy lifting of
+finding flowlines and waterbodies near point locations.</p>
+<p>For flowline indexes, there are a number of useful utilities: -
+<code>disambiguate_flowline_indexes()</code> uses numeric or character
+attributes to attempt to determine the best flowline match when many
+near by matches exist. This is especially useful for mainstem /
+tributary disambiguation. - <code>get_hydro_location()</code> retrieves
+the point location of an index along a flowline. -
+<code>rescale_measures()</code> converts 0:100 reachcode measures to
+0:100 flowline measures. - <code>get_partial_length()</code> retrieves a
+partial length (upstream and downstream) of an index location. -
+<code>get_path_lengths()</code> retrieves the distance between the
+outlets of pairs of flowlines. Use with
+<code>get_partial_length()</code> to determine network distance between
+indexes.</p>
+<p>For waterbody indexes, the <code>get_wb_outlet()</code> function is
+helpful too determine which flowline is the outlet of a waterbody.</p>
 </div>
 <div id="flowline-indexing" class="section level2">
 <h2>Flowline Indexing</h2>
-<p>First we’ll load up some data. In this case, we use flowlines from the NHDPlus subset that’s included in the package and a set of points to index. We’ll use the NHDPlus Gages layer for this example. The data in this example is big. The R session needs a lot of memory to hold the whole NHDPlus flowline layer and run the calculations.</p>
+<p>First we’ll load up some data. In this case, we use flowlines from
+the NHDPlus subset that’s included in the package and a set of points to
+index. We’ll use the NHDPlus Gages layer for this example. The data in
+this example is big. The R session needs a lot of memory to hold the
+whole NHDPlus flowline layer and run the calculations.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nhdplusTools)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nhdplus_path</span>(<span class="fu">file.path</span>(work_dir, <span class="st">&quot;natseamless.gpkg&quot;</span>))</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>flowlines <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="fu">nhdplus_path</span>(), <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>gages <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="fu">nhdplus_path</span>(), <span class="st">&quot;Gage&quot;</span>)</span></code></pre></div>
-<p>Now we can call <code>get_flowline_index()</code> on the data we just loaded. The <code>get_flowline_index()</code> function has an input, <code>search_radius</code> which should correspond to the units of the <code>points</code> input. Projection and unit conversion is attempted. See the function documentation for details. See the documentation of the <a href="https://cran.r-project.org/package=RANN">nn2 function from the RANN package</a> for more information on how the search works.</p>
-<p>NOTE: If you have a small area in which you need flowline indexes, <code>get_flowline_index()</code> has an option to download flowlines in the bounding box of your input points.</p>
+<p>Now we can call <code>get_flowline_index()</code> on the data we just
+loaded. The <code>get_flowline_index()</code> function has an input,
+<code>search_radius</code> which should correspond to the units of the
+<code>points</code> input. Projection and unit conversion is attempted.
+See the function documentation for details. See the documentation of the
+<a href="https://cran.r-project.org/package=RANN">nn2 function from the
+RANN package</a> for more information on how the search works.</p>
+<p>NOTE: If you have a small area in which you need flowline indexes,
+<code>get_flowline_index()</code> has an option to download flowlines in
+the bounding box of your input points.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">get_flowline_index</span>(sf<span class="sc">::</span><span class="fu">st_transform</span>(flowlines, <span class="dv">5070</span>), <span class="co"># albers</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                              sf<span class="sc">::</span><span class="fu">st_transform</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), <span class="dv">5070</span>), </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="dv">200</span>, <span class="st">&quot;meters&quot;</span>), </span>
@@ -174,7 +394,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(sf<span class="sc">::</span><span class="fu">st_zm</span>(flowlines)))</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(indexes), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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BrnWGRSiDQQ1415UZ1CIXhhMUwwzZhtNYzy8u8n1qCuwYK2508V4eLezPVyx8iWt9TBeBNmO7kNUzwl6bdom5P/noj6E7eg+RlsALQgE07RTFwgE8zQt6WV3NswUxsM7IJ/nevvYtitma6RnHz+Rdkj1zN7ocE+GOKnama7oT5TZxVWwFanZuz9gUy8gy2dTj38bwTq+oi2ZFCiuBAp5onG+IZAbpgXKfu+pPHZ81hMX8GwsxPA2U22gZds31bVCIEfM9sKaSYm24z58v/fp00m/Fwsx3M7utKgg0LvX802YCOJm9m8S7Ag0eTsqJZAT2tHlzt5sw/Sv9ljIfAsx3M2uQE0BtP4K1IRBJvLeRBA3s9ME6t2ROvNzdcMTPg4TQVzA/hdejCE2O6r3aYXZ4UeeuL6vxUQQOgdFxiZQO/NVnib+DccP9rWR9TaiUFmnRnd3p1fNKtYtXUoVOj/FOjzpo7ERhcruXEZn3Ua/pVxMdAzuX81PakIhCzHoHEyGxVTtTNhoeizeQ6994BOwEIPOQRW2JiqTN+/aww9nXA2UQc+P4BLm+t0pcW9D5/DRGXefvvAwnn79V6H4swx77aPNg9dP5OnX/w+cKGreSP40LMXyGfCnwFQwH+FMW7m/01SemwrmI7Sz7+eSLxaazht2IvkPJmZNJ9eAPBY7kZziTK995yyvUx0mGj+H/PnYieQM00u+Dk4zl6gzqWEn2+1EcoLOo+jeO8/ch3WGue1ku51ITnCNQOmJLueXr9KIfjZvClTf47z+u0zl4t4yoidjKJQTvNcGiktVS4+yv/tHd18+HkuxnEDrheX6vSOQpVw3FMrnaFcBnS2B7DSCzATyb0y2gZJqVpYirhgK5b+YrQ1D/GPJHwT6IGE5cd/zU7AUy/+zd2NHtgzfUqZbiuULGMyuVk+ospTplmL5FnoP3sxfmspzU8F8EZlD9T0ctrLcVjSzfORbjN32+z/pPzEeXp/P1COzD+l4Ntbj6zE9eKx/kv3stR9hy+cEcoDHbESgC3GZjeb60v+Iz3y037b9GGQkSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSCAQSPwA5YVVWhP251MAAAAASUVORK5CYII=" /><!-- --></p>
-<p>Now let’s look at the results and see how the <code>get_flowline_index()</code> did. The below shows the percent of COMIDs and REACHCODEs that match and shows a histogram of the measure differences for the REACHCODEs that were matched.</p>
+<p>Now let’s look at the results and see how the
+<code>get_flowline_index()</code> did. The below shows the percent of
+COMIDs and REACHCODEs that match and shows a histogram of the measure
+differences for the REACHCODEs that were matched.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p_match <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">which</span>(indexes<span class="sc">$</span>COMID <span class="sc">%in%</span> gages<span class="sc">$</span>FLComID)) <span class="sc">/</span> <span class="fu">nrow</span>(gages)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(p_match, <span class="at">digits =</span> <span class="dv">1</span>), </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
@@ -195,7 +418,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(matched<span class="sc">$</span>REACH_meas_diff, <span class="at">breaks =</span> <span class="dv">100</span>, </span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">quantile</span>(matched<span class="sc">$</span>REACH_meas_diff, </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), </span>
@@ -205,24 +428,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="flowline-indexing-with-higher-precision" class="section level2">
 <h2>Flowline Indexing with higher precision</h2>
-<p>The above example used the native nodes of the NHDPlus as the potential measure snap locations. The <code>get_flowline_index()</code> function has the ability to refine these by segmentizing the line to some given resolution. Let’s try the same thing using a resolution of 10m and see if we can do any better.</p>
-<p>Note that the <code>sf::st_segmentize</code> function takes care of the distance conversion and segmentizes our lon/lat lines to 10m on the fly. Also note, we are working in units of degrees for this sample. (this is probably not a good way to do things, but is being shown here for the sake of demonstration)</p>
+<p>The above example used the native nodes of the NHDPlus as the
+potential measure snap locations. The <code>get_flowline_index()</code>
+function has the ability to refine these by segmentizing the line to
+some given resolution. Let’s try the same thing using a resolution of
+10m and see if we can do any better.</p>
+<p>Note that the <code>sf::st_segmentize</code> function takes care of
+the distance conversion and segmentizes our lon/lat lines to 10m on the
+fly. Also note, we are working in units of degrees for this sample.
+(this is probably not a good way to do things, but is being shown here
+for the sake of demonstration)</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">get_flowline_index</span>(flowlines, </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                              sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="fl">0.1</span>, <span class="st">&quot;degrees&quot;</span>), </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">precision =</span> <span class="dv">10</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gages))), indexes, <span class="at">by =</span> <span class="st">&quot;id&quot;</span>)</span></code></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; st_as_s2(): dropping Z and/or M coordinate</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gages))), indexes, <span class="at">by =</span> <span class="st">&quot;id&quot;</span>)</span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p_match <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">which</span>(indexes<span class="sc">$</span>COMID <span class="sc">%in%</span> gages<span class="sc">$</span>FLComID)) <span class="sc">/</span> <span class="fu">nrow</span>(gages)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(p_match, <span class="at">digits =</span> <span class="dv">1</span>), </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       <span class="st">&quot;% were found to match the COMID in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;69.6% were found to match the COMID in the NHDPlus gages layer&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;76.1% were found to match the COMID in the NHDPlus gages layer&quot;</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>p_match <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">which</span>(indexes<span class="sc">$</span>REACHCODE <span class="sc">%in%</span> gages<span class="sc">$</span>REACHCODE)) <span class="sc">/</span> <span class="fu">nrow</span>(gages)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(<span class="fu">round</span>(p_match, <span class="at">digits =</span> <span class="dv">1</span>), </span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="st">&quot;% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;71.7% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;76.1% were found to match the REACHCODE in the NHDPlus gages layer&quot;</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>matched <span class="ot">&lt;-</span> <span class="fu">cbind</span>(indexes, </span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                 dplyr<span class="sc">::</span><span class="fu">select</span>(sf<span class="sc">::</span><span class="fu">st_set_geometry</span>(gages, <span class="cn">NULL</span>), </span>
@@ -234,17 +511,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(matched<span class="sc">$</span>REACH_meas_diff, <span class="at">breaks =</span> <span class="dv">100</span>, </span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Difference in measure for gages matched to the same reach.&quot;</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">quantile</span>(matched<span class="sc">$</span>REACH_meas_diff, </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">0.9</span>, <span class="dv">1</span>)), <span class="at">digits =</span> <span class="dv">2</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    0%   10%   25%   50%   75%   90%  100% </span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -1.31 -0.66 -0.33 -0.04  0.22  0.81  1.57</span></span></code></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     0%    10%    25%    50%    75%    90%   100% </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -50.36  -1.81  -0.66  -0.18   0.04   0.77  38.44</span></span></code></pre></div>
 </div>
 <div id="finding-multiple-indexes" class="section level2">
 <h2>Finding multiple indexes</h2>
-<p><code>get_flowline_index()</code> has a parameter <code>max_matches</code> that controls how many indexed flowlines are returned per point. This is useful for points that are near many flowlines and some further disambiguation is needed to determine exactly which flowline the point should be indexed to.</p>
-<p>For this example, we’ll just look at one point but keep all the sites for disambiguation down below.</p>
+<p><code>get_flowline_index()</code> has a parameter
+<code>max_matches</code> that controls how many indexed flowlines are
+returned per point. This is useful for points that are near many
+flowlines and some further disambiguation is needed to determine exactly
+which flowline the point should be indexed to.</p>
+<p>For this example, we’ll just look at one point but keep all the sites
+for disambiguation down below.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>all_indexes <span class="ot">&lt;-</span> <span class="fu">get_flowline_index</span>(flowlines,</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                                  sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="fl">0.01</span>, <span class="st">&quot;degrees&quot;</span>), </span>
@@ -286,8 +568,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  POINT (-89.35278 43.20867)</span></span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  POINT (-89.35278 43.20867)</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 POINT (-89.35278 43.20867)</span></span></code></pre></div>
-<p>Now that we have multiple matches, we can use the function <code>disambiguate_flowline_indexes()</code> to figure out which is the “best” match. “best” is in scare quotes here because there are many potential sources of ambiguity here and we are really just narrowing down based on the information we have at hand. (read below for a case in point)</p>
-<p>Below, we run <code>disambiguate_flowline_indexes()</code> on all the indexes we found then pull out the one we looked at just above as an example (gage 42 in our list).</p>
+<p>Now that we have multiple matches, we can use the function
+<code>disambiguate_flowline_indexes()</code> to figure out which is the
+“best” match. “best” is in scare quotes here because there are many
+potential sources of ambiguity here and we are really just narrowing
+down based on the information we have at hand. (read below for a case in
+point)</p>
+<p>Below, we run <code>disambiguate_flowline_indexes()</code> on all the
+indexes we found then pull out the one we looked at just above as an
+example (gage 42 in our list).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>unique_indexes <span class="ot">&lt;-</span> <span class="fu">disambiguate_flowline_indexes</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  all_indexes, </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  flowlines[, <span class="fu">c</span>(<span class="st">&quot;COMID&quot;</span>, <span class="st">&quot;TotDASqKM&quot;</span>), <span class="at">drop =</span> <span class="cn">TRUE</span>],</span>
@@ -314,12 +603,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  GRS 1980(IUGG, 1980)</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id    COMID      REACHCODE REACH_meas       offset                       geom</span></span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 42 13293454 07090002007638        100 0.0008846702 POINT (-89.35278 43.20867)</span></span></code></pre></div>
-<p>As can be seen in this example, a drainage area disambiguation resulted in an unexpected result. Further inspection of this particular gage and the network data used, shows that the main path through this small diversion is coded counter to the main path in the real world. So in this case, if our interest is in the best match to the hydrographic network data we have, this <strong>is</strong> the best match, as the closest spatial match is incorrectly modeled by the hydrographic data set. As always, buyer beware!</p>
+<p>As can be seen in this example, a drainage area disambiguation
+resulted in an unexpected result. Further inspection of this particular
+gage and the network data used, shows that the main path through this
+small diversion is coded counter to the main path in the real world. So
+in this case, if our interest is in the best match to the hydrographic
+network data we have, this <strong>is</strong> the best match, as the
+closest spatial match is incorrectly modeled by the hydrographic data
+set. As always, buyer beware!</p>
 </div>
 <div id="waterbody-indexing" class="section level2">
 <h2>Waterbody Indexing</h2>
-<p>The <code>get_flowline_index()</code> function estimates a hydrographic address as a linear reference to a flowline. For points near bodies of water, these could be an inappropriate kind of index. This is because where flowlines run through a waterbody. they are “artificial paths” and do not represent the waterbody. The <code>get_waterbody_index()</code> function is intended to address points that are in or near the shore of a waterbody.</p>
-<p>This next block of code loads the NHDPlus Waterbody layer and creates an interactive map. Of interest on gages that are near the short of bodies of water but far away from flowlines. Note that we drop the NHDPlus geometry and use the source <code>LonSite</code> and <code>LatSite</code> attributes for geometry.</p>
+<p>The <code>get_flowline_index()</code> function estimates a
+hydrographic address as a linear reference to a flowline. For points
+near bodies of water, these could be an inappropriate kind of index.
+This is because where flowlines run through a waterbody. they are
+“artificial paths” and do not represent the waterbody. The
+<code>get_waterbody_index()</code> function is intended to address
+points that are in or near the shore of a waterbody.</p>
+<p>This next block of code loads the NHDPlus Waterbody layer and creates
+an interactive map. Of interest on gages that are near the short of
+bodies of water but far away from flowlines. Note that we drop the
+NHDPlus geometry and use the source <code>LonSite</code> and
+<code>LatSite</code> attributes for geometry.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>waterbody <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="fu">nhdplus_path</span>(), <span class="st">&quot;NHDWaterbody&quot;</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>gages <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>(gages) <span class="sc">%&gt;%</span></span>
@@ -330,7 +636,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(waterbody), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>This next block shows how to call <code>get_flowline_index()</code> and <code>get_waterbody_index()</code> and what the output looks like.</p>
+<p>This next block shows how to call <code>get_flowline_index()</code>
+and <code>get_waterbody_index()</code> and what the output looks
+like.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>flowline_indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gages))),</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                              <span class="fu">get_flowline_index</span>(</span>

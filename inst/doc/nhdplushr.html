@@ -15,7 +15,19 @@
 
 <title>Working with NHDPlusHR</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -127,7 +139,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -146,8 +338,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="tldr" class="section level2">
 <h2>TL;DR;</h2>
-<p>Most functions in <code>nhdplusTools</code> work with NHDPlus High Res (HR) the same as they do with medium res. The demo below shows how to get a single four-digit hydrologic unit worth of HR data, index a point to it, subset it, and plot the results.</p>
-<p><em>Note: For consistency, identifiers from NHDPlusV2 are used with HiRes data. A future release of nhdplusTools may alter this behavior.</em></p>
+<p>Most functions in <code>nhdplusTools</code> work with NHDPlus High
+Res (HR) the same as they do with medium res. The demo below shows how
+to get a single four-digit hydrologic unit worth of HR data, index a
+point to it, subset it, and plot the results.</p>
+<p><em>Note: For consistency, identifiers from NHDPlusV2 are used with
+HiRes data. A future release of nhdplusTools may alter this
+behavior.</em></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nhdplusTools)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -195,7 +392,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 366 comids of 366</span></span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Found invalid geometry, attempting to fix.</span></span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Writing NHDPlusCatchment</span></span></code></pre></div>
-<p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR data and a subset upstream of a point of interest, we can plot things up and see what it looks like. This plot uses NHDPlusV2 as returned by <code>plot_nhdplus()</code> as a base layer and adds NHDPlusHR data on top of it.</p>
+<p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR
+data and a subset upstream of a point of interest, we can plot things up
+and see what it looks like. This plot uses NHDPlusV2 as returned by
+<code>plot_nhdplus()</code> as a base layer and adds NHDPlusHR data on
+top of it.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_nhdplus</span>(<span class="fu">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="at">streamorder =</span> <span class="dv">2</span>, </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">nhdplus_data =</span> sample_data, <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">plot_config =</span> <span class="fu">list</span>(<span class="at">flowline =</span> <span class="fu">list</span>(<span class="at">lwd =</span> <span class="fl">2.5</span>),</span>
@@ -214,8 +415,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="download" class="section level2">
 <h2>Download</h2>
-<p>NHDPlusHR support in nhdplusTools begins with the function <code>download_nhdplushr()</code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/national-hydrography/access-national-hydrography-products">four digit hydrologic unit code subsets here.</a> <code>download_nhdplushr()</code> facilitates downloading these subsets for as few or as many as you need. It takes a directory you want to save your output into and a vector of four digit (HU04) or two digit (HU02) hydrologic units. There is also an option to just return the URLs of the data that would be downloaded for you to use in some other process. Since the TL;DR; above already downloaded some data. The code below shows how to just get the URLs for a whole HU02 and what the output looks like on disk.</p>
-<p><em>Note: Data for each HU02 are put in their own output folder.</em></p>
+<p>NHDPlusHR support in nhdplusTools begins with the function
+<code>download_nhdplushr()</code>. The NHDPlusHR can be downloaded in <a href="https://www.usgs.gov/national-hydrography/access-national-hydrography-products">four
+digit hydrologic unit code subsets here.</a>
+<code>download_nhdplushr()</code> facilitates downloading these subsets
+for as few or as many as you need. It takes a directory you want to save
+your output into and a vector of four digit (HU04) or two digit (HU02)
+hydrologic units. There is also an option to just return the URLs of the
+data that would be downloaded for you to use in some other process.
+Since the TL;DR; above already downloaded some data. The code below
+shows how to just get the URLs for a whole HU02 and what the output
+looks like on disk.</p>
+<p><em>Note: Data for each HU02 are put in their own output
+folder.</em></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(hr_urls <span class="ot">&lt;-</span> <span class="fu">download_nhdplushr</span>(work_dir, <span class="st">&quot;06&quot;</span>, <span class="at">download_files =</span> <span class="cn">FALSE</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0601_HU4_GDB.zip&quot;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/NHDPlusHR/Beta/GDB/NHDPLUS_H_0602_HU4_GDB.zip&quot;</span></span>
@@ -229,9 +441,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="basic-functionality" class="section level2">
 <h2>Basic functionality</h2>
-<p>The second part of nhdplusTools support for NHDPlusHR is a bit more involved. The entry point is a function called <code>get_nhdplushr()</code>. At it’s core, it will take a collection of NHDPlusHR subsets, open them up one by one and build a single output table for later use. It also 1. joins flowline attributes to the flowline geometry, 1. can return one or more selected layers, 1. can save the result to a standalone geopackage for later use, and 1. can make some attributes of a subset look like they are part of a standalone network rather than having references to downstream data that aren’t in the subset.</p>
-<p>Using the data we downloaded in the TL;DR; intro, the code below demonstrates a few behaviors of <code>get_nhdplushr()</code></p>
-<p>First, if we just give it a directory containing HR data, it will give us back a list with flowlines and catchments as sf data.frames.</p>
+<p>The second part of nhdplusTools support for NHDPlusHR is a bit more
+involved. The entry point is a function called
+<code>get_nhdplushr()</code>. At it’s core, it will take a collection of
+NHDPlusHR subsets, open them up one by one and build a single output
+table for later use. It also 1. joins flowline attributes to the
+flowline geometry, 1. can return one or more selected layers, 1. can
+save the result to a standalone geopackage for later use, and 1. can
+make some attributes of a subset look like they are part of a standalone
+network rather than having references to downstream data that aren’t in
+the subset.</p>
+<p>Using the data we downloaded in the TL;DR; intro, the code below
+demonstrates a few behaviors of <code>get_nhdplushr()</code></p>
+<p>First, if we just give it a directory containing HR data, it will
+give us back a list with flowlines and catchments as sf data.frames.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hr <span class="ot">&lt;-</span> <span class="fu">get_nhdplushr</span>(hr_data_dir)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(hr, class)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      NHDFlowline  NHDPlusCatchment</span></span>
@@ -241,7 +464,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,] &quot;data.frame&quot; &quot;data.frame&quot;</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDFlowline), <span class="at">lwd =</span> (hr<span class="sc">$</span>NHDFlowline<span class="sc">$</span>StreamOrde <span class="sc">/</span> <span class="dv">6</span>))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>If we want more data, we can get any of the layer options listed in the <code>get_nhdplushr()</code> documentation.</p>
+<p>If we want more data, we can get any of the layer options listed in
+the <code>get_nhdplushr()</code> documentation.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hr <span class="ot">&lt;-</span> <span class="fu">get_nhdplushr</span>(hr_data_dir, <span class="at">layers =</span> <span class="fu">c</span>(<span class="st">&quot;NHDFlowline&quot;</span>, <span class="st">&quot;NHDWaterbody&quot;</span>, <span class="st">&quot;NHDArea&quot;</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; GDAL Message 1: organizePolygons() received a polygon with more than 100 parts.</span></span>
@@ -263,20 +487,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">c</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDWaterbody), <span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDArea)), </span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="at">border =</span> <span class="st">&quot;cyan&quot;</span>, <span class="at">lwd =</span> <span class="fl">0.25</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>Since this function can work over large amounts of data and we don’t want to keep running it again and again, there is an option to save the results to a standalone database for later use.</p>
+<p>Since this function can work over large amounts of data and we don’t
+want to keep running it again and again, there is an option to save the
+results to a standalone database for later use.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>demo_gpkg <span class="ot">&lt;-</span> <span class="fu">file.path</span>(work_dir, <span class="st">&quot;demo.gpkg&quot;</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>hr <span class="ot">&lt;-</span> <span class="fu">get_nhdplushr</span>(hr_data_dir, <span class="at">out_gpkg =</span> demo_gpkg)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_layers</span>(demo_gpkg)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Driver: GPKG </span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Available layers:</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name     geometry_type features fields crs_name</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline Multi Line String    34532     57    NAD83</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment     Multi Polygon    42300      7    NAD83</span></span></code></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         layer_name     geometry_type features fields</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      NHDFlowline Multi Line String    34532     57</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 NHDPlusCatchment     Multi Polygon    42300      7</span></span></code></pre></div>
 </div>
 <div id="hr-modification-and-filtering" class="section level2">
 <h2>HR modification and filtering</h2>
-<p>Since NHDPlusHR data can be very large, <code>get_nhdplushr()</code> offers the ability to subset the data using a few filter options. Most of the filters are described in the manual page of the <code>get_hr_data()</code> utility function. 1. <code>min_size_sqkm</code> will remove flowlines under a certain size threshold. 1. <code>sim</code> will simplify all geometry to a given tolerance using <code>sf::st_simplify()</code>. 1. <code>proj</code> will project the output into the desired projection. 1. <code>keep_cols</code> is used to specify which attributes are desired in the output. 1. <code>rename</code> controls whether output is automatically renamed to be compatible with <code>nhdplusTools</code> functions.</p>
-<p><em>Note: These options only operate on the flowline network.</em></p>
+<p>Since NHDPlusHR data can be very large, <code>get_nhdplushr()</code>
+offers the ability to subset the data using a few filter options. Most
+of the filters are described in the manual page of the
+<code>get_hr_data()</code> utility function. 1.
+<code>min_size_sqkm</code> will remove flowlines under a certain size
+threshold. 1. <code>sim</code> will simplify all geometry to a given
+tolerance using <code>sf::st_simplify()</code>. 1. <code>proj</code>
+will project the output into the desired projection. 1.
+<code>keep_cols</code> is used to specify which attributes are desired
+in the output. 1. <code>rename</code> controls whether output is
+automatically renamed to be compatible with <code>nhdplusTools</code>
+functions.</p>
+<p><em>Note: These options only operate on the flowline
+network.</em></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">get_nhdplushr</span>(hr_data_dir, <span class="at">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">min_size_sqkm =</span> <span class="dv">50</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(demo<span class="sc">$</span>NHDFlowline), </span>
@@ -296,9 +534,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="make-standalone-basins" class="section level2">
 <h2>Make Standalone Basins</h2>
-<p>The NHDPlus data model has some shared identifiers that can span very large distances. For example, the “Level Path Identifier” identifies an entire river from headwater to outlet using the “hydrologic sequence identifier” of the outlet. Similarly, the “Terminal Path Identifier” identifies an entire basin using the hydrologic sequence identifier of the terminal flowline (to the ocean or an inland sink). When creating subsets of NHDPlus data, many times, these attributes can identify flowlines that are not included in the subset. For most applications, this is not a problem, but in some cases, it is advantageous to adjust identifiers such that the subset appears to be a complete drainage basin with a true terminal outlet. <code>make_standalone()</code> accomplishes this task.</p>
-<p>On a one by one basis, this may seam insignificant, but for workflows that need to work with arbitrary subsets and start from basin outlets, this functionality is useful. It has little impact on the data and is applied by default.</p>
-<p>The example below shows how the outlet is modified. As described in the documentation os <code>make_standalone()</code> all related attributes upstream are also fixed such that the network is intact for further use.</p>
+<p>The NHDPlus data model has some shared identifiers that can span very
+large distances. For example, the “Level Path Identifier” identifies an
+entire river from headwater to outlet using the “hydrologic sequence
+identifier” of the outlet. Similarly, the “Terminal Path Identifier”
+identifies an entire basin using the hydrologic sequence identifier of
+the terminal flowline (to the ocean or an inland sink). When creating
+subsets of NHDPlus data, many times, these attributes can identify
+flowlines that are not included in the subset. For most applications,
+this is not a problem, but in some cases, it is advantageous to adjust
+identifiers such that the subset appears to be a complete drainage basin
+with a true terminal outlet. <code>make_standalone()</code> accomplishes
+this task.</p>
+<p>On a one by one basis, this may seam insignificant, but for workflows
+that need to work with arbitrary subsets and start from basin outlets,
+this functionality is useful. It has little impact on the data and is
+applied by default.</p>
+<p>The example below shows how the outlet is modified. As described in
+the documentation os <code>make_standalone()</code> all related
+attributes upstream are also fixed such that the network is intact for
+further use.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">get_nhdplushr</span>(hr_data_dir, <span class="at">layers =</span> <span class="st">&quot;NHDFlowline&quot;</span>, </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">min_size_sqkm =</span> <span class="dv">100</span>, <span class="at">check_terminals =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -325,40 +580,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 0 features and 57 fields</span></span>
 <span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: NA ymin: NA xmax: NA ymax: NA</span></span>
 <span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  NAD83</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 0 x 58</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 0 × 58</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 58 variables: Permanent_Identifier &lt;chr&gt;, FDate &lt;dttm&gt;,</span></span>
 <span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   Resolution &lt;int&gt;, GNIS_ID &lt;chr&gt;, GNIS_Name &lt;chr&gt;, LENGTHKM &lt;dbl&gt;,</span></span>
 <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   REACHCODE &lt;chr&gt;, FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;,</span></span>
 <span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   FTYPE &lt;int&gt;, FCODE &lt;int&gt;, MainPath &lt;int&gt;, InNetwork &lt;int&gt;,</span></span>
 <span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   VisibilityFilter &lt;int&gt;, Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;,</span></span>
 <span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   Enabled &lt;int&gt;, Shape &lt;GEOMETRY [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, ...</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;, …</span></span>
 <span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>(standalone <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(standalone_demo, TerminalPa <span class="sc">==</span> standalone_demo_outlet<span class="sc">$</span>Hydroseq))</span>
 <span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 5358 features and 57 fields</span></span>
 <span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
 <span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
 <span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -90.68076 ymin: 41.27482 xmax: -88.1999 ymax: 43.74949</span></span>
 <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  NAD83</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5,358 x 58</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Permanent_Identifi~ FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5,358 × 58</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Permanent_Identifi… FDate               Resolution GNIS_ID GNIS_Name LENGTHKM</span></span>
 <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * &lt;chr&gt;               &lt;dttm&gt;                   &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;        &lt;dbl&gt;</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 156038282           2012-03-19 01:32:25          2 004155~ Pecatoni~    1.34 </span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 155714162           2014-10-28 19:00:00          2 004248~ Fairfiel~    0.417</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 156035374           2012-03-19 01:35:08          2 015619~ Gordon C~    0.39 </span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 145600320           2012-03-19 01:34:47          2 004168~ Rock Cre~    0.352</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 156038282           2012-03-19 01:32:25          2 004155… Pecatoni…    1.34 </span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 155714162           2014-10-28 19:00:00          2 004248… Fairfiel…    0.417</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 156035374           2012-03-19 01:35:08          2 015619… Gordon C…    0.39 </span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 145600320           2012-03-19 01:34:47          2 004168… Rock Cre…    0.352</span></span>
 <span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 155712981           2012-03-19 02:05:43          2 &lt;NA&gt;    &lt;NA&gt;         0.034</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 137417698           2012-03-18 13:07:30          2 015750~ Sugar Ri~    0.798</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 137417698           2012-03-18 13:07:30          2 015750… Sugar Ri…    0.798</span></span>
 <span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 156037500           2012-03-19 01:33:10          2 &lt;NA&gt;    &lt;NA&gt;         0.009</span></span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 145599800           2012-03-19 01:34:47          2 004145~ North Fo~    0.665</span></span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 143246785           2012-03-18 12:56:42          2 004168~ Rock Riv~    0.165</span></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 155712415           2012-03-19 02:05:51          2 004241~ Willow C~    2.11 </span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 145599800           2012-03-19 01:34:47          2 004145… North Fo…    0.665</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 143246785           2012-03-18 12:56:42          2 004168… Rock Riv…    0.165</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 155712415           2012-03-19 02:05:51          2 004241… Willow C…    2.11 </span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 5,348 more rows, and 52 more variables: REACHCODE &lt;chr&gt;,</span></span>
 <span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   FlowDir &lt;int&gt;, WBArea_Permanent_Identifier &lt;chr&gt;, FTYPE &lt;int&gt;, FCODE &lt;int&gt;,</span></span>
 <span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   MainPath &lt;int&gt;, InNetwork &lt;int&gt;, VisibilityFilter &lt;int&gt;,</span></span>
 <span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   Shape_Length &lt;dbl&gt;, COMID &lt;dbl&gt;, VPUID &lt;chr&gt;, Enabled &lt;int&gt;,</span></span>
 <span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   Shape &lt;MULTILINESTRING [°]&gt;, StreamLeve &lt;int&gt;, StreamOrde &lt;int&gt;,</span></span>
 <span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   StreamCalc &lt;int&gt;, FromNode &lt;dbl&gt;, ToNode &lt;dbl&gt;, Hydroseq &lt;dbl&gt;,</span></span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, ...</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   LevelPathI &lt;dbl&gt;, Pathlength &lt;dbl&gt;, TerminalPa &lt;dbl&gt;, ArbolateSu &lt;dbl&gt;, …</span></span>
 <span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(standalone))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
