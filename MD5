@@ -1,7 +1,7 @@
-d65d15c17d19b9fe848f5f4bf5f198f3 *DESCRIPTION
-2bb3a58469a89ed3dd1e8e8a57b20fe5 *NAMESPACE
-b165ddb379c816c736495f8bc66d1c44 *NEWS.md
-9dd2c20f44ffe1eb637384256761c04b *R/boundary_datasets.R
+42811c92d342f0a2284b891afc46ebd5 *DESCRIPTION
+3067b54fc95609f1551ae8bd6689ba75 *NAMESPACE
+08474a0fe72532ca70598426881a95cd *NEWS.md
+c1c6564a71a41a5397230c6c06affa76 *R/boundary_datasets.R
 82811a6e6c779dfa35e3af45a45f41c0 *R/calc_network.R
 cb75fc13dbe484b4a7eb454184d765f0 *R/discover_nhdplus.R
 9d6064701805a79f446cbba31f2fb97d *R/downloading_tools.R
@@ -34,7 +34,7 @@ f18b12e89fc05a371de8ac744bbcc99b *inst/doc/US_data.R
 18288bb3f145b2223194720bd5aa3beb *inst/doc/US_data.html
 5b7dd2ec045e43c426e7b6eb3a8c8315 *inst/doc/advanced_network.R
 01f4dfc28292bd201c25be973865a4af *inst/doc/advanced_network.Rmd
-b8c33615443ef4eb9dd4f2ac1f04b1ad *inst/doc/advanced_network.html
+a612b5bd38092126e629e1bbc0910a3f *inst/doc/advanced_network.html
 9d7a544a814c33b1d7f463a3d6c9c888 *inst/doc/indexing.R
 3dc828a6043053db828f83418e1d8cbb *inst/doc/indexing.Rmd
 787dea710376e29698f6710cebd5fade *inst/doc/indexing.html
@@ -73,6 +73,7 @@ e507418e326a95be4bdf9e80fe44d9e8 *man/figures/logo.png
 c0b418301248b6e560113d84d89b97db *man/get_DM.Rd
 f5a8140cd780a3bc2489dfbb20d44613 *man/get_UM.Rd
 aaa0eaaf8a027d94ea785422e88f56f9 *man/get_UT.Rd
+b12feac20032801d6c2d7fce29f119f3 *man/get_boundaries.Rd
 da9906a21ed014bb39a07a922bb903b8 *man/get_elev_along_path.Rd
 639b2402fa16c382e02b4d5c43fea1c1 *man/get_flowline_index.Rd
 75a8500db0a49cf7abd08a4dfd5a9ca8 *man/get_gagesII.Rd
