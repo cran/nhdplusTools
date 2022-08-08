@@ -424,15 +424,17 @@ other options are possible with <code>discover_nhdplus_id</code> and
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                          <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">return_data =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>flowline <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(nhdplus, <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Spherical geometry (s2) switched on</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>upstream_nwis <span class="ot">&lt;-</span> <span class="fu">navigate_nldi</span>(nwissite,</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                               <span class="at">mode =</span> <span class="st">&quot;upstreamTributaries&quot;</span>,</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                               <span class="at">data_source =</span> <span class="st">&quot;nwissite&quot;</span>)</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>basin <span class="ot">&lt;-</span> <span class="fu">get_nldi_basin</span>(nwissite)</span></code></pre></div>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>flowline <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(nhdplus, <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>upstream_nwis <span class="ot">&lt;-</span> <span class="fu">navigate_nldi</span>(nwissite,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                               <span class="at">mode =</span> <span class="st">&quot;upstreamTributaries&quot;</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                               <span class="at">data_source =</span> <span class="st">&quot;nwissite&quot;</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>basin <span class="ot">&lt;-</span> <span class="fu">get_nldi_basin</span>(nwissite)</span></code></pre></div>
 <p>Now we have a file at the path held in the variable
 <code>nhdplus</code> and three <code>sf</code> <code>data.frame</code>s
 with contents that look like:</p>
