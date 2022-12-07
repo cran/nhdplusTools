@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -20,9 +20,9 @@ Authors@R: c(person(given = "David",
                    role = "ctb", 
                    email = "joshualerickson@gmail.com"))
 Description: Tools for traversing and working with National Hydrography Dataset Plus (NHDPlus) data. All methods implemented in 'nhdplusTools' are available in the NHDPlus documentation available from the US Environmental Protection Agency <https://www.epa.gov/waterdata/basic-information>.
-URL: https://usgs-r.github.io/nhdplusTools/
-        https://github.com/usgs-r/nhdplusTools/
-BugReports: https://github.com/usgs-r/nhdplusTools/issues/
+URL: https://doi-usgs.github.io/nhdplusTools/
+        https://github.com/doi-usgs/nhdplusTools/
+BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
 Depends: R (>= 4.0)
 Imports: dplyr, rlang, sf, RANN, units, magrittr, jsonlite, httr, xml2,
         R.utils, utils, tidyr, methods, rosm, prettymapr, fst,
@@ -38,11 +38,11 @@ Config/testthat/parallel: true
 Config/testthat/edition: 3
 LazyData: true
 NeedsCompilation: no
-Packaged: 2022-11-27 14:54:27 UTC; dblodgett
+Packaged: 2022-12-07 01:37:36 UTC; dblodgett
 Author: David Blodgett [aut, cre] (<https://orcid.org/0000-0001-9489-1710>),
   Mike Johnson [aut] (<https://orcid.org/0000-0002-5288-8350>),
   Marc Weber [ctb] (<https://orcid.org/0000-0002-9742-4744>),
   Josh Erickson [ctb]
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2022-11-28 15:30:07 UTC
+Date/Publication: 2022-12-07 16:00:02 UTC

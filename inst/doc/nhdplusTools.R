@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## ----install, echo = TRUE, eval = FALSE---------------------------------------
 #  # install.packages("remotes")
-#  # remotes::install_github("usgs-r/nhdplusTools")
+#  # remotes::install_github("doi-usgs/nhdplusTools")
 
 ## ----teardown, include=FALSE--------------------------------------------------
 if(Sys.getenv("BUILD_VIGNETTES") != "TRUE") {
