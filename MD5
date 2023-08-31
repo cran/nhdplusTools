@@ -1,6 +1,6 @@
-031a48c03a3a8fdb77d5f7a9d92471c8 *DESCRIPTION
+7364e089cf898ef962e071e41d2a525e *DESCRIPTION
 14b9e9ac8669ae1c0065ec27f07fbb93 *NAMESPACE
-29ef8874935d44c7fa773e8e039e9c2c *NEWS.md
+a027c901bc4726bc273bd4d6af2b0809 *NEWS.md
 3c0f76629fed0648549bbfc404fe3b89 *R/A_nhdplusTools.R
 c1c6564a71a41a5397230c6c06affa76 *R/boundary_datasets.R
 f0f46abcab904a5517d45785b4426933 *R/calc_network.R
@@ -17,14 +17,14 @@ cf390d808577eb20328bda5b6fb68f36 *R/get_network.R
 6b00be7526487bc1f2c0d4ee82a1d877 *R/get_oaproc.R
 b06f435e590affb0d5019efd14da0557 *R/get_path_lengths.R
 690144886d66d7576e814f05a42fc89a *R/get_paths.R
-1c76afc9014a9b73baad08c349831b54 *R/get_vaa.R
+e8e55d3bb0abdc7a6a2fde7e9a52a5d5 *R/get_vaa.R
 ac9b3279a007b471f9a4134228c48213 *R/hl_graph_utils.R
 0990bde0e3bb9cd937d9e383d1f3925c *R/index_nhdplus.R
 bed563ffb4115397024f91f90e997f7c *R/map_nhdplus.R
 0dd42c930b06965d62486501ec56d2e9 *R/plot_nhdplus.R
 545e55249dd574bcde0acd4063b1e94e *R/prep_nhdplus.R
 4c4945d5ef5aa99bc3cdc7f6808a79ae *R/rebuild_topology.R
-70d7e419fcdc212299b0e6c2cd048c73 *R/rescale_catchments.R
+9a25d26411f8155ed2eb5764295cc23b *R/rescale_catchments.R
 d860f742b6c9bd98921ee763934aad4d *R/run_plus_attributes.R
 63a326bbbb331507b7211fe1bf7066eb *R/subset_nhdplus.R
 805d9f293bc5b5c94db2f0573e9fb6ed *README.md
@@ -38,7 +38,7 @@ f18b12e89fc05a371de8ac744bbcc99b *inst/doc/US_data.R
 6b644c80cfa8987f2c702364286cbd0c *inst/doc/US_data.html
 5b7dd2ec045e43c426e7b6eb3a8c8315 *inst/doc/advanced_network.R
 9eaee2e40925fdde8ac951d0a8d9055d *inst/doc/advanced_network.Rmd
-ed2bc131d9ab61161fadd4e7acf0c634 *inst/doc/advanced_network.html
+673334fb30b6b7b3e5e31ee3eb8a8dc6 *inst/doc/advanced_network.html
 9d7a544a814c33b1d7f463a3d6c9c888 *inst/doc/indexing.R
 39fcfd29c1bd35a1c2c2e3c49045b809 *inst/doc/indexing.Rmd
 69ba4c5a833fc45d800566227ccb9d49 *inst/doc/indexing.html
@@ -78,7 +78,7 @@ ec5ba363ee11cd1ccb4d1cd8ad9fcb9b *man/fix_flowdir.Rd
 f5a8140cd780a3bc2489dfbb20d44613 *man/get_UM.Rd
 aaa0eaaf8a027d94ea785422e88f56f9 *man/get_UT.Rd
 b12feac20032801d6c2d7fce29f119f3 *man/get_boundaries.Rd
-180afb960ff73581aef9b9a88aa91c63 *man/get_catchment_characteristics.Rd
+a2054f7430e5eb3834d51faf98576cf0 *man/get_catchment_characteristics.Rd
 56ada4ee4a87e19851f65a0767a30d56 *man/get_characteristics_metadata.Rd
 8d9a603355a5ad304d52e8cb12031f94 *man/get_elev_along_path.Rd
 4d5d58369632c05dcdedb24b69746901 *man/get_flowline_index.Rd
