@@ -26,7 +26,6 @@ oldoption <- options(scipen = 9999,
 ## ----data_dir_setup, echo=FALSE, include=FALSE--------------------------------
 work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
-library(rosm)
 set_default_cachedir(work_dir)
 library(nhdplusTools)
 
@@ -59,8 +58,7 @@ plot_nhdplus(list(list("comid", "13293970"),
              nhdplus_data = sample_data,
              plot_config = list(basin = list(lwd = 2),
                                 outlets = list(huc12pp = list(cex = 1.5),
-                                               comid = list(col = "green"))),
-             stoponlargerequest = FALSE)
+                                               comid = list(col = "green"))))
 
 ## ----bbox_plotting, message=FALSE---------------------------------------------
 bbox <- sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816, xmax = -89.24681, ymax = 43.17192),
@@ -99,60 +97,51 @@ class(st_geometry(flowline))
 class(st_geometry(upstream_nwis$UT_nwissite))
 class(st_geometry(basin))
 
-## ----bbox, message=FALSE------------------------------------------------------
-library(sp)
-
-sf_bbox <- st_bbox(basin)
-sf_bbox
-class(sf_bbox)
-
-sp_bbox <- sp::bbox(sf::as_Spatial(basin))
-sp_bbox
-class(sp_bbox)
-
-# Or without the sp::bbox
-sp_bbox <- matrix(sf_bbox, 
-                  byrow = FALSE, 
-                  ncol = 2, 
-                  dimnames = list(c("x", "y"), 
-                                  c("min", "max")))
-sp_bbox
-
-ggmap_bbox <- setNames(sf_bbox, c("left", "bottom", "right", "top"))
-ggmap_bbox
-
 ## ----plot---------------------------------------------------------------------
 prep_layer <- function(x) st_geometry(st_transform(x, 3857))
 
-prettymapr::prettymap({
-  rosm::osm.plot(sp_bbox, type = "cartolight", quiet = TRUE, 
-                 progress = "none", cachedir = work_dir)
-  
-  plot(prep_layer(basin), 
-       lwd = 2, add = TRUE)
-  
-  plot(prep_layer(flowline), 
-       lwd = 1.5, col = "deepskyblue", add = TRUE)
-  
-  plot(prep_layer(dplyr::filter(flowline, streamorde > 2)), 
-       lwd = 3, col = "darkblue", add = TRUE)
-  
-  us_nwis_layer <- prep_layer(upstream_nwis)
-  
-  plot(us_nwis_layer, 
-       pch = 17, cex = 1.5, col = "yellow", add = TRUE)
-  
-  label_pos <- st_coordinates(us_nwis_layer)
-  
-  text(label_pos[,1],label_pos[,2], 
-       upstream_nwis$identifier, 
-       adj = c(-0.2, 0.5), cex = 0.7)
-  
-}, drawarrow = TRUE)
+bb <- sf::st_as_sfc(sf::st_bbox(prep_layer(basin)))
+
+tiles <- maptiles::get_tiles(bb, 
+                             zoom = 11, crop = FALSE,
+                             verbose = FALSE, 
+                             provider = "Esri.NatGeoWorldMap")
+
+mapsf::mf_map(bb, type = "base", col = NA, border = NA)
+
+maptiles::plot_tiles(tiles, add = TRUE)
+
+mapsf::mf_map(bb, type = "base", add = TRUE, col = NA, border = NA)
+mapsf::mf_arrow(adjust = bb)
+mapsf::mf_scale()
+
+plot(prep_layer(basin), 
+     lwd = 2, add = TRUE)
+
+plot(prep_layer(flowline), 
+     lwd = 1.5, col = "deepskyblue", add = TRUE)
+
+plot(prep_layer(dplyr::filter(flowline, streamorde > 2)), 
+     lwd = 3, col = "darkblue", add = TRUE)
+
+us_nwis_layer <- prep_layer(upstream_nwis$UT_nwissite)
+
+plot(us_nwis_layer, 
+     pch = 17, cex = 1.5, col = "yellow", add = TRUE)
+
+label_pos <- st_coordinates(us_nwis_layer)
+
+text(label_pos[,1],label_pos[,2], 
+     upstream_nwis$identifier, 
+     adj = c(-0.2, 0.5), cex = 0.7)
+
 
 ## ----ggmap, message=FALSE, warning=FALSE--------------------------------------
 library(ggmap)
 library(ggplot2)
+
+ggmap_bbox <- setNames(sf::st_bbox(basin), c("left", "bottom", "right", "top"))
+ggmap_bbox
 
 upstream_nwis <- dplyr::bind_cols(upstream_nwis$UT_nwissite,
                            dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis$UT_nwissite)), 

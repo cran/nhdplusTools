@@ -37,7 +37,8 @@ library(nhdplusTools)
 
 nhdplus_path(file.path(work_dir, "natseamless.gpkg"))
 
-flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network")
+flowlines <- sf::read_sf(nhdplus_path(), "NHDFlowline_Network") |>
+  sf::st_zm()
 gages <- sf::read_sf(nhdplus_path(), "Gage")
 
 ## ----get_indexes--------------------------------------------------------------

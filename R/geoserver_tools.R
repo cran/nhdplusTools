@@ -5,7 +5,7 @@
 #' Spatial Reference System (SRS) as the input AOI. If a individual or set of
 #' IDs are used to query, then the default geoserver CRS of EPSG:4326 is
 #' preserved. In all cases, a user-defined SRS can be passed to \code{t_srs}
-#' which will override all previous SRS's (either input or default).
+#' which will override all previous SRS (either input or default).
 #' All buffer and distance operations are handled internally using in
 #' EPSG:5070 Albers Equal Area projection
 #' @param AOI sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
@@ -27,6 +27,7 @@
 #' @importFrom sf st_crs st_geometry_type st_buffer st_transform st_zm read_sf st_bbox st_as_sfc
 #' @importFrom httr POST RETRY
 #' @importFrom dplyr filter
+#' @importFrom methods as
 
 query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
                                  type = NULL, filter = NULL,
@@ -195,7 +196,7 @@ query_usgs_geoserver <- function(AOI = NULL,  ids = NULL,
   }
 
   if(!is.null(out)) {
-    return(out)
+    return(select(out, -any_of("id")))
   } else {
     warning(paste("No", here$user_call, "features found"), call. = FALSE)
     NULL
