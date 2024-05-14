@@ -26,7 +26,6 @@ oldoption <- options(scipen = 9999,
 ## ----data_dir_setup, echo=FALSE, include=FALSE--------------------------------
 work_dir <- file.path(nhdplusTools_data_dir(), "plot_v_cache")
 dir.create(work_dir, recursive = TRUE, showWarnings = FALSE)
-set_default_cachedir(work_dir)
 library(nhdplusTools)
 
 ## ----nwis_simple1, message=FALSE----------------------------------------------
@@ -136,7 +135,7 @@ text(label_pos[,1],label_pos[,2],
      adj = c(-0.2, 0.5), cex = 0.7)
 
 
-## ----ggmap, message=FALSE, warning=FALSE--------------------------------------
+## ----ggmap,  message=FALSE, warning=FALSE-------------------------------------
 library(ggmap)
 library(ggplot2)
 
@@ -147,16 +146,17 @@ upstream_nwis <- dplyr::bind_cols(upstream_nwis$UT_nwissite,
                            dplyr::rename(dplyr::as_tibble(sf::st_coordinates(upstream_nwis$UT_nwissite)), 
                                          lat = Y, lon = X))
 
-basemap_toner <- get_map(source = "stamen", maptype = "toner", 
-                         location = ggmap_bbox, zoom = 11, messaging = FALSE)
-basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
-                           location = ggmap_bbox, zoom = 11, messaging = FALSE)
-toner_map <- ggmap(basemap_toner)
-terrain_map <- ggmap(basemap_terrain)
+# ggmap now requires api keys
+# basemap_toner <- get_map(source = "stamen", maptype = "toner", 
+#                          location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# basemap_terrain <- get_map(source = "stamen", maptype = "terrain-lines", 
+#                            location = ggmap_bbox, zoom = 11, messaging = FALSE)
+# toner_map <- ggmap(basemap_toner)
+# terrain_map <- ggmap(basemap_terrain)
+# 
+# toner_map
 
-toner_map
-
-terrain_map + geom_sf(data = basin,
+ggplot() + geom_sf(data = basin,
                         inherit.aes = FALSE,
                         color = "black", fill = NA) + 
   geom_sf(data = flowline,

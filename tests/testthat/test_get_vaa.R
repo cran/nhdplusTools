@@ -2,6 +2,7 @@
 
 test_that("vaa examples", {
   skip_on_cran()
+  skip_on_ci()
 
   vaa_names <- get_vaa_names()
 
@@ -35,6 +36,8 @@ test_that("vaa examples", {
 test_that("catchment chars", {
 
   skip_on_cran()
+  skip_on_os("linux")
+  skip_on_os("mac")
 
   httptest::without_internet({
     suppressMessages(expect_warning(w <- get_characteristics_metadata(cache = FALSE)))

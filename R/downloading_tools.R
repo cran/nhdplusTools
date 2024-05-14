@@ -104,9 +104,24 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
       if(download_files & !dir.exists(gsub(".zip", ".gdb", out_file)) &
          !(length(gdb_in_dir) > 0 && !dir.exists(gdb_in_dir))) {
 
+        if(file.exists(out_file)) {
+          unlink(out_file)
+        }
+
         httr::RETRY("GET", url, httr::write_disk(out_file), httr::progress())
 
-        zip::unzip(out_file, exdir = out[length(out)])
+        tryCatch({zip::unzip(out_file, exdir = out[length(out)])},
+                 error = function(e) {
+                   warning("error unzipping with zip::unzip \n",
+                           out_file, "\n", e, "\ntrying a different way", immediate. = TRUE)
+                   files <- try(utils::unzip(out_file, exdir = out[length(out)]))
+                   if(!inherits(files, "try-error")) {
+                     warning("Success with utils::unzip", immediate. = TRUE)
+                   } else {
+                     warning("unzip of\n", out_file,
+                             "\nfailed with utils and zip packages.\n",
+                             "Try manually unzipping?", immediate. = TRUE)}
+                 })
 
         unlink(out_file)
       } else if(!download_files) {
@@ -136,13 +151,13 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 #'   download_nhdplusV2("./data/nhd/")
 #'
 #'   download_nhdplusv2(outdir = "./inst/",
-#'       url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
+#'       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
 #'                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
 #'                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
 #' }
 
 download_nhdplusv2 <- function(outdir,
-                               url = paste0("https://edap-ow-data-commons.s3.amazonaws.com/NHDPlusV21/",
+                               url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
                                             "Data/NationalData/NHDPlusV21_NationalData_Seamless",
                                             "_Geodatabase_Lower48_07.7z"),
                                progress = TRUE) {

@@ -86,13 +86,24 @@ get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
 
       layer_set <- lapply(gdbs, get_hr_data, layer = layer, ...)
 
-      out <- do.call(rbind, layer_set)
+      out <- dplyr::bind_rows(layer_set)
 
       try(out <- st_sf(out))
     }
 
-    if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals)
-      out <- make_standalone(out)
+    if(grepl("flowline", layer, ignore.case = TRUE) & check_terminals) {
+      expect_names <- get(paste0("make_standalone_tonode_attributes"),
+                          envir = nhdplusTools_env)
+      if(!all(expect_names %in% names(out))) {
+        warning("check_terminals is true but attributes selected do not support the checks.")
+      } else {
+        tryCatch(out <- make_standalone(out),
+                 error = function(e) {
+                   warning("Failed to execute 'make_standalone' on output.\n",
+                           "Error was:\n", e)
+                 })
+      }
+    }
 
     if(!is.null(out_gpkg) && (!layer %in% layer_names | overwrite)) {
       write_sf(out, layer = layer, dsn = out_gpkg)
@@ -123,8 +134,11 @@ get_hr_data <- function(gdb, layer = NULL, min_size_sqkm = NULL,
                         simp = NULL, proj = NULL, rename = TRUE) {
   if(layer == "NHDFlowline") {
     hr_data <- suppressWarnings(read_sf(gdb, "NHDPlusFlowlineVAA"))
-    hr_data <- select(hr_data, -ReachCode, -VPUID)
-    hr_data <- left_join(st_zm(read_sf(gdb, layer)), hr_data, by = "NHDPlusID")
+    hr_data <- select(hr_data, -dplyr::matches(c("ReachCode", "VPUID"), ignore.case = TRUE))
+
+    join_col <- names(hr_data)[grepl("nhdplusid", names(hr_data), ignore.case = TRUE)]
+
+    hr_data <- left_join(st_zm(read_sf(gdb, layer)), hr_data, by = join_col)
 
     fix <- which( # In the case things come in as non-linestring geometries
       !sapply(st_geometry(hr_data),
@@ -172,7 +186,7 @@ cull_cols <- function(x, keep_cols) {
 
   if(is.null(keep_cols)) return(x)
 
-  keep_cols <- keep_cols[keep_cols %in% names(x)]
+  keep_cols <- names(x)[sapply(names(x), \(x) any(grepl(x, keep_cols, ignore.case = TRUE)))]
 
   geom_name <- attr(x, "sf_column")
   if(!geom_name %in% keep_cols) keep_cols <- c(keep_cols, geom_name)
