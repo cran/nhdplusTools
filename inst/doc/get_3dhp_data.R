@@ -2,6 +2,7 @@
 library(nhdplusTools)
 
 local <- (Sys.getenv("BUILD_VIGNETTES") == "TRUE")
+
 if(local) {
   cache_path <- file.path(nhdplusTools_data_dir(), "3dhp_v_cache")
 } else {
