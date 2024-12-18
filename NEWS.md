@@ -1,6 +1,15 @@
-nhdplusTools 1.2.1
+nhdplusTools 1.3.0
 ==========
-Bug fix for data cache directory #389
+
+- improve performance of discover_nhdplus_id(). #417
+- update urls for NLDI and Geoserver to use api.water.usgs.gov
+- no longer check ring direction in `get_nhdplushr()` to avoid very slow run time on some polygon layers. #411
+- fix splinters returned from get_split_catchment. #406
+- add support for more NHDPlusHR data and improve data loads. #404, #360
+- Deprecated `discover_nldi_characteristics()` and `get_nldi_characteristics()`
+- Bug fix for data cache directory #389
+- Improved warnings for web service requests. #400, #398
+- Improved documentation for `get_split_catchment()`. #399
 
 nhdplusTools 1.2.0
 ==========

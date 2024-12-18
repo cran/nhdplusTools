@@ -50,7 +50,7 @@ WBAREACOMI <- "WBAREACOMI"
 
 # List of input names that should be changed to replacement names
 nhdplus_attributes <- list(
-  COMID = COMID, NHDPlusID = COMID,
+  COMID = COMID, NHDPlusID = COMID, nhdplusid = COMID,
   Permanent_Identifier = Permanent_Identifier,
   RPUID = RPUID,
   VPUID = VPUID,
@@ -92,7 +92,7 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://labs.waterdata.usgs.gov/geoserver/",
+assign("geoserver_root", "https://api.water.usgs.gov/geoserver/",
        envir = nhdplusTools_env)
 
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
@@ -259,10 +259,12 @@ assign("default_nhdplus_path", default_nhdplus_path, envir = nhdplusTools_env)
 
 nhd_bucket <- "https://prd-tnm.s3.amazonaws.com/"
 nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Current/GDB/"
+archive_nhdhr_file_list <- "?prefix=StagedProducts/Hydrography/NHDPlusHR/VPU/Archive/GDB/"
 nhd_file_list <- "?prefix=StagedProducts/Hydrography/NHD/HU4/GDB/"
 
 assign("nhd_bucket", nhd_bucket, envir = nhdplusTools_env)
 assign("nhdhr_file_list", nhdhr_file_list, envir = nhdplusTools_env)
+assign("archive_nhdhr_file_list", archive_nhdhr_file_list, envir = nhdplusTools_env)
 
 assign("nldi_tier", "prod",
        envir = nhdplusTools_env)
@@ -274,10 +276,16 @@ nhdplus_debug <- function() {
 #' @noRd
 get_nldi_url <- function() {
 
-  tier <- get("nldi_tier", envir = nhdplusTools_env)
+  tier_env <- Sys.getenv("NLDI_TIER")
+
+  tier <- if(tier_env != "") {
+    tier_env
+  } else {
+    get("nldi_tier", envir = nhdplusTools_env)
+  }
 
   if (tier == "prod") {
-    "https://labs.waterdata.usgs.gov/api/nldi"
+    "https://api.water.usgs.gov/nldi"
   } else if (tier == "test") {
     "https://labs-beta.waterdata.usgs.gov/api/nldi"
   } else {
