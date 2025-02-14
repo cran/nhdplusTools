@@ -21,9 +21,9 @@ in any Spatial Reference System.}
 
 \item{ids}{character vector of id3dhp ids or mainstem uris}
 
-\item{type}{character. Type of feature to return
+\item{type}{character. Type of feature to return. e.g.
 ("hydrolocation", "flowline", "waterbody", "drainage area", "catchment").
-If NULL (default) a data.frame of available resources is returned}
+If NULL (default) a data.frame of available types is returned}
 
 \item{universalreferenceid}{character vector of hydrolocation universal
 reference ids such as reachcodes}

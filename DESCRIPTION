@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 1.3.0
+Version: 1.3.1
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -27,7 +27,7 @@ Description: Tools for traversing and working with National Hydrography Dataset 
 URL: https://doi-usgs.github.io/nhdplusTools/
         https://github.com/doi-usgs/nhdplusTools/
 BugReports: https://github.com/doi-usgs/nhdplusTools/issues/
-Depends: R (>= 4.0)
+Depends: R (>= 4.1)
 Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr,
         jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles,
         mapsf, fst, arrow, tools, zip, pbapply, memoise, digest
@@ -42,7 +42,7 @@ Config/testthat/edition: 3
 LazyData: true
 Language: en-US
 NeedsCompilation: no
-Packaged: 2024-12-17 19:21:01 UTC; dblodgett
+Packaged: 2025-02-14 17:47:11 UTC; dblodgett
 Author: David Blodgett [aut, cre] (<https://orcid.org/0000-0001-9489-1710>),
   Mike Johnson [aut] (<https://orcid.org/0000-0002-5288-8350>),
   Marc Weber [ctb] (<https://orcid.org/0000-0002-9742-4744>),
@@ -50,4 +50,4 @@ Author: David Blodgett [aut, cre] (<https://orcid.org/0000-0001-9489-1710>),
   Lauren Koenig [ctb] (<https://orcid.org/0000-0002-7790-330X>)
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2024-12-18 08:30:02 UTC
+Date/Publication: 2025-02-14 23:20:02 UTC
