@@ -46,7 +46,7 @@ oldoption <- options(scipen = 9999)
 
   network <- get_3dhp(basin$basin, type = "flowline")
   water <- get_3dhp(basin$basin, type = "waterbody")
-  hydrolocation <- get_3dhp(basin$basin, type = "hydrolocation")
+  hydrolocation <- get_3dhp(basin$basin, type = "hydrolocation - reach code, external connection")
   
   down_mains <- get_3dhp(ids = dm, type = "flowline")
   
@@ -70,11 +70,11 @@ oldoption <- options(scipen = 9999)
   reachcode <- "07070004002889"
 
   hydrolocation <- get_3dhp(universalreferenceid = reachcode,
-                            type = "reach code, external connection")
+                            type = "hydrolocation - reach code, external connection")
 
   hydrolocation
 
-  mainstem_points <- get_3dhp(ids = hydrolocation$mainstemid, type = "reach code, external connection")
+  mainstem_points <- get_3dhp(ids = hydrolocation$mainstemid, type = "hydrolocation - reach code, external connection")
   mainstem_lines <- get_3dhp(ids = hydrolocation$mainstemid, type = "flowline")
 
   old_par <- par(mar = c(0, 0, 0, 0))
