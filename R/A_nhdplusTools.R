@@ -92,13 +92,13 @@ nhdplus_attributes <- list(
 
 assign("nhdplus_attributes", nhdplus_attributes, envir = nhdplusTools_env)
 
-assign("geoserver_root", "https://api.water.usgs.gov/geoserver/",
-       envir = nhdplusTools_env)
-
 assign("arcrest_root", "https://hydro.nationalmap.gov/arcgis/rest/services/",
        envir = nhdplusTools_env)
 
 assign("gocnx_ref_base_url", "https://reference.geoconnex.us/",
+       envir = nhdplusTools_env)
+
+assign("usgs_water_root", "https://api.water.usgs.gov/fabric/pygeoapi/",
        envir = nhdplusTools_env)
 
 assign("split_flowlines_attributes",
@@ -450,7 +450,7 @@ nhdplusTools_memoise_timeout <- function() {
   query_usgs_arcrest <<- memoise::memoise(query_usgs_arcrest,
                                           ~memoise::timeout(nhdplusTools_memoise_timeout()),
                                           cache = nhdplusTools_memoise_cache())
-  query_usgs_geoserver <<- memoise::memoise(query_usgs_geoserver,
+  query_usgs_oafeat <<- memoise::memoise(query_usgs_oafeat,
                                             ~memoise::timeout(nhdplusTools_memoise_timeout()),
                                             cache = nhdplusTools_memoise_cache())
   query_nldi <<- memoise::memoise(query_nldi,
@@ -504,6 +504,44 @@ align_nhdplus_names <- function(x){
 
   return(x)
 
+}
+
+filter_list_kvp <- \(l, key, val, type = NULL, n = NULL) {
+  ret <- l[vapply(l, \(x) x[[key]] == val, TRUE)]
+
+
+  if(!is.null(type)) {
+    ret <- ret[vapply(ret, \(x) x[["type"]] == type, TRUE)]
+  }
+
+  if(!is.null(n)) {
+    ret <- ret[[n]]
+  }
+
+  ret
+}
+
+extract <- `[[`
+
+split_equal_size <- function (x, n)
+{
+  nr <- try(nrow(x), silent = TRUE)
+  if (inherits(nr, "try-error") | is.null(nr))
+    nr <- try(length(x), silent = TRUE)
+  if (!inherits(nr, "numeric") & length(nr) != 1)
+    stop("x can't be interpreted as a data.frame or list")
+  split(x, rep(1:ceiling(nr/n), each = n, length.out = nr))
+}
+
+#' @title Trim and Cull NULLs
+#' @description Remove NULL arguments from a list
+#' @param x a list
+#' @keywords internal
+#' @return a list
+#' @noRd
+
+tc <- function(x) {
+  Filter(Negate(is.null), x)
 }
 
 #' @importFrom hydroloom st_compatibalize
