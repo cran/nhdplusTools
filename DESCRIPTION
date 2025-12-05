@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -42,7 +42,7 @@ Config/testthat/edition: 3
 LazyData: true
 Language: en-US
 NeedsCompilation: no
-Packaged: 2025-11-18 17:56:24 UTC; dblodgett
+Packaged: 2025-12-04 17:44:10 UTC; dblodgett
 Author: David Blodgett [aut, cre] (ORCID:
     <https://orcid.org/0000-0001-9489-1710>),
   Mike Johnson [aut] (ORCID: <https://orcid.org/0000-0002-5288-8350>),
@@ -51,4 +51,4 @@ Author: David Blodgett [aut, cre] (ORCID:
   Lauren Koenig [ctb] (ORCID: <https://orcid.org/0000-0002-7790-330X>)
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2025-11-19 15:40:07 UTC
+Date/Publication: 2025-12-05 09:10:02 UTC

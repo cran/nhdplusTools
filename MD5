@@ -1,12 +1,12 @@
-451307515e6e656b4d4de1799b301d50 *DESCRIPTION
+1657464f12cc7e539fc3edf64798626a *DESCRIPTION
 786be965f8fd05fe4b952867b2d6e1d9 *NAMESPACE
-858f20ae23fa8471e429d9aaadc52d45 *NEWS.md
+c67619a7a3f408a53ee58300972d17b5 *NEWS.md
 2419f7fdfd91b55f1a6a88f29e443bb2 *R/A_nhdplusTools.R
 1355e137c001d925e018be8df40ec7b0 *R/arcrest_tools.R
 c1c6564a71a41a5397230c6c06affa76 *R/boundary_datasets.R
 7720de2827310507eb56b7ed53d792f6 *R/calc_network.R
 38ea2451c846d5a117f62eaad623aac6 *R/discover_nhdplus.R
-790d483438815b1186fcc47f865656c1 *R/downloading_tools.R
+2fc84dc63a5d4a3f959505cb12eae418 *R/downloading_tools.R
 eddcef9fade37ef2b0d49200ae6a37e0 *R/get_codes.R
 fd93d26e9a42485809063b0a090e5b5e *R/get_geoconnex.R
 ab6f0d2d7d291a27bff61fbce4de42ad *R/get_hydro.R
@@ -20,7 +20,7 @@ c607b79dbd245a5362b5e7bcc58701c2 *R/get_oaproc.R
 8c30a134390b4c93dfdba8d35b354f0e *R/get_vaa.R
 cdab948296a8851839c82905d080226c *R/index_nhdplus.R
 bed563ffb4115397024f91f90e997f7c *R/map_nhdplus.R
-69466a684b6d64d48f6094b784dd9f5d *R/oafeat_tools.R
+7420040429261c44709fd3d722b660e4 *R/oafeat_tools.R
 f9512e57ce90b8c811644907837034f2 *R/plot_nhdplus.R
 06a13711e9a501cdc52af5dd3fde5b9c *R/prep_nhdplus.R
 60a914f44c122e1c9fde1680f10f235e *R/rebuild_topology.R
@@ -32,7 +32,7 @@ d54042561b90aafd8a9a202ea63e1e4b *build/partial.rdb
 ce4b70aa40687f28f8506eb959894336 *build/vignette.rds
 f8ea3bb8d7ff09b6ba64c429e417c9d8 *data/rpu_boundaries.rda
 a313f2bb414b4895544b5c56de438d7b *data/vpu_boundaries.rda
-6a25b0ea9cccde76595fdf44aa31b93b *inst/CITATION
+f15acde30abee5054a9423af858e6de6 *inst/CITATION
 604c16e6f9030175138203119664a066 *inst/WORDLIST
 3afd9c67f98ca7de673bef25b19bc7ef *inst/doc/get_3dhp_data.R
 1e469c8f8d9ae4f636f82df188dc3f5d *inst/doc/get_3dhp_data.Rmd
@@ -153,7 +153,7 @@ b61061a048e7846a279c7f49d38c117f *tests/testthat/test_00_plot_nhdplus.R
 d295c1ebcf0f5ce8cc2394f0abd933dc *tests/testthat/test_01_get_nldi.R
 84045090e251b367316830db41a7bc98 *tests/testthat/test_02_subset.R
 5a1cbb29d77b26f8845f3f8907076c2f *tests/testthat/test_02_subset_extras.R
-f8d994bafee44d8988a3785c88c4dae8 *tests/testthat/test_03_get_functions.R
+8d56498d598aa310a986064108705716 *tests/testthat/test_03_get_functions.R
 e7dc9ef937c139e9f8b3aca4fcc11cff *tests/testthat/test_align_nhdplus_names.R
 2c526d4496cd136bca988b106ed7bdbf *tests/testthat/test_arcrest.R
 30c1ebad484923904d28ba1f2151fa65 *tests/testthat/test_boundary_data.R
