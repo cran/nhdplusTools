@@ -395,8 +395,8 @@ the bounding box of your input points.</p>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>                              sf<span class="sc">::</span><span class="fu">st_transform</span>(sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), <span class="dv">5070</span>), </span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>                              <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="dv">200</span>, <span class="st">&quot;meters&quot;</span>), </span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>                              <span class="at">max_matches =</span> <span class="dv">1</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; check results</span></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(sf<span class="sc">::</span><span class="fu">st_sf</span>(<span class="at">id =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gages)), </span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>                               <span class="at">geom =</span> sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages)), </span>
@@ -453,8 +453,8 @@ for the sake of demonstration)</p>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                              sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), </span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                              <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="fl">0.1</span>, <span class="st">&quot;degrees&quot;</span>), </span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                              <span class="at">precision =</span> <span class="dv">10</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; check results</span></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(gages))), indexes, <span class="at">by =</span> <span class="st">&quot;id&quot;</span>)</span></code></pre></div>
 <p>Now lets look at out comparison again.</p>
@@ -498,8 +498,8 @@ for disambiguation down below.</p>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>                                  sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages), </span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                                  <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="fl">0.01</span>, <span class="st">&quot;degrees&quot;</span>), </span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>                                  <span class="at">max_matches =</span> <span class="dv">10</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; check results</span></span>
 <span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
 <span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>indexes <span class="ot">&lt;-</span> <span class="fu">left_join</span>(sf<span class="sc">::</span><span class="fu">st_sf</span>(<span class="at">id =</span> <span class="dv">42</span>, </span>
 <span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>                               <span class="at">geom =</span> sf<span class="sc">::</span><span class="fu">st_geometry</span>(gages)[<span class="dv">42</span>]), </span>
@@ -614,8 +614,8 @@ like.</p>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>                                sf<span class="sc">::</span><span class="fu">st_transform</span>(flowlines, <span class="dv">5070</span>), </span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>                                sf<span class="sc">::</span><span class="fu">st_geometry</span>(sf<span class="sc">::</span><span class="fu">st_transform</span>(gages, <span class="dv">5070</span>)), </span>
 <span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>                                <span class="at">search_radius =</span> units<span class="sc">::</span><span class="fu">set_units</span>(<span class="dv">200</span>, <span class="st">&quot;m&quot;</span>)), <span class="at">by =</span> <span class="st">&quot;id&quot;</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; check results</span></span>
 <span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>                              </span>
 <span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>indexed_gages <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(gages, </span>
 <span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>                                      <span class="at">orig_REACHCODE =</span> REACHCODE, </span>

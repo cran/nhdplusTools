@@ -199,7 +199,7 @@ unique(discover_geoconnex_reference()[c("id", "title")])
 wolf_gages <- get_geoconnex_reference(basin, type = "gages")
 
 geoconnex_gage <- dplyr::filter(wolf_gages, 
-                                provider_id == gsub("USGS-", "", site_feature$identifier))
+                                provider_id == site_feature$identifier)
 
 wolf_mainstems <- get_geoconnex_reference(basin, type = "mainstems")
 

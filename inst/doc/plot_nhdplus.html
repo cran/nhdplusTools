@@ -428,17 +428,14 @@ other options are possible with <code>discover_nhdplus_id</code> and
 <span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>                          <span class="at">output_file =</span> <span class="fu">file.path</span>(work_dir, <span class="st">&quot;nhdplus.gpkg&quot;</span>),</span>
 <span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>                          <span class="at">nhdplus_data =</span> <span class="st">&quot;download&quot;</span>,</span>
 <span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>                          <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">return_data =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; Reading NHDFlowline_Network</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; Writing NHDFlowline_Network</span></span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>flowline <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(nhdplus, <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>upstream_nwis <span class="ot">&lt;-</span> <span class="fu">navigate_nldi</span>(nwissite,</span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>                               <span class="at">mode =</span> <span class="st">&quot;upstreamTributaries&quot;</span>,</span>
-<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>                               <span class="at">data_source =</span> <span class="st">&quot;nwissite&quot;</span>)</span>
-<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>basin <span class="ot">&lt;-</span> <span class="fu">get_nldi_basin</span>(nwissite)</span></code></pre></div>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>flowline <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(nhdplus, <span class="st">&quot;NHDFlowline_Network&quot;</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>upstream_nwis <span class="ot">&lt;-</span> <span class="fu">navigate_nldi</span>(nwissite,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>                               <span class="at">mode =</span> <span class="st">&quot;upstreamTributaries&quot;</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>                               <span class="at">data_source =</span> <span class="st">&quot;nwissite&quot;</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>basin <span class="ot">&lt;-</span> <span class="fu">get_nldi_basin</span>(nwissite)</span></code></pre></div>
 <p>Now we have a file at the path held in the variable
 <code>nhdplus</code> and three <code>sf</code> <code>data.frame</code>s
 with contents that look like:</p>

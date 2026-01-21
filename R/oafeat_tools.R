@@ -8,13 +8,13 @@
 #' which will override all previous SRS (either input or default).
 #' All buffer and distance operations are handled internally using an
 #' EPSG:5070 Albers Equal Area projection
+#'
 #' @param AOI sf (MULTI)POINT or (MULTI)POLYGON. An 'area of interest' can
 #' be provided as either a location (sf POINT) or area (sf POLYGON)
 #' in any Spatial Reference System.
 #' @param ids character or numeric. A set of identifier(s) from the data
 #' type requested, for example if NHDPlusV2, then a set of COMID(s).
 #' @param type character. Type of feature to return
-#' ('huc08','huc12', 'nhd', 'catchment', 'waterbodies', 'gagesII').
 #' If NULL (default) a data.frame of available resources is returned
 #' @param filter character. An filter to pass to the query
 #' @param t_srs  character (PROJ string or EPSG code) or numeric (EPSG code).
@@ -219,12 +219,13 @@ get_oafeat <- function(base,
   base_call <- paste0(base, "collections/", type, "/items")
   post_body <- list()
 
-  limit <- 1000
+  limit <- 500
 
   if(!is.null(AOI)) {
     if(is.character(AOI)) {
 
-      AOI <- try(sf::read_sf(AOI))
+      AOI <- try(sf::read_sf(AOI)) |>
+        st_transform(4326)
 
       if(!inherits(AOI, "sf")) {
         stop("AOI did not return an sf object when read")
@@ -232,11 +233,13 @@ get_oafeat <- function(base,
 
     }
 
-    if(!inherits(AOI, "bbox")) {
-      AOI <- st_bbox(AOI)
-    } else if(!inherits(AOI, "bbox") &&
-              grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
-      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m"))
+    if(!inherits(AOI, "bbox") &&
+       grepl("point", sf::st_geometry_type(AOI), ignore.case = TRUE)) {
+      AOI <- sf::st_buffer(AOI, units::as_units(buffer, "m")) |>
+        st_transform(4326) |>
+        st_bbox()
+    } else if(!inherits(AOI, "bbox")) {
+      AOI <- st_bbox(st_transform(AOI, 4326))
     }
 
     # pull features with paging if necessary
@@ -257,7 +260,7 @@ get_oafeat <- function(base,
       base_call <- paste0(base_call, paste0("?", id_attribute, "=", ids))
     } else {
       post_body <- list(ids = ids, id_attribute = id_attribute)
-      limit <- 500
+      limit <- 50
     }
 
   }
@@ -290,10 +293,17 @@ make_request <- function(req, body = "") {
     }
 
     if(body != "") {
-      out <- rawToChar(RETRY("POST",
-                             req,
-                             body = body,
-                             httr::content_type("application/query-cql-json"))$content)
+      r <- RETRY("POST",
+                   req,
+                   body = body,
+                   httr::content_type("application/query-cql-json"),
+                 pause_min = 5, pause_base = 5)
+
+      if(r$status != 200) {
+        return(r)
+      }
+
+      out <- rawToChar(r$content)
     } else {
 
       out <- rawToChar(RETRY("GET", req)$content)
@@ -329,7 +339,7 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
 
   keep_going <- TRUE
 
-  if(status) message("Starting download of first set of features.")
+  if(status & interactive()) message("Starting download of first set of features.")
 
   out <- rep(list(list()), 1e6)
   i <- 1
@@ -350,6 +360,11 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
 
     out[[i]] <- make_request(req, post_body)
 
+    if(!is.null(out[[i]]) & inherits(out[[i]], "response")) {
+      warning("Can't continue, got unexpected response: ", print(out[[i]]))
+      out[[i]] <- NULL
+    }
+
     if(!is.null(out[[i]]) && inherits(out[[i]], "sf") & nrow(out[[i]]) == limit) {
       offset <- offset + limit
     }
@@ -369,6 +384,8 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
       }
     }
 
+    if(exists("ids") > 0 && i == length(ids)) keep_going <- FALSE
+
     i <- i + 1
   }
 
@@ -379,7 +396,11 @@ get_features_paging <- function(base_call, ids_list = list(), limit = 1000, stat
 
 id_filter_cql  <- function(ids, name = "comid"){
 
-  jsonlite::toJSON(list(op = "in", args = list(list(property = name), c(ids))),
+  operator <- "in"
+
+  if(length(ids) == 1) operator <- "="
+
+  jsonlite::toJSON(list(op = operator, args = list(list(property = name), c(ids))),
                    auto_unbox = TRUE)
 
 }
@@ -402,7 +423,7 @@ unify_types <- function(out) {
         out <- set_type(out, n, "numeric")
       } else if("integer" %in% all_class[[n]]) { # then integer
         out <- set_type(out, n, "integer")
-      } else if("cheracter" %in% all_class[[n]]) {
+      } else if("character" %in% all_class[[n]] | "datetime" %in% all_class[[n]]) {
         out <- set_type(out, n, "character")
       }
     }

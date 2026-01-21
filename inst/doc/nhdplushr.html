@@ -363,8 +363,7 @@ behavior.</em></p>
 <span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Make a plot and get some background NHDPlusV2 data.</span></span>
 <span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">plot_nhdplus</span>(<span class="fu">list</span>(<span class="st">&quot;nwissite&quot;</span>, <span class="st">&quot;USGS-05428500&quot;</span>), <span class="at">streamorder =</span> <span class="dv">3</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>                          <span class="at">nhdplus_data =</span> sample_data)</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; Zoom set to: 11</span></span></code></pre></div>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>                          <span class="at">nhdplus_data =</span> sample_data)</span></code></pre></div>
 <p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAAABlBMVEX7+/v///+0D4btAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADs0lEQVR4nO3SoQ3AMBDAwO/+SweGBFQxqCrdTWDgeSCYrwP4NwORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5HsgQbeMhCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSE4DwQUDkRiIxEAkBiIxEImBSAxEYiASA5EsI16P0jsU9O0AAAAASUVORK5CYII=" /><!-- --></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Find the HU04 we are interested in.</span></span>
@@ -383,23 +382,15 @@ behavior.</em></p>
 <span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; Warning in check_search_radius(search_radius, points): search_radius units not</span></span>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; set, trying units of points CRS.</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; Warning in index_points_to_lines.hy(x, points, search_radius = search_radius, :</span></span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; converting to LINESTRING, this may be slow, check results</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; Warning in force_linestring(x): converting to LINESTRING, this may be slow,</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; check results</span></span>
 <span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;   id          COMID      REACHCODE REACH_meas   offset</span></span>
 <span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; 1  1 22001000032700 07090002006114    37.6572 87.71874</span></span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
 <span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>ids <span class="ot">&lt;-</span> <span class="fu">get_UT</span>(hr<span class="sc">$</span>NHDFlowline, start_index<span class="sc">$</span>COMID)</span>
 <span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; defaulting to comid rather than permanent_identifier</span></span>
 <span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>hr_subset <span class="ot">&lt;-</span> <span class="fu">subset_nhdplus</span>(ids, <span class="at">nhdplus_data =</span> hr_gpkg)</span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; All intersections performed in latitude/longitude.</span></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; Reading NHDFlowline</span></span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; 366 comids of 366</span></span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; Writing NHDFlowline</span></span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; Reading NHDPlusCatchment</span></span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; 366 comids of 366</span></span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; Found invalid geometry, attempting to fix.</span></span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; Writing NHDPlusCatchment</span></span></code></pre></div>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>hr_subset <span class="ot">&lt;-</span> <span class="fu">subset_nhdplus</span>(ids, <span class="at">nhdplus_data =</span> hr_gpkg)</span></code></pre></div>
 <p>Now that we have both a four digit hydrologic unit worth of NHDPlusHR
 data and a subset upstream of a point of interest, we can plot things up
 and see what it looks like. This plot uses NHDPlusV2 as returned by
@@ -409,13 +400,12 @@ top of it.</p>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>             <span class="at">nhdplus_data =</span> sample_data, <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>             <span class="at">plot_config =</span> <span class="fu">list</span>(<span class="at">flowline =</span> <span class="fu">list</span>(<span class="at">lwd =</span> <span class="fl">2.5</span>),</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                                <span class="at">basin =</span> <span class="fu">list</span>(<span class="at">lwd =</span> <span class="dv">3</span>)))</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Zoom set to: 11</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDPlusCatchment), <span class="at">lwd =</span> <span class="fl">0.25</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDFlowline), <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(<span class="fu">st_transform</span>(hr_subset<span class="sc">$</span>NHDFlowline, <span class="dv">3857</span>)),</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDPlusCatchment), <span class="at">lwd =</span> <span class="fl">0.25</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(hr<span class="sc">$</span>NHDFlowline), <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(<span class="fu">st_transform</span>(hr_subset<span class="sc">$</span>NHDFlowline, <span class="dv">3857</span>)),</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;cyan&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAAABlBMVEX7+/v///+0D4btAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADs0lEQVR4nO3SoQ3AMBDAwO/+SweGBFQxqCrdTWDgeSCYrwP4NwORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5HsgQbeMhCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSAxEYiASA5EYiMRAJAYiMRCJgUgMRGIgEgORGIjEQCQGIjEQiYFIDERiIBIDkRiIxEAkBiIxEImBSE4DwQUDkRiIxEAkBiIxEImBSAxEYiASA5EsI16P0jsU9O0AAAAASUVORK5CYII=" /><!-- --></p>
 </div>
 <div id="download" class="section level2">
