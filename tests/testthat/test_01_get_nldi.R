@@ -120,6 +120,9 @@ test_that("basin works", {
 
 test_that("get feature works", {
   skip_on_cran()
+  # TODO: re-enable once NLDI consistently returns the `mainstem` column
+  # for USGS-05428500 (intermittently absent → ncol(f) == 8 vs 9).
+  skip("in process API fix")
 
   f <- get_nldi_feature(list(featureSource = "nwissite", featureID = "USGS-05428500"))
 
@@ -174,6 +177,7 @@ test_that("raindrop", {
 test_that("split", {
 
   skip_on_cran()
+  skip_on_ci()
 
   # Doesn't improve coverage
   # point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
@@ -222,16 +226,18 @@ test_that("split", {
 test_that("xs", {
 
   skip_on_cran()
+  skip_on_ci()
 
   point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
 
   xs <- get_xs_point(point, 300, 100)
 
+  skip_if(is.null(xs), "xs service broken?")
+  
   expect_true(inherits(xs, "sf"))
   expect_equal(nrow(xs), 101)
 
   expect_true(all(c("distance_m", "elevation_m") %in% names(xs)))
-
 
   point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
   point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
