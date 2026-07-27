@@ -349,7 +349,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Uncomment to install!</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># install.packages(&quot;nhdplusTools&quot;)</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(nhdplusTools)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(hydrogeofetch)</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>start_point <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(<span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">89.362239</span>, <span class="fl">43.090266</span>)), <span class="at">crs =</span> <span class="dv">4269</span>)</span>
@@ -387,17 +387,17 @@ is returned and/or stored in a local file for later use.</p>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">plot_nhdplus</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">outlets =</span> <span class="fu">list</span>(<span class="at">featureSource =</span> <span class="st">&quot;nwissite&quot;</span>, <span class="at">featureID =</span> <span class="st">&quot;USGS-05428500&quot;</span>), </span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">gpkg =</span> subset_file, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>This vignette covers a range of utilities the nhdplusTools package
+<p>This vignette covers a range of utilities the hydrogeofetch package
 offers for working with data in a U.S. context.</p>
 <p>The first thing you are going to need to do is go get some data to
-work with. <code>nhdplusTools</code> provides the ability to download
+work with. <code>hydrogeofetch</code> provides the ability to download
 small subsets of the NHDPlus directly from web services. For large
 subsets, greater than a few thousand square kilometers, you can use
 <code>download_nhdplusv2()</code>.</p>
 <p>If you are working with the whole National Seamless database,
-<code>nhdplusTools</code> has some convenience functions you should be
+<code>hydrogeofetch</code> has some convenience functions you should be
 aware of. Once you have it downloaded and extracted, you can tell the
-nhdplusTools package where it is with the <code>nhdplus_path()</code>
+hydrogeofetch package where it is with the <code>nhdplus_path()</code>
 function.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">nhdplus_path</span>(<span class="fu">file.path</span>(work_dir, <span class="st">&quot;natseamless.gpkg&quot;</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
@@ -414,15 +414,15 @@ network updates from national hydrologic modeling projects.</p>
 <h3>NHDPlus HiRes</h3>
 <p>NHDPlus HiRes is an in-development dataset that introduces much more
 dense flowlines and catchments. In the long run,
-<code>nhdplusTools</code> will have complete support for NHDPlus HiRes.
-So far, <code>nhdplusTools</code> will help download and interface
-NHDPlus HiRes data with existing <code>nhdplusTools</code>
-functionality. It’s important to note that <code>nhdplusTools</code> was
-primarily implemented using NHDPlusV2 and any use of HiRes should be
+<code>hydrogeofetch</code> will have complete support for NHDPlus HiRes.
+So far, <code>hydrogeofetch</code> will help download and interface
+NHDPlus HiRes data with existing <code>hydrogeofetch</code>
+functionality. It’s important to note that <code>hydrogeofetch</code>
+was primarily implemented using NHDPlusV2 and any use of HiRes should be
 subject to scrutiny.</p>
 <p>For the demo below, a small sample of HiRes data that has been loaded
-into <code>nhdplusTools</code> is used. The first line shows how you can
-download additional data (just change <code>download_files</code> to
+into <code>hydrogeofetch</code> is used. The first line shows how you
+can download additional data (just change <code>download_files</code> to
 <code>TRUE</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">download_nhdplushr</span>(<span class="at">nhd_dir =</span> <span class="st">&quot;download_dir&quot;</span>, </span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                   <span class="at">hu_list =</span> <span class="fu">c</span>(<span class="st">&quot;0101&quot;</span>), <span class="co"># can mix hu02 and hu04 codes.</span></span>
@@ -444,8 +444,8 @@ download additional data (just change <code>download_files</code> to
 </div>
 <div id="discovery-and-subsetting" class="section level2">
 <h2>Discovery and Subsetting</h2>
-<p>One of the primary workflows <code>nhdplusTools</code> is designed to
-accomplish can be described in three steps:</p>
+<p>One of the primary workflows <code>hydrogeofetch</code> is designed
+to accomplish can be described in three steps:</p>
 <ol style="list-style-type: decimal">
 <li>what NHDPlus catchment is at the outlet of a watershed,</li>
 <li>figure out what catchments are up or downstream of that catchment,
@@ -484,7 +484,7 @@ work at regional to national scales, skip down the the Local Data
 Subsetting section.</strong></p>
 <div id="web-service-data-subsetting" class="section level3">
 <h3>Web Service Data Subsetting</h3>
-<p><code>nhdplusTools</code> supports discovery and data subsetting
+<p><code>hydrogeofetch</code> supports discovery and data subsetting
 using web services made available through the <a href="https://waterdata.usgs.gov/blog/nldi-intro/">Network Linked Data
 Index</a> (NLDI) and the <a href="https://api.water.usgs.gov/fabric/pygeoapi">Water Mission Area
 pygeoapir.</a> The code below shows how to use the NLDI functions to
@@ -576,8 +576,8 @@ knows about upstream of the one we chose!</p>
 <h3>Local Data Subsetting</h3>
 <p>While web service data access is very convenient, some use cases make
 working with web services impossible or cumbersome such that working
-with local data is preferable. nhdplusTools supports such workflows with
-hybrid, web-service and local, workflows.</p>
+with local data is preferable. hydrogeofetch supports such workflows
+with hybrid, web-service and local, workflows.</p>
 <p>With the starting COMID we found with
 <code>discover_nhdplus_id()</code> above, we can use one of the network
 navigation functions, <code>get_UM()</code>, <code>get_UT()</code>,
@@ -629,7 +629,7 @@ the demonstration, here are a couple more layers plotted up.</p>
 </div>
 <div id="indexing" class="section level2">
 <h2>Indexing</h2>
-<p>nhdplusTools supports a number of indexing use cases. <a href="https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation">See
+<p>hydrogeofetch supports a number of indexing use cases. <a href="https://doi-usgs.github.io/nhdplusTools/reference/index.html#indexing-and-network-navigation">See
 the function index for specifics</a>.</p>
 <p>Using the data above, we can use the
 <code>get_flowline_index()</code> function to get the comid, reachcode,

@@ -55,7 +55,7 @@ remotes::install_github("DOI-USGS/nhdplusTools")
 
 For data discovery and access in a U.S. context, start with the
 [**Getting Started
-page**](https://doi-usgs.github.io/nhdplusTools/articles/nhdplusTools.html).
+page**](https://doi-usgs.github.io/nhdplusTools/articles/hydrogeofetch.html).
 
 Detailed documentation of all the package functions can be found at the
 [**Reference

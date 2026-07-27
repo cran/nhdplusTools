@@ -14,11 +14,11 @@ test_that("get_node", {
   # dput(sf::st_coordinates(sf::st_geometry(end)[1]))
 
   expect_equal(sf::st_coordinates(sf::st_geometry(start)[1]),
-               structure(c(-89.2233517052809, 42.9689495999704), .Dim = 1:2, .Dimnames = list(
+               structure(c(-89.2233517052809, 42.9689495999704), dim = 1:2, dimnames = list(
                  "1", c("X", "Y"))), ignore_attr = TRUE)
 
   expect_equal(sf::st_coordinates(sf::st_geometry(end)[1]),
-               structure(c(-89.2222937052824, 42.9692021333033), .Dim = 1:2, .Dimnames = list(
+               structure(c(-89.2222937052824, 42.9692021333033), dim = 1:2, dimnames = list(
                  "1", c("X", "Y"))), ignore_attr = TRUE)
 })
 

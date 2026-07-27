@@ -1,3 +1,8 @@
+nhdplusTools 1.5.1
+==========
+
+Fixes a very minor CRAN note related to test object structure formatting. `hydrogeofetch` is on the main branch and should be considered for any new development. 
+
 nhdplusTools 1.5.0
 ==========
 

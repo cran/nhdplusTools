@@ -119,7 +119,7 @@
 #' @importFrom dataRetrieval findNLDI
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Black Earth Creek
 #' start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
 #' result <- get_drainage_area_estimates(start)
