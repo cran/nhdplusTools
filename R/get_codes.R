@@ -9,21 +9,6 @@
 #' @importFrom dplyr left_join select
 #' @importFrom hydroloom add_streamorder
 #' @export
-#' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-#'
-#' test_flowline <- data.frame(
-#'   ID = test_flowline$COMID,
-#'   toID = test_flowline$toCOMID)
-#'
-#' (order <- get_streamorder(test_flowline))
-#'
-#' walker_flowline$order <- order
-#'
-#' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
-#'
 get_streamorder <- function(x, status = TRUE) {
   check_names(x, "get_streamorder")
 
@@ -48,27 +33,6 @@ get_streamorder <- function(x, status = TRUE) {
 #' @return numeric stream order in same order as input
 #' @importFrom hydroloom add_streamlevel
 #' @export
-#' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' test_flowline <- data.frame(
-#'  levelpathi = walker_flowline$LevelPathI,
-#'  dnlevelpat = walker_flowline$DnLevelPat)
-#'
-#'  test_flowline$dnlevelpat[1] <- 0
-#'
-#' (level <- get_streamlevel(test_flowline))
-#'
-#' walker_flowline$level <- level
-#'
-#' plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$level, col = "blue")
-#'
-#' test_flowline$coastal <- rep(FALSE, nrow(test_flowline))
-#' (level <- get_streamlevel(test_flowline))
-#'
-#' test_flowline$coastal[!test_flowline$dnlevelpat %in% test_flowline$levelpathi] <- TRUE
-#' (level <- get_streamlevel(test_flowline))
-#'
 get_streamlevel <- function(x) {
 
   check_names(x, "get_streamlevel")
@@ -94,62 +58,6 @@ get_streamlevel <- function(x) {
 #' @importFrom hydroloom add_pfafstetter
 #' @return data.frame with ID and pfaf columns.
 #' @export
-#' @examples
-#' \donttest{
-#' library(dplyr)
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#' hr_flowline <- align_nhdplus_names(hr_data$NHDFlowline)
-#'
-#' fl <-  select(hr_flowline, COMID, AreaSqKM) %>%
-#'   right_join(prepare_nhdplus(hr_flowline, 0, 0,
-#'                              purge_non_dendritic = FALSE,
-#'                              warn = FALSE),
-#'              by = "COMID") %>%
-#'   sf::st_sf() %>%
-#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
-#'
-#' fl$nameID = ""
-#' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
-#'                                    weight = totda)), by = "ID")
-#'
-#' pfaf <- get_pfaf(fl, max_level = 3)
-#'
-#' fl <- left_join(fl, pfaf, by = "ID")
-#'
-#' plot(fl["pf_level_3"], lwd = 2)
-#'
-#' pfaf <- get_pfaf(fl, max_level = 4)
-#'
-#' hr_catchment <- left_join(hr_data$NHDPlusCatchment, pfaf, by = c("FEATUREID" = "ID"))
-#'
-#' colors <- data.frame(pf_level_4 = unique(hr_catchment$pf_level_4),
-#'                      color = sample(terrain.colors(length(unique(hr_catchment$pf_level_4)))),
-#'                     stringsAsFactors = FALSE)
-#' hr_catchment <- left_join(hr_catchment, colors, by = "pf_level_4")
-#' plot(hr_catchment["color"], border = NA, reset = FALSE)
-#' plot(sf::st_geometry(hr_flowline), col = "blue", add = TRUE)
-#'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' fl <- select(walker_flowline, COMID, AreaSqKM) %>%
-#'   right_join(prepare_nhdplus(walker_flowline, 0, 0,
-#'                             purge_non_dendritic = FALSE, warn = FALSE),
-#'             by = "COMID") %>%
-#'   sf::st_sf() %>%
-#'   select(ID = COMID, toID = toCOMID, area = AreaSqKM)
-#'
-#' fl$nameID = ""
-#' fl$totda <- calculate_total_drainage_area(sf::st_set_geometry(fl, NULL))
-#' fl <- left_join(fl, get_levelpaths(rename(sf::st_set_geometry(fl, NULL),
-#'                                    weight = totda)), by = "ID")
-#'
-#' pfaf <- get_pfaf(fl, max_level = 2)
-#'
-#' fl <- left_join(fl, pfaf, by = "ID")
-#'
-#' plot(fl["pf_level_2"], lwd = 2)
-#' }
 get_pfaf <- function(x, max_level = 2, status = FALSE) {
 
   warning("get_pfaf is deprecated, please use hydroloom")

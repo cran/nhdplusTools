@@ -27,12 +27,3 @@ Given flowlines and an rpu_code, performs a network-safe subset such
 that the result can be used in downstream processing. Has been tested to work
 against the entire NHDPlusV2 domain and satisfies a number of edge cases.
 }
-\examples{
-
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-
-sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
-
-subset_rpu(sample_flines, rpu = "07b")
-
-}

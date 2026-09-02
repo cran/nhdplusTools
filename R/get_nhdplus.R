@@ -20,22 +20,6 @@
 #' Default is flowline and options include: outlet, flowline, catchment,
 #' and all
 #' @return sfc a single, or list, of simple feature objects
-#' @examples
-#' \donttest{
-#'  point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
-#'  get_nhdplus(point)
-#'  get_nhdplus(point, realization = "catchment")
-#'  get_nhdplus(point, realization = "all")
-
-#'  get_nhdplus(comid = 101)
-#'  get_nhdplus(nwis  = c(11120000, 11120500))
-
-#'  area <- sf::st_as_sfc(sf::st_bbox(c(xmin = -119.8851, xmax =-119.8361,
-#'  ymax = 34.42439, ymin = 34.40473), crs = 4326))
-
-#'  get_nhdplus(area)
-#'  get_nhdplus(area, realization = "flowline", streamorder = 3)
-#'  }
 #' @importFrom methods is
 #' @importFrom sf st_filter st_crs st_transform
 #' @export

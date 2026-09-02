@@ -17,18 +17,6 @@
 #'
 #' @return character Paths to geodatabases created.
 #' @export
-#' @examples
-#' \donttest{
-#' hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
-#'                             type = "huc08")
-#' if(inherits(hu, "sf")) {
-#' (hu <- substr(hu$huc8, 1, 2))
-#'
-#' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE)
-#'
-#' download_nhdplushr(tempdir(), c(hu, "0203"), download_files = FALSE, archive = TRUE)
-#' }
-#' }
 download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive = FALSE) {
 
   list_source <- get("nhdhr_file_list", envir = nhdplusTools_env)
@@ -45,15 +33,6 @@ download_nhdplushr <- function(nhd_dir, hu_list, download_files = TRUE, archive 
 #'
 #' @return character Paths to geodatabases created.
 #' @export
-#' @examples
-#' \donttest{
-#' hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
-#'                             type = "huc08")
-#'
-#' (hu <- substr(hu$huc8, 1, 2))
-#'
-#' download_nhd(tempdir(), c(hu, "0203"), download_files = FALSE)
-#' }
 download_nhd <- function(nhd_dir, hu_list, download_files = TRUE) {
 
   download_nhd_internal(get("nhd_bucket", envir = nhdplusTools_env),
@@ -162,15 +141,6 @@ download_nhd_internal <- function(bucket, file_list_snip, prefix, nhd_dir, hu_li
 #' @param progress boolean display download progress?
 #' @return character path to the local geodatabase
 #' @export
-#' @examples
-#' \dontrun{
-#'   download_nhdplusv2("./data/nhd/")
-#'
-#'   download_nhdplusv2(outdir = "./inst/",
-#'       url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
-#'                    "Data/NationalData/NHDPlusV21_NationalData_Seamless",
-#'                    "_Geodatabase_HI_PR_VI_PI_03.7z"))
-#' }
 
 download_nhdplusv2 <- function(outdir,
                                url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
@@ -217,10 +187,6 @@ download_nhdplusv2 <- function(outdir,
 #' @return character path to the local geodatabase
 #' @export
 #' @importFrom zip unzip
-#' @examples
-#' \dontrun{
-#'   download_wbd("./data/wbd/")
-#' }
 
 download_wbd <- function(outdir,
                          url = paste0("https://prd-tnm.s3.amazonaws.com/StagedProducts/",
@@ -252,10 +218,6 @@ download_wbd <- function(outdir,
 #' @inheritParams download_nhdplusv2
 #' @return character path to the local e00 file
 #' @export
-#' @examples
-#' \dontrun{
-#'   download_wbd("./data/rf1/")
-#' }
 
 download_rf1 <- function(outdir,
                          url = "https://water.usgs.gov/GIS/dsdl/erf1_2.e00.gz",

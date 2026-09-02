@@ -39,18 +39,3 @@ down levelpath, down hydroseq, total drainage area, and terminalflag.
 The function implements two parallelization schemes for small and large basins
 respectively. If a number of cores is specified, parallel execution will be used.
 }
-\examples{
-
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-
-test_flowline <- data.frame(
-  comid = test_flowline$COMID,
-  tocomid = test_flowline$toCOMID,
-  nameID = walker_flowline$GNIS_ID,
-  lengthkm = test_flowline$LENGTHKM,
-  areasqkm = walker_flowline$AreaSqKM)
-
-add_plus_network_attributes(test_flowline)
-}

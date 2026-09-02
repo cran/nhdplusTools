@@ -13,9 +13,3 @@ data.frame containing layers available and fields that are available to query.
 Queries the geoconnex.us reference feature server for available layers and
 attributes.
 }
-\examples{
-\donttest{
-  discover_geoconnex_reference()
-}
-
-}

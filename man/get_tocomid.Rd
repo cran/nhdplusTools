@@ -44,11 +44,3 @@ ids have been encountered across basins in some datasets. If
 `remove_coastal` is `TRUE` (the default) either ftype or fcode are
 required. Uses the \link[hydroloom]{add_toids} function.
 }
-\examples{
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-tocomid <- get_tocomid(sample_flines)
-
-tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
-
-}

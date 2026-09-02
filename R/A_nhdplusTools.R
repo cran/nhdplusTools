@@ -342,6 +342,11 @@ nhdplusTools_data_dir <- function(dir = NULL) {
 
 .onAttach <- function(libname, pkgname) {
   nhdplus_path(default_nhdplus_path, warn = FALSE)
+  packageStartupMessage(
+    "nhdplusTools has been superseded by hydrogeofetch and will be ",
+    "archived from CRAN in October 2027. Please migrate to:\n",
+    "Blodgett, D. 2026, hydrogeofetch: Hydrologic Geospatial Fabric ",
+    "Extraction Tool Chain, https://doi.org/10.5066/P13UWPUR")
 }
 
 #' @title NHDPlus Data Path
@@ -463,17 +468,6 @@ nhdplusTools_memoise_timeout <- function() {
 #' @param x a \code{sf} object of nhdplus flowlines
 #' @return data.frame renamed \code{sf} object
 #' @export
-#' @examples
-#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
-#'
-#' names(new_hope_flowline)
-#'
-#' names(new_hope_flowline) <- tolower(names(new_hope_flowline))
-#'
-#' new_hope_flowline <- align_nhdplus_names(new_hope_flowline)
-#'
-#' names(new_hope_flowline)
-#'
 align_nhdplus_names <- function(x){
 
   attribute_names <- get("nhdplus_attributes", envir = nhdplusTools_env)

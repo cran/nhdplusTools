@@ -39,19 +39,3 @@ included in this column and the largest value will be followed when no nameID is
   sort orders of a directed graph.
 }
 }
-\examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-
-test_flowline <- data.frame(
-  ID = test_flowline$COMID,
-  toID = test_flowline$toCOMID,
-  nameID = walker_flowline$GNIS_ID,
-  weight = walker_flowline$ArbolateSu,
-  stringsAsFactors = FALSE)
-
-get_levelpaths(test_flowline)
-
-
-}

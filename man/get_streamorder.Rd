@@ -20,19 +20,3 @@ Algorithm: If more than one upstream flowpath has an order equal to the
 maximum upstream order then the downstream flowpath is assigned the maximum
 upstream order plus one. Otherwise it is assigned the max upstream order.
 }
-\examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-
-test_flowline <- data.frame(
-  ID = test_flowline$COMID,
-  toID = test_flowline$toCOMID)
-
-(order <- get_streamorder(test_flowline))
-
-walker_flowline$order <- order
-
-plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$order, col = "blue")
-
-}

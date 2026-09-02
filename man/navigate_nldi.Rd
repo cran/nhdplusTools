@@ -30,33 +30,3 @@ sf data.frame with result
 \description{
 Navigate the Network Linked Data Index network.
 }
-\examples{
-\donttest{
-library(sf)
-library(dplyr)
-
-nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
-
-navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "upstreamTributaries")$UT \%>\%
-  st_geometry() \%>\%
-  plot()
-
-navigate_nldi(nldi_feature = nldi_nwis,
-              mode = "UM")$UM \%>\%
-  st_geometry() \%>\%
-  plot(col = "blue", add = TRUE)
-
-
-
-nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
-                          mode = "UT",
-                          data_source = "nwissite")$UT_nwissite
-
-st_geometry(nwissite) \%>\%
-  plot(col = "green", add = TRUE)
-
-nwissite
-}
-
-}

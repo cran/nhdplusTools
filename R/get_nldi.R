@@ -11,35 +11,6 @@
 #' @return sf data.frame with result
 #' @export
 #' @importFrom utils tail
-#' @examples
-#' \donttest{
-#' library(sf)
-#' library(dplyr)
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
-#'
-#' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "upstreamTributaries")$UT %>%
-#'   st_geometry() %>%
-#'   plot()
-#'
-#' navigate_nldi(nldi_feature = nldi_nwis,
-#'               mode = "UM")$UM %>%
-#'   st_geometry() %>%
-#'   plot(col = "blue", add = TRUE)
-#'
-#'
-#'
-#' nwissite <- navigate_nldi(nldi_feature = nldi_nwis,
-#'                           mode = "UT",
-#'                           data_source = "nwissite")$UT_nwissite
-#'
-#' st_geometry(nwissite) %>%
-#'   plot(col = "green", add = TRUE)
-#'
-#' nwissite
-#' }
-#'
 navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
                           data_source = "flowlines", distance_km = 10) {
 
@@ -85,39 +56,6 @@ navigate_nldi <- function(nldi_feature, mode = "upstreamMain",
 #' @return sf data.frame with result basin boundary
 #' @export
 #' @importFrom sf read_sf
-#' @examples
-#' \donttest{
-#' library(sf)
-#' library(dplyr)
-#'
-#' nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
-#'
-#' site <- get_nldi_feature(nldi_nwis)
-#'
-#' basin <- get_nldi_basin(nldi_feature = nldi_nwis)
-#'
-#' plot(st_geometry(basin))
-#'
-#' basin
-#'
-#' basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
-#'                          simplify = FALSE, split = TRUE)
-#'
-#' if(inherits(basin, "sf") & inherits(basin2, "sf")) {
-#'
-#' length(st_coordinates(basin))
-#' length(st_coordinates(basin2))
-#'
-#' plot(st_geometry(st_buffer(st_transform(site, 5070),
-#'                           units::set_units(3000, "m"))), border = NA)
-#'
-#' plot(st_geometry(site), add = TRUE)
-#' plot(st_geometry(basin2), add = TRUE)
-#'
-#' plot(st_geometry(basin), border = "red", add = TRUE)
-#'
-#' }
-#' }
 get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 
   tryCatch({
@@ -148,10 +86,6 @@ get_nldi_basin <- function(nldi_feature, simplify = TRUE, split = FALSE) {
 #' @description Get a single feature from the NLDI
 #' @inheritParams navigate_nldi
 #' @return sf data.frame with one feature
-#' @examples
-#' \donttest{
-#' get_nldi_feature(list("featureSource" = "nwissite", featureID = "USGS-05428500"))
-#' }
 #' @export
 get_nldi_feature <- function(nldi_feature) {
   nldi_feature <- check_nldi_feature(nldi_feature)
@@ -175,23 +109,6 @@ get_nldi_feature <- function(nldi_feature) {
 #' location.
 #' @param location numeric WGS84 lon/lat pair (X, Y)
 #' @export
-#' @examples
-#' \donttest{
-#' index <- get_nldi_index(c(-89.276, 42.988))
-#'
-#' if(inherits(index, "sf")) {
-#'
-#' plot_nhdplus(
-#'   bbox = sf::st_bbox(
-#'     sf::st_buffer(
-#'       sf::st_transform(index[1,], 5070), units::set_units(1000, "m")
-#'       )
-#'     )
-#' )
-#' plot(sf::st_geometry(sf::st_transform(index, 3857)), add = TRUE)
-#'
-#' }
-#' }
 get_nldi_index <- function(location) {
 
   tryCatch({

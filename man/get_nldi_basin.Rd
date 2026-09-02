@@ -29,37 +29,3 @@ Get a basin boundary for a given NLDI feature.
 Only resolves to the nearest NHDPlus catchment divide. See:
 https://waterdata.usgs.gov/blog/nldi-intro/ for more info on the nldi.
 }
-\examples{
-\donttest{
-library(sf)
-library(dplyr)
-
-nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-05428500")
-
-site <- get_nldi_feature(nldi_nwis)
-
-basin <- get_nldi_basin(nldi_feature = nldi_nwis)
-
-plot(st_geometry(basin))
-
-basin
-
-basin2 <- get_nldi_basin(nldi_feature = nldi_nwis,
-                         simplify = FALSE, split = TRUE)
-
-if(inherits(basin, "sf") & inherits(basin2, "sf")) {
-
-length(st_coordinates(basin))
-length(st_coordinates(basin2))
-
-plot(st_geometry(st_buffer(st_transform(site, 5070),
-                          units::set_units(3000, "m"))), border = NA)
-
-plot(st_geometry(site), add = TRUE)
-plot(st_geometry(basin2), add = TRUE)
-
-plot(st_geometry(basin), border = "red", add = TRUE)
-
-}
-}
-}

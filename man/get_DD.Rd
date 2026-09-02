@@ -25,18 +25,3 @@ Traverse NHDPlus network downstream with diversions
 NOTE: This algorithm may not scale well in large watersheds.
 For reference, the lower Mississippi will take over a minute.
 }
-\examples{
-library(sf)
-start_COMID <- 11688818
-
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
-plot(dplyr::filter(sample_flines, COMID \%in\% DD_COMIDs)$geom,
-     col = "red", lwd = 2)
-
-DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 4)
-plot(dplyr::filter(sample_flines, COMID \%in\% DM_COMIDs)$geom,
-     col = "blue", add = TRUE, lwd = 2)
-
-}

@@ -41,31 +41,3 @@ Provides a full feature network navigation function that
 will work with local or web service data. Parameter details provide
 context.
 }
-\examples{
-
-\donttest{
-navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
-                "UM",
-                output = "flowlines",
-                trim_start = TRUE)
-}
-
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-hydro_location <- list(comid = 5329339,
-                      reachcode = "18050005000078",
-                       reach_meas = 30)
-
-hydro_location <- sf::st_sf(
-  hydro_location,
-  geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
-                                          walker_flowline))
-
-net <- navigate_network(hydro_location,
-                       mode = "DM", network = walker_flowline,
-                       trim_start = TRUE, distance_km = 20)
-
-plot(sf::st_geometry(walker_flowline))
-plot(sf::st_geometry(hydro_location), add = TRUE)
-plot(sf::st_geometry(net), add = TRUE, col = "blue", lwd = 2)
-
-}

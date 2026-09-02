@@ -36,21 +36,6 @@ check_pkg <- function(pkg) {
 #'
 #' See \link{plot_nhdplus} for details on plot configuration.
 #' @export
-#' @examples
-#' \donttest{
-#' map_nhdplus("05428500")
-#'
-#' map_nhdplus("05428500", streamorder = 2)
-#'
-#' map_nhdplus(list(13293970, 13293750))
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' map_nhdplus(list(13293970, 13293750), streamorder = 3, nhdplus_data = sample_data)
-#'
-#' #return leaflet object
-#' map_nhdplus("05428500", return_map = TRUE)
-#' }
 #' @importFrom sf st_transform
 
 map_nhdplus <- function(outlets = NULL, bbox = NULL, streamorder = NULL,

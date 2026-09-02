@@ -29,29 +29,6 @@
 #'
 #' @importFrom sf st_layers read_sf st_sf write_sf
 #' @export
-#' @examples
-#' \dontrun{
-#' # Note this will download a lot of data to a temp directory.
-#' # Change 'temp_dir' to your directory of choice.
-#' temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")
-#'
-#' download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
-#'
-#' get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
-#'
-#' get_nhdplushr(download_dir,
-#'               file.path(download_dir, "nhdplus_0302-03.gpkg"),
-#'               layers = NULL, overwrite = TRUE)
-#'
-#' get_nhdplushr(download_dir,
-#'               file.path(download_dir, "nhdplus_0302-03.gpkg"),
-#'               layers = "NHDFlowline", overwrite = TRUE,
-#'               min_size_sqkm = 10, simp = 10, proj = "+init=epsg:5070")
-#'
-#' # Cleanup
-#' unlink(temp_dir, recursive = TRUE)
-#'
-#' }
 get_nhdplushr <- function(hr_dir, out_gpkg = NULL,
                           layers = c("NHDFlowline", "NHDPlusCatchment"),
                           pattern = ".*GDB.gdb$", check_terminals = TRUE,
@@ -213,46 +190,6 @@ cull_cols <- function(x, keep_cols) {
 #' @importFrom dplyr group_by filter select
 #' @return sf data.frame containing standalone network
 #' @export
-#' @examples
-#' \donttest{
-#' library(dplyr)
-#' library(sf)
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#'
-#' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
-#' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
-#'
-#' hr_data$NHDFlowline <- make_standalone(hr_data$NHDFlowline)
-#'
-#' (outlet <- filter(hr_data$NHDFlowline, Hydroseq == min(Hydroseq)))
-#' nrow(filter(hr_data$NHDFlowline, TerminalPa == outlet$Hydroseq))
-#'
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#'
-#' # Remove mainstem and non-dendritic stuff.
-#' subset <- filter(hr_data$NHDFlowline,
-#'                         StreamLeve > min(hr_data$NHDFlowline$StreamLeve) &
-#'                           StreamOrde == StreamCalc)
-#'
-#' subset <- subset_nhdplus(subset$COMID, nhdplus_data = hr_gpkg)$NHDFlowline
-#'
-#' plot(sf::st_geometry(hr_data$NHDFlowline))
-#'
-#' flowline_mod <- make_standalone(subset)
-#'
-#' terminals <- unique(flowline_mod$TerminalPa)
-#'
-#' colors <- sample(hcl.colors(length(terminals), palette = "Zissou 1"))
-#'
-#' for(i in 1:length(terminals)) {
-#'   fl <- flowline_mod[flowline_mod$TerminalPa == terminals[i], ]
-#'   plot(st_geometry(fl), col = colors[i], lwd = 2, add = TRUE)
-#' }
-#'
-#' ol <- filter(flowline_mod, TerminalFl == 1 & TerminalPa %in% terminals)
-#'
-#' plot(st_geometry(ol), lwd = 2, add = TRUE)
-#'}
 make_standalone <- function(flowlines) {
 
   if(any(grepl("tocomid", names(flowlines), ignore.case = TRUE))) {

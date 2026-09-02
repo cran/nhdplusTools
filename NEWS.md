@@ -1,3 +1,8 @@
+nhdplusTools 1.5.2
+==========
+
+Adds a warning that nhdplusTools has been replaced by `hydrogeofetch`.
+
 nhdplusTools 1.5.1
 ==========
 

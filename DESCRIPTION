@@ -1,7 +1,7 @@
 Package: nhdplusTools
 Type: Package
 Title: NHDPlus Tools
-Version: 1.5.1
+Version: 1.5.2
 Authors@R: c(person(given = "David", 
                     family = "Blodgett", 
                     role = c("aut", "cre"), 
@@ -31,18 +31,17 @@ Depends: R (>= 4.1)
 Imports: hydroloom, dataRetrieval, dplyr, sf, units, magrittr,
         jsonlite, httr, xml2, R.utils, utils, tidyr, methods, maptiles,
         mapsf, fst, arrow, tools, zip, pbapply, memoise, digest
-Suggests: testthat, knitr, rmarkdown, ggmap, ggplot2, lwgeom, gifski,
-        leaflet, httptest, future, future.apply, StreamCatTools, terra
+Suggests: testthat, ggmap, ggplot2, lwgeom, gifski, leaflet, httptest,
+        future, future.apply, StreamCatTools, terra
 License: CC0
 Encoding: UTF-8
-RoxygenNote: 7.3.3
-VignetteBuilder: knitr
 Config/testthat/parallel: true
 Config/testthat/edition: 3
 LazyData: true
 Language: en-US
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-07-27 21:00:23 UTC; dblodgett
+Packaged: 2026-09-01 16:40:29 UTC; dblodgett
 Author: David Blodgett [aut, cre] (ORCID:
     <https://orcid.org/0000-0001-9489-1710>),
   Mike Johnson [aut] (ORCID: <https://orcid.org/0000-0002-5288-8350>),
@@ -51,4 +50,4 @@ Author: David Blodgett [aut, cre] (ORCID:
   Lauren Koenig [ctb] (ORCID: <https://orcid.org/0000-0002-7790-330X>)
 Maintainer: David Blodgett <dblodgett@usgs.gov>
 Repository: CRAN
-Date/Publication: 2026-07-27 22:00:03 UTC
+Date/Publication: 2026-09-02 05:20:25 UTC

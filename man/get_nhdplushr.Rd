@@ -57,27 +57,3 @@ returned.
 Names are not modified from the NHDPlusHR geodatabase.
 Set layers to "NULL" to get all layers.
 }
-\examples{
-\dontrun{
-# Note this will download a lot of data to a temp directory.
-# Change 'temp_dir' to your directory of choice.
-temp_dir <- file.path(nhdplusTools_data_dir(), "temp_hr_cache")
-
-download_dir <- download_nhdplushr(temp_dir, c("0302", "0303"))
-
-get_nhdplushr(download_dir, file.path(download_dir, "nhdplus_0302-03.gpkg"))
-
-get_nhdplushr(download_dir,
-              file.path(download_dir, "nhdplus_0302-03.gpkg"),
-              layers = NULL, overwrite = TRUE)
-
-get_nhdplushr(download_dir,
-              file.path(download_dir, "nhdplus_0302-03.gpkg"),
-              layers = "NHDFlowline", overwrite = TRUE,
-              min_size_sqkm = 10, simp = 10, proj = "+init=epsg:5070")
-
-# Cleanup
-unlink(temp_dir, recursive = TRUE)
-
-}
-}

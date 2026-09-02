@@ -18,17 +18,3 @@ associated with most-downstream reach in the NHD Waterbody
 \description{
 Get Waterbody Outlet
 }
-\examples{
-\donttest{
-
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-
-fline <- sf::read_sf(sample_data, "NHDFlowline_Network")
-wtbdy <- sf::read_sf(sample_data, "NHDWaterbody")
-
-lake_COMID <- wtbdy$COMID[wtbdy$GNIS_NAME=='Lake Mendota 254']
-
-get_wb_outlet(13293262, fline)
-
-}
-}

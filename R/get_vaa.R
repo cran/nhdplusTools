@@ -29,14 +29,6 @@ get_vaa_path <- function(updated_network = FALSE) {
 #' @return character vector
 #' @importFrom fst metadata_fst
 #' @export
-#' @examples
-#' \dontrun{
-#' # This will download the vaa file to the path from get_vaa_path()
-#' get_vaa_names()
-#'
-#' #cleanup if desired
-#' unlink(dirname(get_vaa_path()), recursive = TRUE)
-#' }
 get_vaa_names <- function(updated_network = FALSE) {
   path <- get_vaa_path(updated_network = updated_network)
 
@@ -60,19 +52,6 @@ get_vaa_names <- function(updated_network = FALSE) {
 #' @return data.frame containing requested VAA data
 #' @importFrom fst read.fst
 #' @export
-#' @examples
-#' \dontrun{
-#' # This will download the vaa file to the path from get_vaa_path()
-#'
-#' get_vaa("slope")
-#' get_vaa(c("slope", "lengthkm"))
-#'
-#' get_vaa(updated_network = TRUE)
-#' get_vaa("reachcode", updated_network = TRUE)
-#'
-#' #cleanup if desired
-#' unlink(dirname(get_vaa_path()), recursive = TRUE)
-#' }
 
 get_vaa <- function(atts = NULL,
                     path = get_vaa_path(),
@@ -219,10 +198,6 @@ download_vaa <- function(path = get_vaa_path(updated_network), force = FALSE, up
 #' @param cache logical should cached metadata be used?
 #' @importFrom utils read.delim
 #' @export
-#' @examples
-#' \donttest{
-#' get_characteristics_metadata()
-#' }
 get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) {
 
   source <- match.arg(source, c("usgs", "streamcat"))
@@ -335,10 +310,6 @@ get_characteristics_metadata <- function(search, source = "usgs", cache = TRUE) 
 #' @importFrom dplyr bind_rows filter select everything collect
 #' @importFrom arrow s3_bucket open_dataset
 #' @export
-#' @examples
-#' \donttest{
-#'   get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
-#' }
 get_catchment_characteristics <- function(varname, ids,
                                           reference_fabric = "nhdplusv2",
                                           source = "usgs",

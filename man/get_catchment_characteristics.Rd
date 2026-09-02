@@ -47,8 +47,3 @@ When \code{source = "streamcat"}, data is retrieved from the EPA StreamCat
 dataset via the \code{StreamCatTools} package (must be installed separately).
 The \code{aoi} parameter controls the area of interest for StreamCat queries.
 }
-\examples{
-\donttest{
-  get_catchment_characteristics("CAT_BFI", c(5329343, 5329427))
-}
-}

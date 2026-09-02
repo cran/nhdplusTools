@@ -10,19 +10,6 @@
 #' @importFrom dplyr filter select
 #' @importFrom hydroloom navigate_hydro_network
 #' @export
-#' @examples
-#' library(sf)
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#' plot(sample_flines$geom)
-#' start_COMID <- 11690196
-#' UT_COMIDs <- get_UT(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geom,
-#'      col = "red", add = TRUE)
-#'
-#' UT_COMIDs <- get_UT(sample_flines, start_COMID, distance = 50)
-#' plot(dplyr::filter(sample_flines, COMID %in% UT_COMIDs)$geom,
-#'      col = "blue", add = TRUE)
-#'
 get_UT <- function(network, comid, distance = NULL) {
   navigate_hydro_network(network, comid, "UT", distance)
 }
@@ -40,21 +27,6 @@ get_UT <- function(network, comid, distance = NULL) {
 #' along the mainstem
 #' @importFrom dplyr filter select arrange
 #' @export
-#' @examples
-#' library(sf)
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' plot(sample_flines$geom)
-#' start_COMID <- 11690196
-#' UM_COMIDs <- get_UM(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geom,
-#'      col = "red", add = TRUE, lwd = 3)
-#'
-#' UM_COMIDs <- get_UM(sample_flines, start_COMID, distance = 50)
-#' plot(dplyr::filter(sample_flines, COMID %in% UM_COMIDs)$geom,
-#'      col = "blue", add = TRUE, lwd = 2)
-#'
 get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE) {
 
   network <- align_nhdplus_names(network)
@@ -81,21 +53,6 @@ get_UM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' along the mainstem
 #' @importFrom dplyr select filter arrange desc
 #' @export
-#' @examples
-#' library(sf)
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' plot(sample_flines$geom)
-#' start_COMID <- 11690092
-#' DM_COMIDs <- get_DM(sample_flines, start_COMID)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
-#'      col = "red", add = TRUE, lwd = 3)
-#'
-#' DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 40)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
-#'      col = "blue", add = TRUE, lwd = 2)
-#'
 get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE) {
 
   network <- align_nhdplus_names(network)
@@ -123,20 +80,6 @@ get_DM <- function(network, comid, distance = NULL, sort = FALSE, include = TRUE
 #' @return integer vector of all COMIDs downstream of the starting COMID
 #' @importFrom dplyr filter
 #' @export
-#' @examples
-#' library(sf)
-#' start_COMID <- 11688818
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' DD_COMIDs <- get_DD(sample_flines, start_COMID, distance = 4)
-#' plot(dplyr::filter(sample_flines, COMID %in% DD_COMIDs)$geom,
-#'      col = "red", lwd = 2)
-#'
-#' DM_COMIDs <- get_DM(sample_flines, start_COMID, distance = 4)
-#' plot(dplyr::filter(sample_flines, COMID %in% DM_COMIDs)$geom,
-#'      col = "blue", add = TRUE, lwd = 2)
-#'
 get_DD <- function(network, comid, distance = NULL) {
 
   navigate_hydro_network(network, comid, "DD", distance)
@@ -160,33 +103,6 @@ get_DD <- function(network, comid, distance = NULL) {
 #' @param trim_tolerance numeric from 0 to 100 percent of flowline length. If amount
 #' to trim is less than this tolerance, no trim will be applied.
 #' @export
-#' @examples
-#'
-#' \donttest{
-#' navigate_network(list(featureSource = "nwissite", featureID = "USGS-06287800"),
-#'                 "UM",
-#'                 output = "flowlines",
-#'                 trim_start = TRUE)
-#' }
-#'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#' hydro_location <- list(comid = 5329339,
-#'                       reachcode = "18050005000078",
-#'                        reach_meas = 30)
-#'
-#' hydro_location <- sf::st_sf(
-#'   hydro_location,
-#'   geom = nhdplusTools::get_hydro_location(data.frame(hydro_location),
-#'                                           walker_flowline))
-#'
-#' net <- navigate_network(hydro_location,
-#'                        mode = "DM", network = walker_flowline,
-#'                        trim_start = TRUE, distance_km = 20)
-#'
-#' plot(sf::st_geometry(walker_flowline))
-#' plot(sf::st_geometry(hydro_location), add = TRUE)
-#' plot(sf::st_geometry(net), add = TRUE, col = "blue", lwd = 2)
-#'
 navigate_network <- function(start, mode = "UM", network = NULL,
                              output = "flowlines", distance_km = 10,
                              trim_start = FALSE, trim_stop = FALSE,

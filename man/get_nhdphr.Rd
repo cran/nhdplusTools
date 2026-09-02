@@ -56,25 +56,3 @@ which will override all previous SRS (either input or default).
 All buffer and distance operations are handled internally using in
 EPSG:5070 Albers Equal Area projection
 }
-\examples{
-\donttest{
-AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-                                   xmax = -89.24681, ymax = 43.17192),
-                                 crs = "+proj=longlat +datum=WGS84 +no_defs"))
-
-# get flowlines and hydrolocations
-flowlines <- get_nhdphr(AOI = AOI, type = "networknhdflowline")
-point <- get_nhdphr(AOI = AOI, type = "nhdpoint")
-waterbody <- get_nhdphr(AOI = AOI, type = "nhdwaterbody")
-
-if(!is.null(waterbody) & !is.null(flowlines) & !is.null(point)) {
-plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
-plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
-plot(sf::st_geometry(point), col = "grey", pch = "+", add = TRUE) }
-
-# given universalreferenceid (reachcodes), can query for them but only
-# for hydrolocations. This is useful for looking up mainstem ids.
-
-get_nhdphr(reachcode = "13020101021927", type = "networknhdflowline")
-}
-}

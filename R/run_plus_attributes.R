@@ -20,20 +20,6 @@
 #' @return data.frame with added attributes
 #' @importFrom tidyr replace_na
 #' @export
-#' @examples
-#'
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-#'
-#' test_flowline <- data.frame(
-#'   comid = test_flowline$COMID,
-#'   tocomid = test_flowline$toCOMID,
-#'   nameID = walker_flowline$GNIS_ID,
-#'   lengthkm = test_flowline$LENGTHKM,
-#'   areasqkm = walker_flowline$AreaSqKM)
-#'
-#' add_plus_network_attributes(test_flowline)
 
 add_plus_network_attributes <- function(net, override = 5,
                                         cores = NULL, split_temp = NULL,

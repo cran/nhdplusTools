@@ -40,15 +40,3 @@ a call to \link{get_raindrop_trace}.
 If no point is provided, the raindrop argument is ignored and the result
 is a comid integer derived from a call to \link{get_nldi_feature}.
 }
-\examples{
-\donttest{
-point <- sf::st_sfc(sf::st_point(c(-76.874, 39.482)), crs = 4326)
-discover_nhdplus_id(point)
-
-discover_nhdplus_id(point, raindrop = TRUE)
-
-nldi_nwis <- list(featureSource = "nwissite", featureID = "USGS-08279500")
-discover_nhdplus_id(nldi_feature = nldi_nwis)
-}
-
-}

@@ -137,33 +137,6 @@ get_catchment_areas <- function(comids, refactored_areas = NULL){
 #' "split_catchment_areasqkm", and "split_area_prop". If not provided, it will
 #' be retrieved from `refactored_areas` and/or \link{get_vaa}.
 #'
-#' @examples
-#' \donttest{
-#' vars <- data.frame(characteristic_id = c("CAT_IMPV11","CAT_BASIN_AREA"),
-#'                    summary_statistic = c("area_weighted_mean","sum"))
-#' lookup_table <- data.frame(id = rep(10012268, 2),
-#'                            comid = c(4146596, 4147382),
-#'                            member_comid = c(4146596, 4147382))
-#' rescale_catchment_characteristics(vars, lookup_table)
-#'
-#' vars <- data.frame(characteristic_id = c("CAT_ELEV_MIN","CAT_ELEV_MAX"),
-#'                    summary_statistic = c("min","max"))
-#' lookup_table <- data.frame(id = rep(10012268, 2),
-#'                            comid = c(4146596, 4147382),
-#'                            member_comid = c(4146596, 4147382))
-#' rescale_catchment_characteristics(vars, lookup_table)
-#'
-#' vars <- data.frame(characteristic_id = c("CAT_EWT","CAT_TWI", "CAT_BASIN_AREA"),
-#'                    summary_statistic = c("area_weighted_mean", "area_weighted_mean","sum"))
-#' lookup_table <- data.frame(id = c(10012268, 10012268, 10024047, 10024048),
-#'                            comid = c(4146596, 4147382, 4147396, 4147396),
-#'                            member_comid = c("4146596", "4147382", "4147396.1", "4147396.2"))
-#' comid_areas <- data.frame(featureid = c("4146596", "4147382", "4147396.1", "4147396.2"),
-#'                                areasqkm = c(0.9558, 11.9790, 6.513294, 1.439999))
-#' rescale_catchment_characteristics(vars, lookup_table, refactored_areas = comid_areas)
-#'
-#'  }
-#'
 #' @param source character \code{"usgs"} (default) or \code{"streamcat"}. Passed
 #' through to \link{get_catchment_characteristics} when \code{catchment_characteristics}
 #' is not provided.

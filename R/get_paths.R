@@ -24,21 +24,6 @@
 #'   sort orders of a directed graph.
 #' }
 #' @export
-#' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' test_flowline <- prepare_nhdplus(walker_flowline, 0, 0, FALSE)
-#'
-#' test_flowline <- data.frame(
-#'   ID = test_flowline$COMID,
-#'   toID = test_flowline$toCOMID,
-#'   nameID = walker_flowline$GNIS_ID,
-#'   weight = walker_flowline$ArbolateSu,
-#'   stringsAsFactors = FALSE)
-#'
-#' get_levelpaths(test_flowline)
-#'
-#'
 get_levelpaths <- function(x, override_factor = NULL, status = FALSE, cores = NULL) {
 
   warning("get_levelpaths is deprecated in favor of add_levelpaths in the hydroloom package.")
@@ -96,20 +81,6 @@ get_fromids <- function(index_ids, return_list = FALSE) {
 #' @return data.frame containing a topologically sorted version
 #' of the requested network and optionally a terminal id.
 #' @importFrom hydroloom sort_network
-#' @examples
-#' source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
-#'
-#' fpath <- get_tocomid(
-#'   dplyr::select(new_hope_flowline, COMID, FromNode, ToNode, Divergence, FTYPE,
-#'                 AreaSqKM, LENGTHKM, GNIS_ID)
-#' )
-#'
-#' head(fpath <- get_sorted(fpath, split = TRUE))
-#'
-#' fpath['sort_order'] <- 1:nrow(fpath)
-#'
-#' plot(fpath['sort_order'])
-#'
 get_sorted <- function(x, split = FALSE, outlets = NULL) {
 
   orig_names <- names(x)[1:2]
@@ -180,16 +151,6 @@ topo_sort_network <- function(x, reverse = TRUE) {
 #' @param outlets IDs of outlet flowlines
 #' @export
 #' @return data.frame containing the terminal ID for each outlet
-#' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
-#'                     ID = COMID, toID = toCOMID)
-#'
-#' outlet <- fl$ID[which(!fl$toID %in% fl$ID)]
-#'
-#' get_terminal(fl, outlet)
-#'
 get_terminal <- function(x, outlets) {
 
   message("Deprecated, use get_sorted.")
@@ -208,14 +169,6 @@ get_terminal <- function(x, outlets) {
 #' @importFrom hydroloom add_pathlength
 #' @export
 #' @return data.frame containing pathlength for each ID
-#' @examples
-#' source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-#'
-#' fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
-#'                     ID = COMID, toID = toCOMID, length = LENGTHKM)
-#'
-#' get_pathlength(fl)
-#'
 get_pathlength <- function(x) {
 
   x <- select(st_drop_geometry(x), all_of(c("id" = "ID", "toid" = "toID",

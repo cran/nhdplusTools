@@ -20,15 +20,6 @@
 #' @return data.frame ready to be used with the refactor_flowlines function.
 #' @importFrom dplyr select filter left_join group_split group_by bind_rows
 #' @export
-#' @examples
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' prepare_nhdplus(sample_flines,
-#'                 min_network_size = 10,
-#'                 min_path_length = 1,
-#'                 warn = FALSE)
-#'
 prepare_nhdplus <- function(flines,
                             min_network_size = 0,
                             min_path_length = 0,
@@ -200,13 +191,6 @@ filter_coastal <- function(flines) {
 #' attributes provided with comid and tocomid in the first and second columns..
 #' @importFrom hydroloom add_toids
 #' @export
-#' @examples
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' tocomid <- get_tocomid(sample_flines)
-#'
-#' tocomid <- get_tocomid(sample_flines, return_dendritic = FALSE)
-#'
 get_tocomid <- function(x, return_dendritic = TRUE, missing = 0,
                         remove_coastal = TRUE, add = TRUE) {
 

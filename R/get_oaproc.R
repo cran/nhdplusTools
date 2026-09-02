@@ -9,23 +9,6 @@
 #' @return sf data.frame containing raindrop trace and requested
 #' portion of flowline.
 #' @export
-#' @examples
-#' \donttest{
-#' point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
-#'
-#' (trace <- get_raindrop_trace(point))
-#'
-#' if(inherits(trace, "sf")) {
-#' bbox <- sf::st_bbox(trace) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
-#' plot(sf::st_transform(sf::st_geometry(trace)[1], 3857), add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_geometry(trace)[2], 3857), add = TRUE, col = "black")
-#' }
-#' }
-#'
 get_raindrop_trace <- function(point, direction = "down") {
 
   point <- check_point(point)[[1]]
@@ -66,59 +49,6 @@ get_raindrop_trace <- function(point, direction = "down") {
 #' data.frame.
 #'
 #' @export
-#' @examples
-#' \donttest{
-#' point <- sf::st_sfc(sf::st_point(x = c(-89.2158, 42.9561)), crs = 4326)
-#'
-#' trace <- get_raindrop_trace(point)
-#'
-#' if(inherits(trace, "sf")) {
-#'
-#' (snap_point <- sf::st_sfc(sf::st_point(trace$intersection_point[[1]]),
-#'                           crs = 4326))
-#'
-#' (catchment <- get_split_catchment(snap_point))
-#'
-#' if(inherits(catchment, "sf")) {
-#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
-#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
-#' }
-#'
-#' (catchment <- get_split_catchment(snap_point, upstream = FALSE))
-#'
-#'
-#' if(inherits(catchment, "sf")) {
-#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
-#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE, col = "white")
-#' }
-#'
-#' pour_point <- sf::st_sfc(sf::st_point(x = c(-89.25619, 42.98646)), crs = 4326)
-#'
-#' (catchment <- get_split_catchment(pour_point, upstream = FALSE))
-#'
-#' if(inherits(catchment, "sf")) {
-#' bbox <- sf::st_bbox(catchment) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(catchment)[1], 3857), add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_geometry(catchment)[2], 3857), add = TRUE, col = "black")
-#' plot(sf::st_transform(sf::st_sfc(pour_point, crs = 4326), 3857), add = TRUE, col = "white")
-#' }
-#'
-#' }
-#'}
-#'
 get_split_catchment <- function(point, upstream = TRUE) {
 
   point <- check_point(point)[[1]]
@@ -174,25 +104,6 @@ remove_shards <- function(g, thresh = 0.01) {
 #' @param num_pts numeric number of points to retrieve along the cross section.
 #' @return sf data.frame containing points retrieved.
 #' @export
-#' @examples
-#' \donttest{
-#' point <- sf::st_sfc(sf::st_point(x = c(-105.97218, 36.17592)), crs = 4326)
-#'
-#' (xs <- get_xs_point(point, 300, 100))
-#'
-#' if(inherits(xs, "sf")) {
-#'
-#' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_sfc(point, crs = 4326), 3857), add = TRUE)
-#'
-#' plot(xs$distance_m, xs$elevation_m)
-#' }
-#' }
-#'
 get_xs_point <- function(point, width, num_pts) {
 
   point <- check_point(point)[[1]]
@@ -216,27 +127,6 @@ get_xs_point <- function(point, width, num_pts) {
 #' Must be on of: 1, 3, 5, 10, 30, 60.
 #' @return sf data.frame containing points retrieved.
 #' @export
-#' @examples
-#' \donttest{
-#' point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
-#' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
-#'
-#' (xs <- get_xs_points(point1, point2, 100))
-#'
-#' if(inherits(xs, "sf")) {
-#'
-#' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
-#' plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
-#'
-#' plot(xs$distance_m, xs$elevation_m)
-#' }
-#' }
-#'
 get_xs_points <- function(point1, point2, num_pts, res = 1) {
 
   point1 <- check_point(point1)[[1]]
@@ -272,32 +162,6 @@ check_res <- function(res) {
 #' and ".group". .group tracks which input point each set of output
 #' points belongs to.
 #' @export
-#' @examples
-#' \donttest{
-#' point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
-#' point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
-#' point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
-#'
-#' points <- sf::st_as_sf(c(point1, point2, point3))
-#'
-#' (xs <- get_elev_along_path(points, 100))
-#'
-#' if(inherits(xs, "sf")) {
-#'
-#' bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
-#'
-#' nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-#'
-#' plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
-#' plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
-#' plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
-#' plot(sf::st_transform(sf::st_sfc(point3, crs = 4326), 3857), add = TRUE)
-#'
-#' plot(xs$distance_m, xs$elevation_m)
-#' }
-#'
-#' }
-#'
 get_elev_along_path <- function(points, num_pts, res = 1, status = TRUE) {
 
   url_base <- get_nldi_url(pygeo = TRUE)

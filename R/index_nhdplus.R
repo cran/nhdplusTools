@@ -37,35 +37,6 @@
 #' @importFrom hydroloom index_points_to_lines
 #' @importFrom magrittr `%>%`
 #' @export
-#' @examples
-#' \donttest{
-#'
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)),
-#'                     crs = 4326)
-#'
-#' get_flowline_index(sample_flines, point)
-#'
-#' point <- sf::st_transform(point, 5070)
-#'
-#' get_flowline_index(sample_flines, point,
-#'                    search_radius = units::set_units(200, "m"))
-#'
-#' get_flowline_index("download_nhdplusv2", point)
-#'
-#' get_flowline_index(sample_flines, point, precision = 30)
-#'
-#' get_flowline_index(sample_flines,
-#'                    sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
-#'                                    sf::st_point(c(-76.91711, 39.40884)),
-#'                                    sf::st_point(c(-76.88081, 39.36354))),
-#'                               crs = 4326),
-#'                    search_radius = units::set_units(0.2, "degrees"),
-#'                    max_matches = 10)
-#'
-#' }
-#'
 get_flowline_index <- function(flines, points,
                                search_radius = NULL,
                                precision = NA,
@@ -119,44 +90,6 @@ get_flowline_index <- function(flines, points,
 #' value, duplicates will be returned.
 #' @importFrom hydroloom disambiguate_indexes
 #' @export
-#' @examples
-#' source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-#'
-#' hydro_location <- sf::st_sf(id = c(1, 2, 3),
-#'                             geom = sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
-#'                                                    sf::st_point(c(-76.91711, 39.40884)),
-#'                                                    sf::st_point(c(-76.88081, 39.36354))),
-#'                                               crs = 4326),
-#'                             totda = c(23.6, 7.3, 427.9),
-#'                             nameid = c("Patapsco", "", "Falls Run River"))
-#'
-#' flowpath <- dplyr::select(sample_flines,
-#'                           comid = COMID,
-#'                           totda = TotDASqKM,
-#'                           nameid = GNIS_NAME,
-#'                           REACHCODE,
-#'                           ToMeas,
-#'                           FromMeas)
-#'
-#' indexes <- get_flowline_index(flowpath,
-#'                               hydro_location,
-#'                               search_radius = 0.2,
-#'                               max_matches = 10)
-#'
-#' disambiguate_flowline_indexes(indexes,
-#'                               dplyr::select(flowpath, comid, totda),
-#'                               dplyr::select(hydro_location, id, totda))
-#'
-#' result <- disambiguate_flowline_indexes(indexes,
-#'                                         dplyr::select(flowpath, comid, nameid),
-#'                                         dplyr::select(hydro_location, id, nameid))
-#'
-#' result[result$id == 1, ]
-#'
-#' result[result$id == 2, ]
-#'
-#' result[result$id == 3, ]
-#'
 disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
   check_names(indexes, "disambiguate_flowline_indexes")
 
@@ -183,20 +116,6 @@ disambiguate_flowline_indexes <- function(indexes, flowpath, hydro_location) {
 #' near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projection.
 #' @importFrom hydroloom index_points_to_waterbodies
 #' @export
-#' @examples
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' waterbodies <- sf::st_transform(
-#'   sf::read_sf(sample_data, "NHDWaterbody"), 5070)
-#'
-#' points <- sf::st_transform(
-#'   sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
-#'              crs = 4326), 5070)
-#'
-#' get_waterbody_index(waterbodies, points,
-#'                     search_radius = units::set_units(500, "m"))
-#'
 get_waterbody_index <- function(waterbodies, points, flines = NULL,
                                 search_radius = NULL) {
 

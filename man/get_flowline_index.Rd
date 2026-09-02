@@ -58,33 +58,3 @@ handling of precision parameter.
 
 Note 5: "from" is downstream -- 0 is the outlet "to" is upstream -- 100 is the inlet
 }
-\examples{
-\donttest{
-
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-point <- sf::st_sfc(sf::st_point(c(-76.87479, 39.48233)),
-                    crs = 4326)
-
-get_flowline_index(sample_flines, point)
-
-point <- sf::st_transform(point, 5070)
-
-get_flowline_index(sample_flines, point,
-                   search_radius = units::set_units(200, "m"))
-
-get_flowline_index("download_nhdplusv2", point)
-
-get_flowline_index(sample_flines, point, precision = 30)
-
-get_flowline_index(sample_flines,
-                   sf::st_sfc(list(sf::st_point(c(-76.86934, 39.49328)),
-                                   sf::st_point(c(-76.91711, 39.40884)),
-                                   sf::st_point(c(-76.88081, 39.36354))),
-                              crs = 4326),
-                   search_radius = units::set_units(0.2, "degrees"),
-                   max_matches = 10)
-
-}
-
-}

@@ -65,17 +65,3 @@ which will override all previous SRS (either input or default).
 All buffer and distance operations are handled internally using an
 EPSG:5070 Albers Equal Area projection
 }
-\examples{
-\donttest{
- point <- sf::st_sfc(sf::st_point(c(-119.845, 34.4146)), crs = 4326)
- get_nhdplus(point)
- get_nhdplus(point, realization = "catchment")
- get_nhdplus(point, realization = "all")
- get_nhdplus(comid = 101)
- get_nhdplus(nwis  = c(11120000, 11120500))
- area <- sf::st_as_sfc(sf::st_bbox(c(xmin = -119.8851, xmax =-119.8361,
- ymax = 34.42439, ymin = 34.40473), crs = 4326))
- get_nhdplus(area)
- get_nhdplus(area, realization = "flowline", streamorder = 3)
- }
-}

@@ -118,14 +118,6 @@
 #'   disambiguate_indexes
 #' @importFrom dataRetrieval findNLDI
 #' @export
-#' @examples
-#' \dontrun{
-#' # Black Earth Creek
-#' start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
-#' result <- get_drainage_area_estimates(start)
-#' result$da_huc10_sqkm
-#' result$network_da_sqkm
-#' }
 get_drainage_area_estimates <- function(start, catchments = FALSE,
   nhdplushr = TRUE, local_navigation = FALSE, huc12_data = NULL,
   huc12_outlets = NULL, waterbody_data = NULL, catchment_data = NULL,

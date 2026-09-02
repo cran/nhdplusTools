@@ -22,17 +22,3 @@ starting COMID.
 \description{
 Traverse NHDPlus network upstream with tributaries
 }
-\examples{
-library(sf)
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-plot(sample_flines$geom)
-start_COMID <- 11690196
-UT_COMIDs <- get_UT(sample_flines, start_COMID)
-plot(dplyr::filter(sample_flines, COMID \%in\% UT_COMIDs)$geom,
-     col = "red", add = TRUE)
-
-UT_COMIDs <- get_UT(sample_flines, start_COMID, distance = 50)
-plot(dplyr::filter(sample_flines, COMID \%in\% UT_COMIDs)$geom,
-     col = "blue", add = TRUE)
-
-}

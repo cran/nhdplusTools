@@ -18,14 +18,3 @@ data.frame containing the terminal ID for each outlet
 Get the ID of the basin outlet for each flowline.
 This function has been deprecated in favor of get_sorted.
 }
-\examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-fl <- dplyr::select(prepare_nhdplus(walker_flowline, 0, 0),
-                    ID = COMID, toID = toCOMID)
-
-outlet <- fl$ID[which(!fl$toID \%in\% fl$ID)]
-
-get_terminal(fl, outlet)
-
-}

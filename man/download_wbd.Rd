@@ -27,8 +27,3 @@ Please see:
 https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.xml
 for metadata.
 }
-\examples{
-\dontrun{
-  download_wbd("./data/wbd/")
-}
-}

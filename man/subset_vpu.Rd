@@ -27,12 +27,3 @@ data.frame containing subset network
 Calls \link{subset_rpu} for all raster processing units for the
 requested vector processing unit.
 }
-\examples{
-
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-
-sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
-
-subset_vpu(sample_flines, "07")
-
-}

@@ -37,81 +37,6 @@
 #'
 #' @return character path to the saved subset geopackage
 #' @export
-#' @examples
-#' \donttest{
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' nhdplus_path(sample_data)
-#'
-#' sample_flines <- sf::st_zm(sf::read_sf(nhdplus_path(), "NHDFlowline_Network"))
-#'
-#' plot(sf::st_geometry(sample_flines),
-#'      lwd = 3)
-#'
-#' start_point <- sf::st_sfc(sf::st_point(c(-89.362239, 43.090266)),
-#'                           crs = 4326)
-#'
-#' plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
-#'
-#' start_comid <- discover_nhdplus_id(start_point)
-#'
-#' comids <- get_UT(sample_flines, start_comid)
-#'
-#' plot(sf::st_geometry(dplyr::filter(sample_flines, COMID %in% comids)),
-#'      add=TRUE, col = "red", lwd = 2)
-#'
-#' output_file <- tempfile(fileext = ".gpkg")
-#'
-#' subset_nhdplus(comids = comids,
-#'                output_file = output_file,
-#'                nhdplus_data = sample_data,
-#'                overwrite = TRUE,
-#'                status = TRUE)
-#'
-#' sf::st_layers(output_file)
-#'
-#' catchment <- sf::read_sf(output_file, "CatchmentSP")
-#'
-#' plot(sf::st_geometry(catchment), add = TRUE)
-#'
-#' waterbody <- sf::read_sf(output_file, "NHDWaterbody")
-#'
-#' plot(sf::st_geometry(waterbody),
-#'      col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
-#'
-#' # Cleanup temp
-#' unlink(output_file)
-#'
-#' # Download Option:
-#' subset_nhdplus(comids = comids,
-#'                output_file = output_file,
-#'                nhdplus_data = "download",
-#'                overwrite = TRUE,
-#'                status = TRUE, flowline_only = FALSE)
-#'
-#' sf::st_layers(output_file)
-#'
-#' # NHDPlusHR
-#' source(system.file("extdata/nhdplushr_data.R", package = "nhdplusTools"))
-#'
-#' up_ids <- get_UT(hr_data$NHDFlowline, 15000500028335)
-#'
-#' sub_gpkg <- file.path(work_dir, "sub.gpkg")
-#' sub_nhdhr <- subset_nhdplus(up_ids, output_file = sub_gpkg,
-#'                             nhdplus_data = hr_gpkg, overwrite = TRUE)
-#'
-#' sf::st_layers(sub_gpkg)
-#' names(sub_nhdhr)
-#'
-#' plot(sf::st_geometry(hr_data$NHDFlowline), lwd = 0.5)
-#' plot(sf::st_geometry(sub_nhdhr$NHDFlowline), lwd = 0.6, col = "red", add = TRUE)
-#'
-#' unlink(output_file)
-#' unlink(sub_gpkg)
-#'
-#' }
-#'
 
 subset_nhdplus <- function(comids = NULL, output_file = NULL, nhdplus_data = NULL, bbox = NULL,
                            simplified = TRUE, overwrite = FALSE, return_data = TRUE, status = TRUE,
@@ -493,14 +418,6 @@ get_flowline_layer_name <- function(nhdplus_data) {
 #' @export
 #' @importFrom dplyr filter select
 #' @return data.frame containing subset network
-#' @examples
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
-#'
-#' subset_vpu(sample_flines, "07")
-#'
 subset_vpu <- function(fline, vpu,
                        include_null_rpuid = TRUE,
                        run_make_standalone = TRUE) {
@@ -562,14 +479,6 @@ recase_sf <- function(x, orig_names) {
 #' @return data.frame containing subset network
 #' @importFrom dplyr filter arrange summarize
 #' @importFrom sf st_sf st_drop_geometry
-#' @examples
-#'
-#' source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-#'
-#' sample_flines <- sf::read_sf(sample_data, "NHDFlowline_Network")
-#'
-#' subset_rpu(sample_flines, rpu = "07b")
-#'
 subset_rpu <- function(fline, rpu, run_make_standalone = TRUE, strict = FALSE) {
   orig_names <- names(fline)
 

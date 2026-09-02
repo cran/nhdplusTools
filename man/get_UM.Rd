@@ -26,19 +26,3 @@ along the mainstem
 \description{
 Traverse NHDPlus network upstream main stem
 }
-\examples{
-library(sf)
-
-source(system.file("extdata", "sample_flines.R", package = "nhdplusTools"))
-
-plot(sample_flines$geom)
-start_COMID <- 11690196
-UM_COMIDs <- get_UM(sample_flines, start_COMID)
-plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geom,
-     col = "red", add = TRUE, lwd = 3)
-
-UM_COMIDs <- get_UM(sample_flines, start_COMID, distance = 50)
-plot(dplyr::filter(sample_flines, COMID \%in\% UM_COMIDs)$geom,
-     col = "blue", add = TRUE, lwd = 2)
-
-}

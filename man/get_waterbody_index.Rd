@@ -27,18 +27,3 @@ near_wb_dist, and outlet_fline_COMID. Distance is in units of provided projectio
 given an sf point geometry column, return waterbody id, and
 COMID of dominant artificial path
 }
-\examples{
-
-source(system.file("extdata/sample_data.R", package = "nhdplusTools"))
-
-waterbodies <- sf::st_transform(
-  sf::read_sf(sample_data, "NHDWaterbody"), 5070)
-
-points <- sf::st_transform(
-  sf::st_sfc(sf::st_point(c(-89.356086, 43.079943)),
-             crs = 4326), 5070)
-
-get_waterbody_index(waterbodies, points,
-                    search_radius = units::set_units(500, "m"))
-
-}

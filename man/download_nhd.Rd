@@ -22,13 +22,3 @@ character Paths to geodatabases created.
 \description{
 Download NHD
 }
-\examples{
-\donttest{
-hu <- get_huc(sf::st_sfc(sf::st_point(c(-73, 42)), crs = 4326),
-                            type = "huc08")
-
-(hu <- substr(hu$huc8, 1, 2))
-
-download_nhd(tempdir(), c(hu, "0203"), download_files = FALSE)
-}
-}

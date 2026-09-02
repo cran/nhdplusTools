@@ -140,12 +140,3 @@ By default, network navigation is performed via the NLDI web service and
   Each pair includes a total and a contributing-only estimate derived from
   the \code{ncontrb_a} (non-contributing acres) attribute on HUC12 features.
 }
-\examples{
-\dontrun{
-# Black Earth Creek
-start <- list(featureSource = "nwissite", featureID = "USGS-05406500")
-result <- get_drainage_area_estimates(start)
-result$da_huc10_sqkm
-result$network_da_sqkm
-}
-}

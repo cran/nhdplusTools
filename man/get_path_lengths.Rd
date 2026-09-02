@@ -25,17 +25,3 @@ Given a network and set of IDs, finds path lengths between all
 identified flowpath outlets. This algorithm finds distance between outlets
 regardless of flow direction.
 }
-\examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-fline <- walker_flowline
-
-outlets <- c(5329303, 5329357, 5329317, 5329365, 5329435, 5329817)
-
-# Add toCOMID
-fline <- nhdplusTools::get_tocomid(fline, add = TRUE)
-
-fl <- dplyr::select(fline, ID = comid, toID = tocomid, lengthkm)
-
-get_path_lengths(outlets, fl)
-
-}

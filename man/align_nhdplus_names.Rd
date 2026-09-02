@@ -15,15 +15,3 @@ data.frame renamed \code{sf} object
 \description{
 this function takes any NHDPlus dataset and aligns the attribute names with those used in nhdplusTools.
 }
-\examples{
-source(system.file("extdata/new_hope_data.R", package = "nhdplusTools"))
-
-names(new_hope_flowline)
-
-names(new_hope_flowline) <- tolower(names(new_hope_flowline))
-
-new_hope_flowline <- align_nhdplus_names(new_hope_flowline)
-
-names(new_hope_flowline)
-
-}

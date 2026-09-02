@@ -222,46 +222,6 @@ get_nwis <- function(AOI = NULL, t_srs = NULL, buffer = 20000){
 #' @param universalreferenceid character vector of hydrolocation universal
 #' reference ids such as reachcodes
 #' @export
-#' @examples
-#' \donttest{
-#' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-#'                                    xmax = -89.24681, ymax = 43.17192),
-#'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
-#'
-#' # get flowlines and hydrolocations
-#' flowlines <- get_3dhp(AOI = AOI, type = "flowline")
-#' hydrolocation <- get_3dhp(AOI = AOI, type = "hydrolocation")
-#' waterbody <- get_3dhp(AOI = AOI, type = "waterbody")
-#'
-#' if(!is.null(waterbody) & !is.null(flowlines) & !is.null(hydrolocation)) {
-#' plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
-#' plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
-#' plot(sf::st_geometry(hydrolocation), col = "grey", pch = "+", add = TRUE) }
-#'
-#' # given mainstem ids from any source, can query for them in ids.
-#'
-#' CO <- get_3dhp(ids = "https://geoconnex.us/ref/mainstems/29559",
-#'                type = "flowline")
-#'
-#' if(!is.null(CO))
-#'   plot(sf::st_geometry(CO), col = "blue")
-#'
-#' # get all the waterbodies along the CO river
-#' CO_wb <- get_3dhp(ids = unique(CO$waterbodyid3dhp), type = "waterbody")
-#'
-#' if(!is.null(CO_wb)) {
-#' plot(sf::st_geometry(CO_wb[grepl("Powell", CO_wb$gnisidlabel),]),
-#'      col = "blue", border = "NA") }
-#'
-#' # given a workunitid, can query for features in that work unit
-#' wufl <- get_3dhp(ids = "workunitid:300585", type = "flowline")
-#'
-#' # given universalreferenceid (reachcodes), can query for them but only
-#' # for hydrolocations. This is useful for looking up mainstem ids.
-#'
-#' get_3dhp(universalreferenceid = unique(hydrolocation$universalreferenceid),
-#'          type = "hydrolocation")
-#'}
 get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
                      universalreferenceid = NULL,
                      t_srs = NULL, buffer = 0.5,
@@ -314,27 +274,6 @@ get_3dhp <- function(AOI = NULL, ids = NULL, type = NULL,
 #' spatial queries are the primary use of this function.
 #'
 #' @export
-#' @examples
-#' \donttest{
-#' AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-#'                                    xmax = -89.24681, ymax = 43.17192),
-#'                                  crs = "+proj=longlat +datum=WGS84 +no_defs"))
-#'
-#' # get flowlines and hydrolocations
-#' flowlines <- get_nhdphr(AOI = AOI, type = "networknhdflowline")
-#' point <- get_nhdphr(AOI = AOI, type = "nhdpoint")
-#' waterbody <- get_nhdphr(AOI = AOI, type = "nhdwaterbody")
-#'
-#' if(!is.null(waterbody) & !is.null(flowlines) & !is.null(point)) {
-#' plot(sf::st_geometry(waterbody), col = "lightblue", border = "lightgrey")
-#' plot(sf::st_geometry(flowlines), col = "blue", add = TRUE)
-#' plot(sf::st_geometry(point), col = "grey", pch = "+", add = TRUE) }
-#'
-#' # given universalreferenceid (reachcodes), can query for them but only
-#' # for hydrolocations. This is useful for looking up mainstem ids.
-#'
-#' get_nhdphr(reachcode = "13020101021927", type = "networknhdflowline")
-#'}
 get_nhdphr <- function(AOI = NULL, ids = NULL, type = NULL,
                        reachcode = NULL,
                        t_srs = NULL, buffer = 0.5,

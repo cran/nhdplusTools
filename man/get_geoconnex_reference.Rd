@@ -33,23 +33,3 @@ sf data.frame containing requested reference features
 \description{
 Queries the geoconnex reference feature server for features of interest.
 }
-\examples{
-\donttest{
-
-dplyr::distinct(discover_geoconnex_reference()[c("id", "title")])
-
-AOI <- sf::st_as_sfc(sf::st_bbox(c(xmin = -89.56684, ymin = 42.99816,
-                                   xmax = -89.24681, ymax = 43.17192),
-                                 crs = "+proj=longlat +datum=WGS84 +no_defs"))
-
-get_geoconnex_reference(AOI, type = "hu04")
-
-get_geoconnex_reference("https://geoconnex.us/ref/mainstems/315626", type = "hu04", )
-
-AOI <- sf::st_sfc(sf::st_point(c(-89.56684, 42.99816)),
-                  crs = "+proj=longlat +datum=WGS84 +no_defs")
-
-get_geoconnex_reference(AOI, type = "hu04", buffer = 100000)
-
-}
-}

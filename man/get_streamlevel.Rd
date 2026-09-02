@@ -24,25 +24,3 @@ If a TRUE/FALSE coastal attribute is included, coastal terminal paths
 begin at 1 and internal terminal paths begin at 4 as is implemented by
 the NHD stream leveling rules.
 }
-\examples{
-source(system.file("extdata", "walker_data.R", package = "nhdplusTools"))
-
-test_flowline <- data.frame(
- levelpathi = walker_flowline$LevelPathI,
- dnlevelpat = walker_flowline$DnLevelPat)
-
- test_flowline$dnlevelpat[1] <- 0
-
-(level <- get_streamlevel(test_flowline))
-
-walker_flowline$level <- level
-
-plot(sf::st_geometry(walker_flowline), lwd = walker_flowline$level, col = "blue")
-
-test_flowline$coastal <- rep(FALSE, nrow(test_flowline))
-(level <- get_streamlevel(test_flowline))
-
-test_flowline$coastal[!test_flowline$dnlevelpat \%in\% test_flowline$levelpathi] <- TRUE
-(level <- get_streamlevel(test_flowline))
-
-}

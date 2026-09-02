@@ -30,13 +30,3 @@ for more information and metadata about this data.
 Default downloads lower-48 only. See examples for islands. No Alaska data
 are available.
 }
-\examples{
-\dontrun{
-  download_nhdplusv2("./data/nhd/")
-
-  download_nhdplusv2(outdir = "./inst/",
-      url = paste0("https://dmap-data-commons-ow.s3.amazonaws.com/NHDPlusV21/",
-                   "Data/NationalData/NHDPlusV21_NationalData_Seamless",
-                   "_Geodatabase_HI_PR_VI_PI_03.7z"))
-}
-}

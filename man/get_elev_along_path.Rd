@@ -26,30 +26,3 @@ points belongs to.
 Uses a cross section retrieval web services to retrieve elevation
  along a path.
 }
-\examples{
-\donttest{
-point1 <- sf::st_sfc(sf::st_point(x = c(-105.9667, 36.17602)), crs = 4326)
-point2 <- sf::st_sfc(sf::st_point(x = c(-105.97768, 36.17526)), crs = 4326)
-point3 <- sf::st_sfc(sf::st_point(x = c(-105.98869, 36.17450)), crs = 4326)
-
-points <- sf::st_as_sf(c(point1, point2, point3))
-
-(xs <- get_elev_along_path(points, 100))
-
-if(inherits(xs, "sf")) {
-
-bbox <- sf::st_bbox(xs) + c(-0.005, -0.005, 0.005, 0.005)
-
-nhdplusTools::plot_nhdplus(bbox = bbox, cache_data = FALSE)
-
-plot(sf::st_transform(sf::st_geometry(xs), 3857), pch = ".", add = TRUE, col = "red")
-plot(sf::st_transform(sf::st_sfc(point1, crs = 4326), 3857), add = TRUE)
-plot(sf::st_transform(sf::st_sfc(point2, crs = 4326), 3857), add = TRUE)
-plot(sf::st_transform(sf::st_sfc(point3, crs = 4326), 3857), add = TRUE)
-
-plot(xs$distance_m, xs$elevation_m)
-}
-
-}
-
-}
